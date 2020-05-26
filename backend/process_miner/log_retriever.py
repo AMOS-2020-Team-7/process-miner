@@ -9,14 +9,14 @@ log = logging.getLogger(__name__)
 default_oldest_retrieved_timestamp = "1970-01-01T01:00:00.000Z"
 oldest_retrieved_timestamp_filename = "oldest_timestamp"
 
-absolute_search_path = "api/search/universal/absolute"
-default_headers = {'Accept': 'application/json'}
-default_query_parameters = {'query': '*', 'fields': 'correlationId, message, timestamp', 'limit': '10', 'pretty': 'true'}
+absolute_search_path = "api/search/universal/absolute/export"
+default_headers = {'Accept': 'text/csv'}
+default_query_parameters = {'query': "*", 'fields': "correlationId, timestamp, message", 'batch_size': 0}
 
 
 def timestamp_is_valid(timestamp: str) -> bool:
     try:
-        datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+        datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S.%f")
         return True
     except ValueError:
         return False
@@ -40,10 +40,12 @@ class LogRetriever:
         query_parameters = self.__prepare_query_parameters()
         log.info("retrieving logs in time range from '%s' to '%s' via GET request to %s", self.oldest_timestamp,
                  query_parameters['to'], self.url)
-        response = requests.get(self.url, headers=default_headers, auth=(self.api_token, 'token'), params=query_parameters)
+        response = requests.get(self.url, headers=default_headers, auth=(self.api_token, 'token'),
+                                params=query_parameters)
 
         if response.status_code != 200:
-            log.error("log retrieval failed with status code '%s', reason '%s' and body \n%s", response.status_code, response.reason, response.text)
+            log.error("log retrieval failed with status code '%s', reason '%s' and body \n%s", response.status_code,
+                      response.reason, response.text)
             return
 
         # TODO actual log storage (and possibly grouping by correlationId)
@@ -77,6 +79,6 @@ class LogRetriever:
     def __prepare_query_parameters(self):
         query_parameters = default_query_parameters.copy()
         query_parameters['from'] = self.oldest_timestamp
-        # TODO proper time formating without string manipulation
+        # TODO proper time formatting without string manipulation
         query_parameters['to'] = str(datetime.datetime.now())[:-3]
         return query_parameters

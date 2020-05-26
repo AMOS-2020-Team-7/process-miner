@@ -10,8 +10,9 @@ def main():
     logging.basicConfig(level=logging.INFO)
     log.info("process miner backend started")
 
-    log_retriever = LogRetriever(log_retriever_cfg["url"], log_retriever_cfg["api_token"], log_retriever_cfg["target_dir"])
-    log_retriever.download_logs()
+    log_retriever = LogRetriever(log_retriever_cfg["url"], log_retriever_cfg["api_token"],
+                                 log_retriever_cfg["target_dir"])
+    log_retriever.retrieve_logs()
 
 
 if __name__ == '__main__':

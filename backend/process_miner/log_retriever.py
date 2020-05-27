@@ -108,8 +108,6 @@ class LogRetriever:
     def process_csv_lines(lines: List[str]):
         reader = csv.DictReader(lines)
         sorted_list = sorted(reader, key=lambda row: row['timestamp'], reverse=False)
-        print(type(sorted_list))
-        print(type(sorted_list[0]))
         grouped_dict = LogRetriever.group_lines_by_correlation_id(sorted_list)
         newest_timestamp = sorted_list[-1]['timestamp']
         return reader.fieldnames, grouped_dict, newest_timestamp

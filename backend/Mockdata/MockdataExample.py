@@ -15,7 +15,7 @@ from pm4py.visualization.petrinet import visualizer as petri_vis
 
 def execute_script():
     # import csv & create log
-    dataframe = csv_import_adapter.import_dataframe_from_path("testData1.csv", sep=";")
+    dataframe = csv_import_adapter.import_dataframe_from_path(datasourceMockdata(), sep=";")
     dataframe = dataframe.rename(columns={'ID':'case:concept:name', 'Days':'time:timestamp', 'Task':'concept:name', 'Person':'org:resource'})
     log = conversion_factory.apply(dataframe)
 
@@ -36,6 +36,11 @@ def execute_script():
             heuristics_miner.Variants.CLASSIC.value.Parameters.DEPENDENCY_THRESH: 0.99})
     gviz3 = petri_vis.apply(net, im, fm, parameters={petri_vis.Variants.WO_DECORATION.value.Parameters.FORMAT: "png"})
     petri_vis.view(gviz3)
+
+def datasourceMockdata():
+    datasource = "TestData1.csv"
+    return datasource
+
 
 if __name__ == "__main__":
     execute_script()

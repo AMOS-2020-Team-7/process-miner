@@ -25,7 +25,7 @@ jobs:
     - name: Deploy to Firebase
       uses: w9jds/firebase-action@master
       with:
-        args: deploy --only hosting
+        args: deploy --only hosting:dev
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_HOSTING_KEY }}
         PROJECT_PATH: ./frontend

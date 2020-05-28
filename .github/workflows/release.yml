@@ -1,0 +1,29 @@
+name: Deploy release
+
+on:
+  release:
+    types: [ released ]
+
+jobs:
+  Frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: Install dependencies
+      run: npm ci
+    - name: Build
+      run: npm run build --prod
+    - name: Deploy to Firebase
+      uses: w9jds/firebase-action@master
+      with:
+        args: deploy --only hosting:prod
+      env:
+        GCP_SA_KEY: ${{ secrets.GCP_SA_HOSTING_KEY }}
+        PROJECT_PATH: ./frontend

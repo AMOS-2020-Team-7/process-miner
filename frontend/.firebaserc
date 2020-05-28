@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "process-miner-amos"
+  },
+  "targets": {
+    "process-miner-amos": {
+      "hosting": {
+        "prod": [
+          "process-miner-amos"
+        ],
+        "dev": [
+          "process-miner-amos-dev"
+        ]
+      }
+    }
+  }
+}

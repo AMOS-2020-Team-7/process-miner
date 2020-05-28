@@ -1,10 +1,8 @@
-name: Deploy application
+name: Deploy release
 
 on:
-  push:
-    branches: [ actions ]
-  pull_request:
-    branches: [ master ]
+  release:
+    types: [ released ]
 
 jobs:
   Frontend:
@@ -25,7 +23,7 @@ jobs:
     - name: Deploy to Firebase
       uses: w9jds/firebase-action@master
       with:
-        args: deploy --only hosting:dev
+        args: deploy --only hosting:prod
       env:
         GCP_SA_KEY: ${{ secrets.GCP_SA_HOSTING_KEY }}
         PROJECT_PATH: ./frontend

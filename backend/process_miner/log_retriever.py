@@ -1,12 +1,12 @@
 import csv
 import logging
-import requests
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Sequence, Dict, Iterable
+from typing import List, Dict, Iterable
 from urllib.parse import urljoin
 
+import requests
 
 log = logging.getLogger(__name__)
 

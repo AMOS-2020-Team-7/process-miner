@@ -22,4 +22,4 @@ jobs:
       - name: Test with pytest
         run: pipenv run pytest
       - name: Check for security issues with bandit
-        run: pipenv run bandit -r process_miner tests
+        run: pipenv run bandit -r process_miner

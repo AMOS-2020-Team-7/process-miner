@@ -21,5 +21,7 @@ jobs:
         run: pipenv install --dev
       - name: Test with pytest
         run: pipenv run pytest
+      - name: Lint with pylint
+        run: pipenv run pylint process_miner tests
       - name: Check for security issues with bandit
         run: pipenv run bandit -r process_miner

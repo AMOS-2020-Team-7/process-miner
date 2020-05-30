@@ -3,9 +3,8 @@ Main module of the process miner package used to start the process miner.
 """
 import logging
 
-from process_miner.log_retriever import LogRetriever
-from process_miner.process_miner_config import \
-    log_retriever as log_retriever_cfg
+from .log_retriever import LogRetriever
+from .process_miner_config import log_retriever as log_retriever_cfg
 
 log = logging.getLogger(__name__)
 

@@ -8,8 +8,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Dict, Iterable, Sequence, Tuple
 
-from process_miner import graylog_access
-from process_miner.graylog_access import GraylogAccess
+from . import graylog_access
+from .graylog_access import GraylogAccess
 
 log = logging.getLogger(__name__)
 

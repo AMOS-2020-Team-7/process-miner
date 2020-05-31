@@ -36,7 +36,6 @@ class LogRetriever:
     """
     Class used for retrieving and storing log entries.
     """
-
     def __init__(self, url: str, api_token: str, target_dir: str):
         self.graylog_access = GraylogAccess(url, api_token)
         self.target_dir = Path(target_dir)

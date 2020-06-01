@@ -1,0 +1,28 @@
+coID,Timestamp,Activity
+1,20200422T0456,GET bank code & GET ASPSP
+1,20200422T0457,bank information
+1,20200422T0458,POST create consent
+1,20200422T0459,response created
+1,20200422T0500,POST start authorisation
+1,20200422T0501,response started
+1,20200422T0502,PUT password
+1,20200422T0503,response OK password
+1,20200422T0504,PUT choose auth. method
+1,20200422T0505,response OK auth. method
+1,20200422T0506,user receives otp
+1,20200422T0507,PUT one time password
+1,20200422T0508,response OK one time password
+1,20200422T0509,GET receive list of accounts
+1,20200422T0510,list of accounts
+1,20200422T0511,response OK list of account
+1,20200422T0512,GET receive list of transactions
+1,20200422T0513,list of transactions
+1,20200422T0514,response OK list of transactions
+1,20200422T0515,GET consent status + auth. status + DELETE consent
+1,20200422T0516,consent status
+1,20200422T0517,response OK consent status
+1,20200422T0518,auth. status
+1,20200422T0519,response OK auth. status
+1,20200422T0520,deleted consent
+1,20200422T0521,response OK delete consent
+

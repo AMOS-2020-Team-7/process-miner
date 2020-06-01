@@ -1,0 +1,334 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<pnml>
+  <net id="net1" type="http://www.pnml.org/version-2009/grammar/pnmlcoremodel">
+    <page id="n0">
+      <place id="pre_deleted consent">
+        <name>
+          <text>pre_deleted consent</text>
+        </name>
+      </place>
+      <place id="pre_response OK password">
+        <name>
+          <text>pre_response OK password</text>
+        </name>
+      </place>
+      <place id="pre_POST create consent">
+        <name>
+          <text>pre_POST create consent</text>
+        </name>
+      </place>
+      <place id="pre_response OK delete consent">
+        <name>
+          <text>pre_response OK delete consent</text>
+        </name>
+      </place>
+      <place id="source0">
+        <name>
+          <text>source0</text>
+        </name>
+        <initialMarking>
+          <text>1</text>
+        </initialMarking>
+      </place>
+      <place id="pre_PUT choose auth. method">
+        <name>
+          <text>pre_PUT choose auth. method</text>
+        </name>
+      </place>
+      <place id="sink0">
+        <name>
+          <text>sink0</text>
+        </name>
+      </place>
+      <place id="pre_response OK auth. method">
+        <name>
+          <text>pre_response OK auth. method</text>
+        </name>
+      </place>
+      <place id="pre_response created">
+        <name>
+          <text>pre_response created</text>
+        </name>
+      </place>
+      <place id="pre_user receives otp">
+        <name>
+          <text>pre_user receives otp</text>
+        </name>
+      </place>
+      <place id="pre_response started">
+        <name>
+          <text>pre_response started</text>
+        </name>
+      </place>
+      <place id="pre_PUT one time password">
+        <name>
+          <text>pre_PUT one time password</text>
+        </name>
+      </place>
+      <place id="pre_response OK one time password">
+        <name>
+          <text>pre_response OK one time password</text>
+        </name>
+      </place>
+      <place id="pre_GET receive list of accounts">
+        <name>
+          <text>pre_GET receive list of accounts</text>
+        </name>
+      </place>
+      <place id="pre_list of accounts">
+        <name>
+          <text>pre_list of accounts</text>
+        </name>
+      </place>
+      <place id="pre_response OK list of account">
+        <name>
+          <text>pre_response OK list of account</text>
+        </name>
+      </place>
+      <place id="pre_GET receive list of transactions">
+        <name>
+          <text>pre_GET receive list of transactions</text>
+        </name>
+      </place>
+      <place id="pre_POST start authorisation">
+        <name>
+          <text>pre_POST start authorisation</text>
+        </name>
+      </place>
+      <place id="pre_list of transactions">
+        <name>
+          <text>pre_list of transactions</text>
+        </name>
+      </place>
+      <place id="pre_response OK list of transactions">
+        <name>
+          <text>pre_response OK list of transactions</text>
+        </name>
+      </place>
+      <place id="pre_GET consent status + auth. status + DELETE consent">
+        <name>
+          <text>pre_GET consent status + auth. status + DELETE consent</text>
+        </name>
+      </place>
+      <place id="pre_consent status">
+        <name>
+          <text>pre_consent status</text>
+        </name>
+      </place>
+      <place id="pre_response OK consent status">
+        <name>
+          <text>pre_response OK consent status</text>
+        </name>
+      </place>
+      <place id="pre_auth. status">
+        <name>
+          <text>pre_auth. status</text>
+        </name>
+      </place>
+      <place id="pre_bank information">
+        <name>
+          <text>pre_bank information</text>
+        </name>
+      </place>
+      <place id="pre_response OK auth. status">
+        <name>
+          <text>pre_response OK auth. status</text>
+        </name>
+      </place>
+      <place id="pre_PUT password">
+        <name>
+          <text>pre_PUT password</text>
+        </name>
+      </place>
+      <transition id="GET bank code &amp; GET ASPSP">
+        <name>
+          <text>GET bank code &amp; GET ASPSP</text>
+        </name>
+      </transition>
+      <transition id="bank information">
+        <name>
+          <text>bank information</text>
+        </name>
+      </transition>
+      <transition id="POST create consent">
+        <name>
+          <text>POST create consent</text>
+        </name>
+      </transition>
+      <transition id="response created">
+        <name>
+          <text>response created</text>
+        </name>
+      </transition>
+      <transition id="POST start authorisation">
+        <name>
+          <text>POST start authorisation</text>
+        </name>
+      </transition>
+      <transition id="response started">
+        <name>
+          <text>response started</text>
+        </name>
+      </transition>
+      <transition id="PUT password">
+        <name>
+          <text>PUT password</text>
+        </name>
+      </transition>
+      <transition id="response OK password">
+        <name>
+          <text>response OK password</text>
+        </name>
+      </transition>
+      <transition id="PUT choose auth. method">
+        <name>
+          <text>PUT choose auth. method</text>
+        </name>
+      </transition>
+      <transition id="response OK auth. method">
+        <name>
+          <text>response OK auth. method</text>
+        </name>
+      </transition>
+      <transition id="user receives otp">
+        <name>
+          <text>user receives otp</text>
+        </name>
+      </transition>
+      <transition id="PUT one time password">
+        <name>
+          <text>PUT one time password</text>
+        </name>
+      </transition>
+      <transition id="response OK one time password">
+        <name>
+          <text>response OK one time password</text>
+        </name>
+      </transition>
+      <transition id="GET receive list of accounts">
+        <name>
+          <text>GET receive list of accounts</text>
+        </name>
+      </transition>
+      <transition id="list of accounts">
+        <name>
+          <text>list of accounts</text>
+        </name>
+      </transition>
+      <transition id="response OK list of account">
+        <name>
+          <text>response OK list of account</text>
+        </name>
+      </transition>
+      <transition id="GET receive list of transactions">
+        <name>
+          <text>GET receive list of transactions</text>
+        </name>
+      </transition>
+      <transition id="list of transactions">
+        <name>
+          <text>list of transactions</text>
+        </name>
+      </transition>
+      <transition id="response OK list of transactions">
+        <name>
+          <text>response OK list of transactions</text>
+        </name>
+      </transition>
+      <transition id="GET consent status + auth. status + DELETE consent">
+        <name>
+          <text>GET consent status + auth. status + DELETE consent</text>
+        </name>
+      </transition>
+      <transition id="consent status">
+        <name>
+          <text>consent status</text>
+        </name>
+      </transition>
+      <transition id="response OK consent status">
+        <name>
+          <text>response OK consent status</text>
+        </name>
+      </transition>
+      <transition id="auth. status">
+        <name>
+          <text>auth. status</text>
+        </name>
+      </transition>
+      <transition id="response OK auth. status">
+        <name>
+          <text>response OK auth. status</text>
+        </name>
+      </transition>
+      <transition id="deleted consent">
+        <name>
+          <text>deleted consent</text>
+        </name>
+      </transition>
+      <transition id="response OK delete consent">
+        <name>
+          <text>response OK delete consent</text>
+        </name>
+      </transition>
+      <arc id="161591615622" source="pre_PUT password" target="PUT password"/>
+      <arc id="161591618568" source="pre_deleted consent" target="deleted consent"/>
+      <arc id="161591615629" source="pre_response OK password" target="response OK password"/>
+      <arc id="161591618575" source="pre_response OK delete consent" target="response OK delete consent"/>
+      <arc id="-9223371875263157230" source="GET bank code &amp; GET ASPSP" target="pre_bank information"/>
+      <arc id="161591615636" source="pre_PUT choose auth. method" target="PUT choose auth. method"/>
+      <arc id="161591279382" source="pre_POST create consent" target="POST create consent"/>
+      <arc id="161591618582" source="bank information" target="pre_POST create consent"/>
+      <arc id="-9223371875263157223" source="POST create consent" target="pre_response created"/>
+      <arc id="161591615643" source="pre_response OK auth. method" target="response OK auth. method"/>
+      <arc id="161591618589" source="response created" target="pre_POST start authorisation"/>
+      <arc id="-9223371875263157216" source="POST start authorisation" target="pre_response started"/>
+      <arc id="161591615650" source="pre_user receives otp" target="user receives otp"/>
+      <arc id="161591618596" source="response started" target="pre_PUT password"/>
+      <arc id="-9223371875263157209" source="PUT password" target="pre_response OK password"/>
+      <arc id="161591615657" source="pre_PUT one time password" target="PUT one time password"/>
+      <arc id="161591618603" source="response OK password" target="pre_PUT choose auth. method"/>
+      <arc id="-9223371875263508564" source="pre_bank information" target="bank information"/>
+      <arc id="-9223371875263157202" source="PUT choose auth. method" target="pre_response OK auth. method"/>
+      <arc id="161591615664" source="pre_response OK one time password" target="response OK one time password"/>
+      <arc id="161591618610" source="response OK auth. method" target="pre_user receives otp"/>
+      <arc id="-9223371875263157195" source="user receives otp" target="pre_PUT one time password"/>
+      <arc id="161591615671" source="pre_GET receive list of accounts" target="GET receive list of accounts"/>
+      <arc id="161591618617" source="PUT one time password" target="pre_response OK one time password"/>
+      <arc id="-9223371875263171142" source="pre_POST start authorisation" target="POST start authorisation"/>
+      <arc id="-9223371875263157188" source="response OK one time password" target="pre_GET receive list of accounts"/>
+      <arc id="161591615678" source="pre_list of accounts" target="list of accounts"/>
+      <arc id="161591618624" source="GET receive list of accounts" target="pre_list of accounts"/>
+      <arc id="-9223371875263157181" source="list of accounts" target="pre_response OK list of account"/>
+      <arc id="161591615685" source="pre_response OK list of account" target="response OK list of account"/>
+      <arc id="161591618631" source="response OK list of account" target="pre_GET receive list of transactions"/>
+      <arc id="-9223371875263157174" source="GET receive list of transactions" target="pre_list of transactions"/>
+      <arc id="161591615692" source="pre_GET receive list of transactions" target="GET receive list of transactions"/>
+      <arc id="161591618638" source="list of transactions" target="pre_response OK list of transactions"/>
+      <arc id="-9223371875263504559" source="pre_response created" target="response created"/>
+      <arc id="-9223371875263157167" source="response OK list of transactions" target="pre_GET consent status + auth. status + DELETE consent"/>
+      <arc id="161591615699" source="pre_list of transactions" target="list of transactions"/>
+      <arc id="161591618645" source="GET consent status + auth. status + DELETE consent" target="pre_consent status"/>
+      <arc id="-9223371875263160232" source="pre_response started" target="response started"/>
+      <arc id="-9223371875263157160" source="consent status" target="pre_response OK consent status"/>
+      <arc id="161591615706" source="pre_response OK list of transactions" target="response OK list of transactions"/>
+      <arc id="161591618652" source="response OK consent status" target="pre_auth. status"/>
+      <arc id="-9223371875263157153" source="auth. status" target="pre_response OK auth. status"/>
+      <arc id="161591615713" source="pre_GET consent status + auth. status + DELETE consent" target="GET consent status + auth. status + DELETE consent"/>
+      <arc id="161591618659" source="response OK auth. status" target="pre_deleted consent"/>
+      <arc id="-9223371875263157146" source="deleted consent" target="pre_response OK delete consent"/>
+      <arc id="161591615720" source="pre_consent status" target="consent status"/>
+      <arc id="-9223371875263157139" source="response OK delete consent" target="sink0"/>
+      <arc id="161591615727" source="pre_response OK consent status" target="response OK consent status"/>
+      <arc id="161591615734" source="pre_auth. status" target="auth. status"/>
+      <arc id="-9223371875263500807" source="source0" target="GET bank code &amp; GET ASPSP"/>
+      <arc id="161591615741" source="pre_response OK auth. status" target="response OK auth. status"/>
+    </page>
+    <finalmarkings>
+      <marking>
+        <place idref="sink0">
+          <text>1</text>
+        </place>
+      </marking>
+    </finalmarkings>
+  </net>
+</pnml>

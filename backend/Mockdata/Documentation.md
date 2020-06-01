@@ -174,24 +174,25 @@ based on the _Embedded Flow diagram_ below
 1. Embedded Flow Diagram  
 
 <br>
-    <center><img src="/pics/embedded%20flow%20diagram.jpeg" alt="Embedded Flow Diagram" width="500"/></center>  
+    <center><img src="/backend/Mockdata/pics/embedded%20flow%20diagram.jpeg" alt="Embedded Flow Diagram" width="500"/></center>  
 </br>
 
 2. Possible Structures of an Embedded Flow: `EmbeddedFlowTheory.py`
 
-    <center><table><tr><td><center>DFG</br></br><img src="/pics/DFG_TestLog_Theory_Embedded.png" alt="/pics/DFG_TestLog_Theory_Embedded.png" height="1300"/></td><td><center>Heuristic Net</br></br>
-    <img src="/pics/Heuristic Net_TestLog_Theory_Embedded.png" alt="/pics/Heuristic Net_TestLog_Theory_Embedded.png" height="1300"/></td></tr></table></center>
-    <center><table><td><center>Petri Net</br></br><img src="/pics/Petri Net_TestLog_Theory_Embedded.png" alt="/pics/Petri Net_TestLog_Theory_Embedded.png"/></td></table></center>
+    <center><table><tr><td><center>DFG</br></br><img src="/backend/Mockdata/pics/DFG_TestLog_Theory_Embedded.png" alt="/pics/DFG_TestLog_Theory_Embedded.png" height="1300"/></td><td><center>Heuristic Net</br></br>
+    <img src="/backend/Mockdata/pics/Heuristic Net_TestLog_Theory_Embedded.png" alt="/pics/Heuristic Net_TestLog_Theory_Embedded.png" height="1300"/></td></tr></table></center>
+    
+    <center><table><td><center>Petri Net</br></br><img src="/backend/Mockdata/pics/Petri Net_TestLog_Theory_Embedded.png" alt="/pics/Petri Net_TestLog_Theory_Embedded.png"/></td></table></center>
 
 
 3. Possible Extracted Log Results of an Embedded Flow: `EmbeddedFlowLog.py`
-  <center><table><tr><td><center>DFG</br></br><img src="/pics/DFG_Graylog_Theory_Embedded.png" alt="/pics/DFG_Graylog_Theory_Embedded.png"/></td></tr></table></center>
+  <center><table><tr><td><center>DFG</br></br><img src="/backend/Mockdata/pics/DFG_Graylog_Theory_Embedded.png" alt="/pics/DFG_Graylog_Theory_Embedded.png"/></td></tr></table></center>
 
 
   <center><table><td><center>Heuristic Net</br></br>
-  <img src="/pics/Heuristic Net_Graylog_Theory_Embedded.png" alt="Heuristic Net_Graylog_Theory_Embedded.png"/></td></table></center>
+  <img src="/backend/Mockdata/pics/Heuristic Net_Graylog_Theory_Embedded.png" alt="Heuristic Net_Graylog_Theory_Embedded.png"/></td></table></center>
 
-  <center><table><td><center>Petri Net</br></br><img src="/pics/Petri Net_Graylog_Theory_Embedded.svg" alt="/pics/Petri Net_Graylog_Theory_Embedded.svg"/></td></table></center>
+  <center><table><td><center>Petri Net</br></br><img src="/backend/Mockdata/pics/Petri Net_Graylog_Theory_Embedded.svg" alt="/pics/Petri Net_Graylog_Theory_Embedded.svg"/></td></table></center>
 
 4. Observations
 

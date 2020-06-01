@@ -1,0 +1,29 @@
+name: Lint and test backend
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+      - name: Install pipenv
+        uses: dschep/install-pipenv-action@v1
+      - name: Install dependencies
+        run: pipenv install --dev
+      - name: Test with pytest
+        run: pipenv run pytest
+      - name: Lint with pylint
+        run: pipenv run pylint process_miner tests
+      - name: Check for security issues with bandit
+        run: pipenv run bandit -r process_miner

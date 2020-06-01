@@ -33,7 +33,7 @@ def execute_script():
 
 
 def datasourceMockdata():
-    datasource = "graylog1.csv"
+    datasource = "../Data/graylog1.csv"
     return datasource
 
 

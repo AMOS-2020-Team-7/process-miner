@@ -22,8 +22,8 @@ def test_get_datetime_from_timestamp_valid_timestamp_default_precision():
     """
     Checks if valid date string is converted correctly.
     """
-    date = datetime.fromtimestamp(0)
-    assert get_datetime_from_timestamp('1970-01-01T01:00:00.000Z') == date
+    date = datetime.fromisoformat('2020-01-01T01:01:01.000')
+    assert get_datetime_from_timestamp('2020-01-01T01:01:01.000Z') == date
 
 
 def test_get_datetime_from_timestamp_valid_timestamp_higher_precision():
@@ -31,8 +31,8 @@ def test_get_datetime_from_timestamp_valid_timestamp_higher_precision():
     Checks if valid date string with precision higher than required is
     converted correctly.
     """
-    date = datetime.fromtimestamp(0)
-    assert get_datetime_from_timestamp('1970-01-01T01:00:00.000000Z') == date
+    date = datetime.fromisoformat('2020-01-01T01:01:01.000')
+    assert get_datetime_from_timestamp('2020-01-01T01:01:01.000000Z') == date
 
 
 def test_get_timestamp_from_datetime():

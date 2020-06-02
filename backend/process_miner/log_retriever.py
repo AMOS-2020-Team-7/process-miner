@@ -32,6 +32,13 @@ def _write_timestamp(timestamp: str, path: Path) -> None:
         timestamp_file.write(timestamp)
 
 
+def _sanitize_filename(filename: str) -> str:
+    #  Windows does not support ':' as part of filenames as it is a
+    #  reserved character. There are more invalid characters but for now
+    #  this should do.
+    return filename.replace(':', '_')
+
+
 class LogRetriever:
     """
     Class used for retrieving and storing log entries.
@@ -123,7 +130,7 @@ class LogRetriever:
         for (correlation_id, log_entries) in grouped_dict.items():
             first_timestamp = log_entries[0]['timestamp']
             filename = f"{first_timestamp}_{correlation_id}.csv"
-            file_path = self.target_dir.joinpath(filename)
+            file_path = self.target_dir.joinpath(_sanitize_filename(filename))
             log.info("storing process with correlation_id '%s' in file '%s'",
                      correlation_id, file_path)
             with file_path.open("w", newline='') as csvfile:

@@ -22,7 +22,7 @@ lint:
 security-check:
 	pipenv run bandit -r $(MODULE_DIR)
 
-check: test lint secdurity-check
+check: test lint security-check
 
 run:
 	pipenv run python -m process_miner

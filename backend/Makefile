@@ -25,4 +25,4 @@ security-check:
 check: test lint security-check
 
 run:
-	pipenv run python -m process_miner
+	FLASK_APP=$(MODULE_DIR) pipenv run flask run

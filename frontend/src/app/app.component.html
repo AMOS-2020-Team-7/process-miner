@@ -1,34 +1,9 @@
-<header data-role="appbar" data-expand-point="md" class="app-bar adorsys-blue app-bar-expand" data-role-appbar="true">
-  <button type="button" class="hamburger menu-down hidden"><span class="line"></span><span class="line"></span><span
-      class="line"></span>
-  </button>
-
-  <a routerlink="" class="d-block brand no-hover" href="#">
-    <span class="h1">Process Miner</span>
-  </a>
-  <a href="#" class="app-bar-item">Home</a>
-  <a href="#" class="app-bar-item">Logs</a>
-  <a href="#" class="app-bar-item">Processes</a>
-
-  <ul class="app-bar-menu ml-auto collapsed">
-    <li>
-      <a href="">
-        <span class="mif-user mif-2x d-none d-block-md"> <span class="h4"> John Appleseed </span> </span>
-      </a>
-    </li>
-  </ul>
-</header>
-
-
-
-
-<div class="hero hero-bg text-center">
-  <div class="display4 fg-blue"><span class="reduce-3 enlarge-3-md">Process Miner</span></div>
-  <h4 class="text-center fg-blue text-upper text-light">Welcome</h4>
-</div>
-<div class="container-fluid">
-  <div class="row flex-xl-nowrap">
-    <!-- Content goes here -->
-    <!-- <router-outlet></router-outlet> -->
-  </div>
-</div>
+<mat-toolbar class = 'adorsys-blue'>
+  <h1>
+    Process  Miner 
+  </h1>
+  <button mat-button routerLink="/">Home</button>
+  <button mat-button routerLink="/logs">Logs</button>
+  <button mat-button routerLink="/processes">Processes</button>
+</mat-toolbar>
+<router-outlet></router-outlet>

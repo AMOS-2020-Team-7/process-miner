@@ -9,7 +9,7 @@ import { retry, catchError, tap } from 'rxjs/operators';
 })
 export class DataService {
 
-  private REST_API_SERVER_TESTS = "http://www.mocky.io/v2/5ed74c41320000d456274640";
+  private REST_API_SERVER_TESTS = 'http://www.mocky.io/v2/5ed74c41320000d456274640';
 
   constructor(private httpClient: HttpClient) { }
 
@@ -26,12 +26,14 @@ export class DataService {
     return throwError(errorMessage);
   }
 
-  public sendGetRequest(){
-    return this.httpClient.get(this.REST_API_SERVER_TESTS, {  params: new HttpParams({fromString: ""}), observe: "response"}).pipe(retry(3), catchError(this.handleError), tap(res => {
-      
+  public sendGetRequest() {
+    return this.httpClient.get(this.REST_API_SERVER_TESTS, {
+        params: new HttpParams({
+            fromString: ''
+        }),
+        observe: 'response'
+    }).pipe(retry(3), catchError(this.handleError), tap(res => {
+
     }));
-  }
-
-
-
+}
 }

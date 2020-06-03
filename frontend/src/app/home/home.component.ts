@@ -25,8 +25,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   public testGet() {
-    this.dataService.sendGetRequest().pipe(takeUntil(this.destroy$)).subscribe((res: HttpResponse<any[]>) => {
-      console.log(res);
-    })
-  }
+    this.dataService.sendGetRequest().pipe(takeUntil(this.destroy$)).subscribe((res: HttpResponse < any[] > ) => {
+        console.log(res);
+    });
+}
 }

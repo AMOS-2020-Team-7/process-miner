@@ -28,7 +28,7 @@ export class DataService {
 
   public sendGetRequest(){
     return this.httpClient.get(this.REST_API_SERVER_TESTS, {  params: new HttpParams({fromString: ""}), observe: "response"}).pipe(retry(3), catchError(this.handleError), tap(res => {
-      console.log(res);
+      
     }));
   }
 

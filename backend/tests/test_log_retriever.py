@@ -54,7 +54,7 @@ def test_retrieve_logs_consecutive_requests(tmp_path, requests_mock):
     with timestamp_file_path.open('r') as timestamp_file:
         assert timestamp_file.readline() == '2020-01-01T01:00:03.000Z'
     #  file with correlationId 1
-    file1 = log_directory / '2020-01-01T01:00:00.000Z_1.csv'
+    file1 = log_directory / '2020-01-01T01_00_00.000Z_1.csv'
     with file1.open('r') as csv_file_2:
         reader = DictReader(csv_file_2)
         assert reader.fieldnames == ['timestamp', 'correlationId', 'message']
@@ -66,7 +66,7 @@ def test_retrieve_logs_consecutive_requests(tmp_path, requests_mock):
         assert rows[1]['correlationId'] == '1'
         assert rows[1]['message'] == 'message2'
     #  file with correlationId 2
-    file2 = log_directory / '2020-01-01T01:00:01.000Z_2.csv'
+    file2 = log_directory / '2020-01-01T01_00_01.000Z_2.csv'
     with file2.open('r') as csv_file_2:
         reader = DictReader(csv_file_2)
         assert reader.fieldnames == ['timestamp', 'correlationId', 'message']
@@ -89,7 +89,7 @@ def test_retrieve_logs_consecutive_requests(tmp_path, requests_mock):
     with timestamp_file_path.open('r') as timestamp_file:
         assert timestamp_file.readline() == '2020-01-01T01:01:05.000Z'
     #  file with correlationId 3
-    file3 = log_directory / '2020-01-01T01:01:04.000Z_3.csv'
+    file3 = log_directory / '2020-01-01T01_01_04.000Z_3.csv'
     with file3.open('r') as csv_file_3:
         reader = DictReader(csv_file_3)
         assert reader.fieldnames == ['timestamp', 'correlationId', 'message']

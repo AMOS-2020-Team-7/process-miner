@@ -16,30 +16,24 @@ log = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.INFO)
 
-log.info('setting up configuration')
-cfg_loader = ConfigurationLoader(Path(CONFIG_FILENAME))
-global_cfg = cfg_loader.get_section('global')
-log_retriever_cfg = cfg_loader.get_section('log_retriever')
 
-log.info('setting up log retriever')
-retriever = LogRetriever(log_retriever_cfg['url'],
-                         log_retriever_cfg['api_token'],
-                         global_cfg['log_directory']
-                         )
-
-log.info('setting up flask app')
-process_miner_app = Flask(__name__)
-
-
-@process_miner_app.route('/logs/refresh')
-def refresh_logs():
+def setup_components():
     """
-    Triggers the retrieval of logs from Graylog.
+    Sets up all components needed for running the process miner.
+    :return: a fully set up LogRetriever instance
     """
-    #  TODO CPU intensive tasks should be executed asynchronously but this will
-    #   do for now as this just serves as an example endpoint
-    retriever.retrieve_logs()
-    return 'Done'
+    log.info('setting up configuration')
+    cfg_loader = ConfigurationLoader(Path(CONFIG_FILENAME))
+    global_cfg = cfg_loader.get_section('global')
+    log_retriever_cfg = cfg_loader.get_section('log_retriever')
+
+    log.info('setting up log retriever')
+    retriever = LogRetriever(log_retriever_cfg['url'],
+                             log_retriever_cfg['api_token'],
+                             global_cfg['log_directory']
+                             )
+
+    return retriever
 
 
 def create_app():
@@ -48,4 +42,19 @@ def create_app():
     flask app.
     :return: the Flask object
     """
+    retriever = setup_components()
+    log.info('setting up flask app')
+    process_miner_app = Flask(__name__)
+
+    def refresh_logs():
+        """
+        Triggers the retrieval of logs from Graylog.
+        """
+        #  TODO CPU intensive tasks should be executed asynchronously but this
+        #   will do for now as this just serves as an example endpoint
+        retriever.retrieve_logs()
+        return 'Done'
+    # used instead of @app.route to make method usage visible to pylint
+    process_miner_app.add_url_rule('/logs/refresh', view_func=refresh_logs)
+
     return process_miner_app

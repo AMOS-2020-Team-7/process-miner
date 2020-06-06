@@ -9,7 +9,7 @@ Select and export data from graylog for process mining. [Further information: Gr
 * activity --> _message_
 * timestamp --> _timestamp_
 
-![necessary information for process mining](/Users/larslempenauer/Amos/ProcessMining/process-miner/backend/graylog/graylogDataStructure.png)
+![necessary information for process mining](/backend/graylog/graylogDataStructure.png)
 
 Every further information is optional.
 

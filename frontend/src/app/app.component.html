@@ -1,9 +1,14 @@
 <mat-toolbar class = 'adorsys-blue'>
-  <h1>
-    Process  Miner 
+  <div class = "container-logo">
+  <img src="assets/img/logo.png">
+</div>
+  <h1 class="toolbar-title">
+    process  miner 
   </h1>
-  <button mat-button routerLink="/">Home</button>
+  <div class = "toolbar-items">
+  <button class = "toolbar-items" mat-button routerLink="/">Home</button>
   <button mat-button routerLink="/logs">Logs</button>
   <button mat-button routerLink="/processes">Processes</button>
+</div>
 </mat-toolbar>
 <router-outlet></router-outlet>

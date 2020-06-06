@@ -4,3 +4,6 @@ __pycache__/
 # System Files
 .DS_Store
 
+# config files containing possibly sensitive data
+process_miner_config.yaml
+/example_process_miner_config.yaml

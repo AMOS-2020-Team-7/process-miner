@@ -1,9 +1,9 @@
-import Simple.MockdataExample
-import Simple.MockdataLogs
+import Mockdata.Simple.MockdataExample
+import Mockdata.Simple.MockdataLogs
 
 if __name__ == "__main__":
     print("\n\Mockdata")
-    Simple.MockdataExample.execute_script()
+    Mockdata.Simple.MockdataExample.execute_script()
 
     print("\n\MockdataLogs")
-    Simple.MockdataLogs.execute_script()
+    Mockdata.Simple.MockdataLogs.execute_script()

@@ -12,6 +12,8 @@ requests-mock = "*"
 [packages]
 requests = "*"
 flask = "*"
+pm4py = "*"
+atomicwrites = "*"
 
 [requires]
 python_version = "3.8"

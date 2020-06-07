@@ -1,0 +1,18 @@
+.filler {
+    flex: 1 1 auto;
+ }
+
+ .logs-toolbar{
+    background: #FFFFFF;
+    border: 2px solid #C4C4C4;
+ }
+
+ .toolbar-title {
+    font-family: 'Montserrat', sans-serif;
+    color: #054F72;
+}
+
+.container-dropdown{
+    padding: 10px 10px;
+}
+

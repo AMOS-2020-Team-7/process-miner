@@ -14,13 +14,15 @@ import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
+import { UserComponent } from './user/user.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     LogsComponent,
-    ProcessesComponent
+    ProcessesComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,

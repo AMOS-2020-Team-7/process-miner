@@ -1,14 +1,19 @@
-<mat-toolbar class = 'adorsys-blue'>
-  <div class = "container-logo">
-  <img src="assets/img/logo.png">
-</div>
+<mat-toolbar class='adorsys-blue'>
+  <div class="container-logo">
+      <img src="assets/img/logo.png">
+  </div>
   <h1 class="toolbar-title">
-    process  miner 
+      process miner
   </h1>
-  <div class = "toolbar-items">
-  <button class = "toolbar-items" mat-button routerLink="/">Home</button>
-  <button mat-button routerLink="/logs">Logs</button>
-  <button mat-button routerLink="/processes">Processes</button>
+  <div class="toolbar-items">
+      <button class="toolbar-items" mat-button routerLink="/">Home</button>
+      <button mat-button routerLink="/logs">Logs</button>
+      <button mat-button routerLink="/processes">Processes</button>
+  </div>
+  <span class = "filler"></span>
+  <div class="toolbar-items">
+    <button mat-button routerLink="/user">User <i class="material-icons">face</i> </button>
 </div>
+  
 </mat-toolbar>
 <router-outlet></router-outlet>

@@ -2,12 +2,6 @@
     background-color:#0984bf;
 }
 
-@font-face {
-    font-family: 'Comfortaa';
-    src: url(/assets/Comfortaa/Comfortaa-VariableFont_wght.ttf) format("truetype");
-    font-weight:300;
-  }
-
 .toolbar-title {
     font-family: 'Comfortaa', cursive;
     color: #FFFFFF;
@@ -21,6 +15,11 @@
 .mat-toolbar{
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
+
+.filler {
+    flex: 1 1 auto;
+ }
+
 /* -------------------  LOGO ---------------------------  */
 
 .container-logo {

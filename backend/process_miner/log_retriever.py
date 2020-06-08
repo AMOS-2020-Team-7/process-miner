@@ -13,9 +13,16 @@ from .graylog_access import GraylogAccess
 
 log = logging.getLogger(__name__)
 
-# TODO make last included timestamp configurable
 TIMESTAMP_FILENAME = 'last_included_timestamp'
 EXPORTED_FIELDS = ['correlationId', 'timestamp', 'message']
+ADDED_FIELDS = ['approach', 'consent']
+APPROACHES_TYPES = \
+    ['redirect', 'embedded', 'OAuth', 'Decoupled', 'not available']
+APPROACHES_SIGNAL_WORDS = ['approach=REDIRECT', 'approach=EMBEDDED',
+                           'approach=OAUTH', 'approach=DECOUPLED']
+CONSENT_TYPES = ['GET_ACCOUNTS', 'GET_TRANSACTIONS', 'not available']
+CONSENT_SIGNAL_WORDS = ['GET_ACCOUNTS', 'GET_TRANSACTIONS',
+                        'get account list', 'get transaction list']
 
 
 def _get_advanced_timestamp(timestamp: datetime) -> datetime:
@@ -39,10 +46,105 @@ def _sanitize_filename(filename: str) -> str:
     return filename.replace(':', '_')
 
 
+def _add_approach(grouped_dict) -> None:
+    """
+    add approach value to grouped dictionary before convert to csv
+    """
+    approach_list = defaultdict(list)
+    for (correlation_id, log_entries) in grouped_dict.items():
+        i = 0
+        j = 0
+        unlabeled = True
+        for _ in enumerate(log_entries):
+            # searching for signal words in message
+            wholemessage = log_entries[i]['message']
+            result_redirect = wholemessage.find(APPROACHES_SIGNAL_WORDS[0])
+            result_embedded = wholemessage.find(APPROACHES_SIGNAL_WORDS[1])
+            result_oauth = wholemessage.find(APPROACHES_SIGNAL_WORDS[2])
+            result_decoupled = wholemessage.find(APPROACHES_SIGNAL_WORDS[3])
+
+            # if signal word is found it will be added to a approach dictionary
+            # identified by correlation id
+            if result_redirect != -1 and unlabeled:
+                approach_list[correlation_id] = APPROACHES_TYPES[0]
+                unlabeled = False
+            if result_embedded != -1 and unlabeled:
+                approach_list[correlation_id] = APPROACHES_TYPES[1]
+                unlabeled = False
+            if result_redirect == -1 and unlabeled:
+                approach_list[correlation_id] = APPROACHES_TYPES[4]
+            if result_embedded == -1 and unlabeled:
+                approach_list[correlation_id] = APPROACHES_TYPES[4]
+
+            if result_oauth != -1 and unlabeled:
+                approach_list[correlation_id] = APPROACHES_TYPES[2]
+                unlabeled = False
+            if result_decoupled != -1 and unlabeled:
+                approach_list[correlation_id] = APPROACHES_TYPES[3]
+                unlabeled = False
+            if result_oauth == -1 and unlabeled:
+                approach_list[correlation_id] = APPROACHES_TYPES[4]
+            if result_decoupled == -1 and unlabeled:
+                approach_list[correlation_id] = APPROACHES_TYPES[4]
+            i = i + 1
+
+        # add to each row the approach value
+        for _ in enumerate(log_entries):
+            log_entries[j]['approach'] = approach_list[correlation_id]
+            j = j + 1
+    return grouped_dict
+
+
+def _add_consent(grouped_dict) -> None:
+    """
+    add consent value to grouped dictionary before convert to csv
+    """
+    correlation_id = grouped_dict.items()
+    consent_list = defaultdict(list)
+    for (correlation_id, log_entries) in grouped_dict.items():
+        i = 0
+        # searching for signal words in message
+        for _ in enumerate(log_entries):
+            wholemessage = log_entries[i]['message']
+            result_get_accounts1 = wholemessage.find(CONSENT_SIGNAL_WORDS[0])
+            result_get_transactions1 = \
+                wholemessage.find(CONSENT_SIGNAL_WORDS[1])
+            result_get_accounts2 = wholemessage.find(CONSENT_SIGNAL_WORDS[2])
+            result_get_transactions2 = \
+                wholemessage.find(CONSENT_SIGNAL_WORDS[3])
+            notlabeled = True
+
+            # if a signal word is found, the consent value is added to row,
+            # otherwise the consent value is 'not available'
+            if result_get_accounts1 != -1 or result_get_accounts2 != -1:
+                consent_list[correlation_id] = CONSENT_TYPES[0]
+                log_entries[i]['consent'] = consent_list[correlation_id]
+                notlabeled = False
+            if result_get_transactions1 != -1 or \
+                    result_get_transactions2 != -1:
+                consent_list[correlation_id] = CONSENT_TYPES[1]
+                log_entries[i]['consent'] = consent_list[correlation_id]
+                notlabeled = False
+
+            if result_get_accounts1 == -1 and result_get_accounts2 == -1 \
+                    and notlabeled:
+                consent_list[correlation_id] = CONSENT_TYPES[2]
+                log_entries[i]['consent'] = consent_list[correlation_id]
+            if result_get_transactions1 == -1 \
+                    and result_get_transactions2 == -1 and notlabeled:
+                consent_list[correlation_id] = CONSENT_TYPES[2]
+                log_entries[i]['consent'] = consent_list[correlation_id]
+
+            i = i + 1
+
+    return correlation_id
+
+
 class LogRetriever:
     """
     Class used for retrieving and storing log entries.
     """
+
     def __init__(self, url: str, api_token: str, target_dir: str):
         self.graylog_access = GraylogAccess(url, api_token)
         self.target_dir = Path(target_dir)
@@ -69,6 +171,9 @@ class LogRetriever:
             return
 
         fields, grouped_lines, last_timestamp = self._process_csv_lines(lines)
+        # here adding values for approach and consent before store as csv
+        _add_approach(grouped_lines)
+        _add_consent(grouped_lines)
         self._store_logs_as_csv(grouped_lines, fields)
         self._store_last_included_timestamp(last_timestamp)
 
@@ -104,18 +209,23 @@ class LogRetriever:
         _write_timestamp(timestamp, timestamp_path)
 
     @staticmethod
-    def _process_csv_lines(lines: List[str]) -> Tuple[
-            Sequence[str], Dict[str, List[Dict[str, str]]], str]:
+    def _process_csv_lines(
+            lines: List[str]) -> Tuple[Sequence[str],
+                                       Dict[str, List[Dict[str, str]]], str]:
         reader = csv.DictReader(lines)
         sorted_list = sorted(reader, key=lambda row: row['timestamp'],
                              reverse=False)
         grouped_lines = LogRetriever._group_by_correlation_id(sorted_list)
         timestamp_of_last_entry = sorted_list[-1]['timestamp']
-        return reader.fieldnames, grouped_lines, timestamp_of_last_entry
+
+        # adds the additional fieldnames to original fieldnames
+        fields = reader.fieldnames + ADDED_FIELDS
+
+        return fields, grouped_lines, timestamp_of_last_entry
 
     @staticmethod
-    def _group_by_correlation_id(lines: List[Dict[str, str]]) -> Dict[
-            str, List[Dict[str, str]]]:
+    def _group_by_correlation_id(
+            lines: List[Dict[str, str]]) -> Dict[str, List[Dict[str, str]]]:
         grouped_lines = defaultdict(list)
         for line in lines:
             correlation_id = line['correlationId']

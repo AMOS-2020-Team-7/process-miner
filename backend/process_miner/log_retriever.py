@@ -205,6 +205,10 @@ class LogRetriever:
             file_path = self.target_dir.joinpath(_sanitize_filename(filename))
             log.info("storing process with correlation_id '%s' in file '%s'",
                      correlation_id, file_path)
+
+            # move message to rightmost column
+            fieldnames.remove('message')
+            fieldnames.append('message')
             with file_path.open("w", newline='') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames)
                 writer.writeheader()

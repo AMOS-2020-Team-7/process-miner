@@ -76,7 +76,6 @@ def _add_approach(grouped_dict) -> None:
         # add to each row the approach value
         for entry in log_entries:
             entry['approach'] = approach_list[correlation_id]
-    return grouped_dict
 
 
 def _add_consent(grouped_dict) -> None:
@@ -98,8 +97,6 @@ def _add_consent(grouped_dict) -> None:
             # add no approach if no key word wasn't found
             if result == -1 and notlabeled:
                 entry['consent'] = MISSING_VALUE
-
-    return correlation_id
 
 
 class LogRetriever:

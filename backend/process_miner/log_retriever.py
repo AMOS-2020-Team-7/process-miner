@@ -16,13 +16,18 @@ log = logging.getLogger(__name__)
 TIMESTAMP_FILENAME = 'last_included_timestamp'
 EXPORTED_FIELDS = ['correlationId', 'timestamp', 'message']
 ADDED_FIELDS = ['approach', 'consent']
-APPROACHES_TYPES = \
-    ['redirect', 'embedded', 'OAuth', 'Decoupled', 'not available']
-APPROACHES_SIGNAL_WORDS = ['approach=REDIRECT', 'approach=EMBEDDED',
-                           'approach=OAUTH', 'approach=DECOUPLED']
-CONSENT_TYPES = ['GET_ACCOUNTS', 'GET_TRANSACTIONS', 'not available']
-CONSENT_SIGNAL_WORDS = ['GET_ACCOUNTS', 'GET_TRANSACTIONS',
-                        'get account list', 'get transaction list']
+
+APPROACHES = {'redirect': 'approach=REDIRECT',
+              'embedded': 'approach=EMBEDDED',
+              'OAuth': 'approach=OAUTH',
+              'Decoupled': 'approach=DECOUPLED'}
+
+CONSENT = {'GET_ACCOUNTS': 'get_accounts',
+           'get account list': 'get_accounts',
+           'GET_TRANSACTIONS': 'get_transactions',
+           'get transaction list': 'get_transactions'}
+
+MISSING_VALUE = 'not available'
 
 
 def _get_advanced_timestamp(timestamp: datetime) -> datetime:
@@ -52,46 +57,25 @@ def _add_approach(grouped_dict) -> None:
     """
     approach_list = defaultdict(list)
     for (correlation_id, log_entries) in grouped_dict.items():
-        i = 0
-        j = 0
         unlabeled = True
-        for _ in enumerate(log_entries):
+        for entry in log_entries:
             # searching for signal words in message
-            wholemessage = log_entries[i]['message']
-            result_redirect = wholemessage.find(APPROACHES_SIGNAL_WORDS[0])
-            result_embedded = wholemessage.find(APPROACHES_SIGNAL_WORDS[1])
-            result_oauth = wholemessage.find(APPROACHES_SIGNAL_WORDS[2])
-            result_decoupled = wholemessage.find(APPROACHES_SIGNAL_WORDS[3])
-
             # if signal word is found it will be added to a approach dictionary
             # identified by correlation id
-            if result_redirect != -1 and unlabeled:
-                approach_list[correlation_id] = APPROACHES_TYPES[0]
-                unlabeled = False
-            if result_embedded != -1 and unlabeled:
-                approach_list[correlation_id] = APPROACHES_TYPES[1]
-                unlabeled = False
-            if result_redirect == -1 and unlabeled:
-                approach_list[correlation_id] = APPROACHES_TYPES[4]
-            if result_embedded == -1 and unlabeled:
-                approach_list[correlation_id] = APPROACHES_TYPES[4]
 
-            if result_oauth != -1 and unlabeled:
-                approach_list[correlation_id] = APPROACHES_TYPES[2]
-                unlabeled = False
-            if result_decoupled != -1 and unlabeled:
-                approach_list[correlation_id] = APPROACHES_TYPES[3]
-                unlabeled = False
-            if result_oauth == -1 and unlabeled:
-                approach_list[correlation_id] = APPROACHES_TYPES[4]
-            if result_decoupled == -1 and unlabeled:
-                approach_list[correlation_id] = APPROACHES_TYPES[4]
-            i = i + 1
+            wholemessage = entry['message']
+
+            for key, approach in APPROACHES.items():
+                result = wholemessage.find(approach)
+                if result != -1 and unlabeled:
+                    approach_list[correlation_id] = key
+                    unlabeled = False
+                if result == -1 and unlabeled:
+                    approach_list[correlation_id] = MISSING_VALUE
 
         # add to each row the approach value
-        for _ in enumerate(log_entries):
-            log_entries[j]['approach'] = approach_list[correlation_id]
-            j = j + 1
+        for entry in log_entries:
+            entry['approach'] = approach_list[correlation_id]
     return grouped_dict
 
 
@@ -100,42 +84,20 @@ def _add_consent(grouped_dict) -> None:
     add consent value to grouped dictionary before convert to csv
     """
     correlation_id = grouped_dict.items()
-    consent_list = defaultdict(list)
     for (correlation_id, log_entries) in grouped_dict.items():
-        i = 0
-        # searching for signal words in message
-        for _ in enumerate(log_entries):
-            wholemessage = log_entries[i]['message']
-            result_get_accounts1 = wholemessage.find(CONSENT_SIGNAL_WORDS[0])
-            result_get_transactions1 = \
-                wholemessage.find(CONSENT_SIGNAL_WORDS[1])
-            result_get_accounts2 = wholemessage.find(CONSENT_SIGNAL_WORDS[2])
-            result_get_transactions2 = \
-                wholemessage.find(CONSENT_SIGNAL_WORDS[3])
+        #search for signal words
+        for entry in log_entries:
+            wholemessage = entry['message']
             notlabeled = True
+            for keyword, consent in CONSENT.items():
+                result = wholemessage.find(keyword)
+                if result != -1 and notlabeled:
+                    entry['consent'] = consent
+                    notlabeled = False
 
-            # if a signal word is found, the consent value is added to row,
-            # otherwise the consent value is 'not available'
-            if result_get_accounts1 != -1 or result_get_accounts2 != -1:
-                consent_list[correlation_id] = CONSENT_TYPES[0]
-                log_entries[i]['consent'] = consent_list[correlation_id]
-                notlabeled = False
-            if result_get_transactions1 != -1 or \
-                    result_get_transactions2 != -1:
-                consent_list[correlation_id] = CONSENT_TYPES[1]
-                log_entries[i]['consent'] = consent_list[correlation_id]
-                notlabeled = False
-
-            if result_get_accounts1 == -1 and result_get_accounts2 == -1 \
-                    and notlabeled:
-                consent_list[correlation_id] = CONSENT_TYPES[2]
-                log_entries[i]['consent'] = consent_list[correlation_id]
-            if result_get_transactions1 == -1 \
-                    and result_get_transactions2 == -1 and notlabeled:
-                consent_list[correlation_id] = CONSENT_TYPES[2]
-                log_entries[i]['consent'] = consent_list[correlation_id]
-
-            i = i + 1
+            # add no approach if no key word wasn't found
+            if result == -1 and notlabeled:
+                entry['consent'] = MISSING_VALUE
 
     return correlation_id
 

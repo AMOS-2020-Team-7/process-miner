@@ -55,7 +55,7 @@ def _add_approach(grouped_dict) -> None:
     """
     add approach value to grouped dictionary before convert to csv
     """
-    approach_list = defaultdict(list)
+    approach_list = dict()
     for (correlation_id, log_entries) in grouped_dict.items():
         unlabeled = True
         for entry in log_entries:

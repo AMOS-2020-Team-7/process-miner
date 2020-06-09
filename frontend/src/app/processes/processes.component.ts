@@ -19,7 +19,8 @@ export class ProcessesComponent implements OnInit {
     {item: 'EMBEDDED', viewValue: 'EMBEDDED'}
   ];
 
-  constructor() { }
+  constructor() {
+   }
 
   ngOnInit(): void {
     wheelzoom(document.querySelector('img.zoom'));

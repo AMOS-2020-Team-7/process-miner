@@ -21,6 +21,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatSliderModule} from '@angular/material/slider';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import {MatSliderModule} from '@angular/material/slider';
     MatInputModule,
     MatDividerModule,
     MatGridListModule,
-    MatSliderModule
+    MatSliderModule,
+    FlexLayoutModule
   ],
   providers: [],
   bootstrap: [AppComponent]

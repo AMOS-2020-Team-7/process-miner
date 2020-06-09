@@ -13,7 +13,7 @@ window.wheelzoom = (function(){
 	};
 
 	var main = function(img, options){
-		console.log("Loading img viewer");
+		console.log("Loading img viewer" + img + options);
 		if (!img || !img.nodeName || img.nodeName !== 'IMG') { return; }
 
 		var settings = {};

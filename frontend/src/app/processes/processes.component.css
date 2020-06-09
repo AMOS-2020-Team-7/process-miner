@@ -22,15 +22,22 @@
     background: #0984BF;
     text-align: center;
 }
-.container-dropdown{
-    padding: 10px 10px;
-}
 .container-controls{
     width: 100%;
     height: 100%;
     font-family: 'Montserrat', sans-serif;
     color: #054F72;
+    align-items: center;
 }
-.controls-main{
-    vertical-align: 0%;
+.controls-main-selectors{
+    padding: 27px 0px;
 }
+.controls-main-selectors-labels{
+    padding: 10px 0px;
+}
+::ng-deep .mat-accent .mat-slider-thumb {
+    background-color: #054F72;
+} 
+::ng-deep .mat-accent .mat-slider-track-fill {
+    background-color: black;
+} 

@@ -1,9 +1,7 @@
 <!doctype html>
 <html>
-
 <head>
 </head>
-
 <body>
     <mat-grid-list cols="2" gutterSize="10px">
         <mat-grid-tile [colspan]="1" [rowspan]="1">
@@ -15,30 +13,48 @@
             </div>
         </mat-grid-tile>
         <mat-grid-tile [colspan]="1" [rowspan]="1">
-            <div class="container-controls" >
-                <div class="controls controls-main" layout='column'>
-                    <ul layout='row'>1</ul>
-                        <ul>3</ul>
-                        <ul>4</ul>
-                    <ul>2</ul>
-
-
+            <div class="container container-controls" fxLayout="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="stretch">
+                <div fxFlex="33%" class="controls-main-selectors">
+                    <div fxLayout="column" fxLayoutAlign="stretch">
+                        <div fxFlex="50%">
+                            <div fxLayout="row" fxLayoutAlign="center stretch">
+                                <div fxFlex="25%" class="controls-main-selectors-labels">
+                                    Approach
+                                </div>
+                                <div fxFlex="75%">
+                                    <mat-form-field floatLabel='never'>
+                                        <mat-label>Select</mat-label>
+                                        <mat-select>
+                                            <mat-option *ngFor="let approach of approaches" [value]="approach.item">
+                                                {{ approach.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div fxFlex="50%">
+                            <div fxLayout="row" fxLayoutAlign="center stretch">
+                                <div fxFlex="25%" class="controls-main-selectors-labels">
+                                    Depth
+                                </div>
+                                <div fxFlex="75%">
+                                    <mat-slider></mat-slider>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <mat-divider></mat-divider>
-                <div class="controls">Consent
-
-
+                <div fxFlex="33%">
+                    Consent
                 </div>
-
                 <mat-divider></mat-divider>
-                <div class="controls">Variants
-
-                    
+                <div fxFlex="33%">
+                    Variants
                 </div>
             </div>
         </mat-grid-tile>
-
     </mat-grid-list>
 </body>
-
 </html>

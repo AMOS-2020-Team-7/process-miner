@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 
 declare const wheelzoom: any;
 
+export interface Approach {
+  item: string;
+  viewValue: string;
+}
+
 @Component({
   selector: 'app-processes',
   templateUrl: './processes.component.html',
@@ -9,7 +14,10 @@ declare const wheelzoom: any;
 })
 export class ProcessesComponent implements OnInit {
 
-
+  approaches: Approach[] = [
+    {item: 'REDIRECT', viewValue: 'REDIRECT'},
+    {item: 'EMBEDDED', viewValue: 'EMBEDDED'}
+  ];
 
   constructor() { }
 

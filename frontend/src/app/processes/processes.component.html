@@ -5,13 +5,40 @@
 </head>
 
 <body>
-    <mat-grid-list cols="2" rowHeight="1:1">
-        <mat-grid-tile>
+    <mat-grid-list cols="2" gutterSize="10px">
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
             <div class='container-img'>
-                <img class='zoom' src='assets/img/Heuristic Net_Graylog_Theory_Embedded.png' width='555' height='320'/>
+                <p class='instructions-text'>
+                    Scroll to zoom, drag and click to pan
+                </p>
+                <img class='zoom' src='assets/img/Petri Net_Graylog_Theory_Embedded.svg'>
             </div>
         </mat-grid-tile>
-        <mat-grid-tile>2</mat-grid-tile>
+        <mat-grid-tile [colspan]="1" [rowspan]="1">
+            <div class="container-controls" >
+                <div class="controls controls-main" layout='column'>
+                    <ul layout='row'>1</ul>
+                        <ul>3</ul>
+                        <ul>4</ul>
+                    <ul>2</ul>
+
+
+                </div>
+                <mat-divider></mat-divider>
+                <div class="controls">Consent
+
+
+                </div>
+
+                <mat-divider></mat-divider>
+                <div class="controls">Variants
+
+                    
+                </div>
+            </div>
+        </mat-grid-tile>
+
     </mat-grid-list>
 </body>
+
 </html>

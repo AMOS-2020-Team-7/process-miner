@@ -5,9 +5,9 @@
 */
 window.wheelzoom = (function(){
 	var defaults = {
-		zoom: 0.10,
+		zoom: 0.05,
 		maxZoom: false,
-		initialZoom: 1,
+		initialZoom: 0,
 		initialX: 0.5,
 		initialY: 0.5,
 	};

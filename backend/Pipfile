@@ -12,6 +12,7 @@ requests-mock = "*"
 [packages]
 requests = "*"
 flask = "*"
+pm4py = "*"
 
 [requires]
 python_version = "3.8"

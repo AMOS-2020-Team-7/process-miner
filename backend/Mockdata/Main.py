@@ -1,9 +1,9 @@
-import EmbeddedFlowLog
-import EmbeddedFlowTheory
+import Mockdata.EmbeddedFlowLog
+import Mockdata.EmbeddedFlowTheory
 
 if __name__ == "__main__":
     print("\n\EmbeddedFlowTheory")
-    EmbeddedFlowTheory.execute_script()
+    Mockdata.EmbeddedFlowTheory.execute_script()
 
     print("\n\EmbeddedFlowLog")
-    EmbeddedFlowLog.execute_script()
+    Mockdata.EmbeddedFlowLog.execute_script()

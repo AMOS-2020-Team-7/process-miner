@@ -3,3 +3,8 @@ global:
 log_retriever:
   url: 'INSERT_GRAYLOG_URL_HERE'
   api_token: 'INSERT_API_TOKEN_HERE'
+filters:
+  'filter_expressions': [
+    '^Searching for ASPSPs:',
+    '^UTF-8 charset will be used for response body parsing$'
+  ]

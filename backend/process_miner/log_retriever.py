@@ -82,9 +82,8 @@ def _add_consent(grouped_dict) -> None:
     """
     add consent value to grouped dictionary before convert to csv
     """
-    correlation_id = grouped_dict.items()
-    for (correlation_id, log_entries) in grouped_dict.items():
-        #search for signal words
+    for log_entries in grouped_dict.values():
+        # search for signal words
         for entry in log_entries:
             wholemessage = entry['message']
             notlabeled = True

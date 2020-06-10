@@ -28,7 +28,9 @@
               "node_modules/metro4/build/css/metro-all.min.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/js/Minimal-jQuery-Image-Zooming-Plugin-Wheelzoom/wheelzoom.js"
+            ]
           },
           "configurations": {
             "production": {

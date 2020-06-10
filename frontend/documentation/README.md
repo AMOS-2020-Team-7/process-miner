@@ -6,7 +6,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-## UI Framework
+## UI Framework (Important)
 
 This project is running  [Angular material V. 9.2.4](https://material.angular.io).
 
@@ -23,6 +23,19 @@ This project has a template to interact with HTTP REQUESTS with the following ca
 
 Reference: 
 https://www.techiediaries.com/angular/angular-9-8-tutorial-by-example-rest-crud-apis-http-get-requests-with-httpclient/
+http://www.jacklmoore.com/wheelzoom/
 
+## Image viewer is using WHEELZOOM
 
+It's a JS library, very simple and easy to use. 
+
+Reference:
+https://github.com/jackmoore/wheelzoom
+
+## Layout is using FLEX-LAYOUT
+
+(Not a 100% for now, next Sprint will be fully flex-layout)
+
+Reference:
+https://github.com/angular/flex-layout
 

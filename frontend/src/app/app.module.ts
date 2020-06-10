@@ -14,13 +14,22 @@ import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
+import {UserComponent } from './user/user.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatSliderModule} from '@angular/material/slider';
+import {FlexLayoutModule} from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     LogsComponent,
-    ProcessesComponent
+    ProcessesComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +40,14 @@ import {MatIconModule} from '@angular/material/icon';
     MatCardModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    MatSelectModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDividerModule,
+    MatGridListModule,
+    MatSliderModule,
+    FlexLayoutModule
   ],
   providers: [],
   bootstrap: [AppComponent]

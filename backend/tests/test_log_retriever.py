@@ -14,7 +14,8 @@ def test___str___token_is_redacted():
     object.
     """
     token = 'token123'
-    retriever = LogRetriever('test_url', token, 'directory')
+    retriever = LogRetriever('test_url', token, 'directory',
+                             ['filter_expression'])
     assert token not in retriever.__str__()
 
 
@@ -26,7 +27,8 @@ def test_retrieve_logs_no_new_logs(tmp_path, requests_mock):
     requests_mock.get(f'{test_url}/api/search/universal/absolute/export',
                       text='')
     log_directory = tmp_path / 'retrieved_logs'
-    retriever = LogRetriever(test_url, 'token', log_directory)
+    retriever = LogRetriever(test_url, 'token', log_directory,
+                             ['filter_expression'])
     retriever.retrieve_logs()
     assert len(os.listdir(log_directory)) == 0
 
@@ -45,7 +47,8 @@ def test_retrieve_logs_consecutive_requests(tmp_path, requests_mock):
 2020-01-01T01:00:03.000Z,2,message3
 ''')
     log_directory = tmp_path / 'retrieved_logs'
-    retriever = LogRetriever(test_url, 'token', log_directory)
+    retriever = LogRetriever(test_url, 'token', log_directory,
+                             ['filter_expression'])
     retriever.retrieve_logs()
 
     #  number of files and last retrieved timestamp after first request

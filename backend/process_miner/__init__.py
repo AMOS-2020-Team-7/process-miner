@@ -26,11 +26,13 @@ def setup_components():
     cfg_loader = ConfigurationLoader(Path(CONFIG_FILENAME))
     global_cfg = cfg_loader.get_section('global')
     log_retriever_cfg = cfg_loader.get_section('log_retriever')
+    filter_cfg = cfg_loader.get_section('filters')
 
     log.info('setting up log retriever')
     retriever = LogRetriever(log_retriever_cfg['url'],
                              log_retriever_cfg['api_token'],
-                             global_cfg['log_directory']
+                             global_cfg['log_directory'],
+                             filter_cfg['filter_expressions']
                              )
 
     return retriever

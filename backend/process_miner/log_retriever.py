@@ -6,10 +6,11 @@ import logging
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Dict, Iterable, Sequence, Tuple
+from typing import List, Dict, Tuple
 
 from . import graylog_access
 from .graylog_access import GraylogAccess
+from .log_filter import LogFilter
 
 log = logging.getLogger(__name__)
 
@@ -102,14 +103,18 @@ class LogRetriever:
     """
     Class used for retrieving and storing log entries.
     """
-
-    def __init__(self, url: str, api_token: str, target_dir: str):
+    def __init__(self, url: str, api_token: str, target_dir: str,
+                 filter_expressions: List[str]):
         self.graylog_access = GraylogAccess(url, api_token)
+        self.log_filter = LogFilter(EXPORTED_FIELDS, 'message',
+                                    filter_expressions)
         self.target_dir = Path(target_dir)
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__} [' \
-               f'graylog_access <{self.graylog_access}>]'
+               f'graylog_access <{self.graylog_access}>, ' \
+               f'log_filter <{self.log_filter}>, ' \
+               f'target_dir <{self.target_dir}>]'
 
     def retrieve_logs(self) -> None:
         """
@@ -128,10 +133,18 @@ class LogRetriever:
             log.info("no (new) log entries found")
             return
 
-        fields, grouped_lines, last_timestamp = self._process_csv_lines(lines)
-        # here adding values for approach and consent before store as csv
+        fields, sorted_lines = self._convert_log_lines_to_dict(lines)
+        # filter log entries before they get processed any further
+        self.log_filter.filter_log_entries(sorted_lines)
+        # organize/collect related log entries
+        grouped_lines, last_timestamp = self._process_csv_lines(sorted_lines)
+        # add approach and consent type
         _add_approach(grouped_lines)
         _add_consent(grouped_lines)
+
+        # add additional fields that were created during log processing
+        fields.extend(ADDED_FIELDS)
+
         self._store_logs_as_csv(grouped_lines, fields)
         self._store_last_included_timestamp(last_timestamp)
 
@@ -167,19 +180,19 @@ class LogRetriever:
         _write_timestamp(timestamp, timestamp_path)
 
     @staticmethod
-    def _process_csv_lines(
-            lines: List[str]) -> Tuple[Sequence[str],
-                                       Dict[str, List[Dict[str, str]]], str]:
+    def _convert_log_lines_to_dict(lines: List[str]) \
+            -> Tuple[List[str], List[Dict[str, str]]]:
         reader = csv.DictReader(lines)
         sorted_list = sorted(reader, key=lambda row: row['timestamp'],
                              reverse=False)
-        grouped_lines = LogRetriever._group_by_correlation_id(sorted_list)
-        timestamp_of_last_entry = sorted_list[-1]['timestamp']
+        return list(reader.fieldnames), sorted_list
 
-        # adds the additional fieldnames to original fieldnames
-        fields = reader.fieldnames + ADDED_FIELDS
-
-        return fields, grouped_lines, timestamp_of_last_entry
+    @staticmethod
+    def _process_csv_lines(entries: List[Dict[str, str]]) -> Tuple[
+            Dict[str, List[Dict[str, str]]], str]:
+        grouped_lines = LogRetriever._group_by_correlation_id(entries)
+        timestamp_of_last_entry = entries[-1]['timestamp']
+        return grouped_lines, timestamp_of_last_entry
 
     @staticmethod
     def _group_by_correlation_id(
@@ -194,7 +207,7 @@ class LogRetriever:
         return grouped_lines
 
     def _store_logs_as_csv(self, grouped_dict,
-                           fieldnames: Iterable[str]) -> None:
+                           fieldnames: List[str]) -> None:
         for (correlation_id, log_entries) in grouped_dict.items():
             first_timestamp = log_entries[0]['timestamp']
             filename = f"{first_timestamp}_{correlation_id}.csv"

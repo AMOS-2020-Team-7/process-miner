@@ -1,3 +1,6 @@
+"""
+Module used for importing tagged logs into heuristic miner
+"""
 import glob
 import pandas as pd
 from pm4py.objects.log.adapters.pandas import csv_import_adapter

@@ -7,7 +7,6 @@ from process_miner import setup_components
 from process_miner.logs_importer import execute_script, concat_files
 log = logging.getLogger(__name__)
 
-
 def _main():
     retriever = setup_components()
     log.info('starting log retrieval')

@@ -14,7 +14,8 @@ def test___str___token_is_redacted():
     object.
     """
     token = 'token123'
-    retriever = LogRetriever('test_url', token, 'directory')
+    retriever = LogRetriever('test_url', token, 'directory',
+                             ['filter_expression'])
     assert token not in retriever.__str__()
 
 
@@ -26,7 +27,8 @@ def test_retrieve_logs_no_new_logs(tmp_path, requests_mock):
     requests_mock.get(f'{test_url}/api/search/universal/absolute/export',
                       text='')
     log_directory = tmp_path / 'retrieved_logs'
-    retriever = LogRetriever(test_url, 'token', log_directory)
+    retriever = LogRetriever(test_url, 'token', log_directory,
+                             ['filter_expression'])
     retriever.retrieve_logs()
     assert len(os.listdir(log_directory)) == 0
 
@@ -45,7 +47,8 @@ def test_retrieve_logs_consecutive_requests(tmp_path, requests_mock):
 2020-01-01T01:00:03.000Z,2,message3
 ''')
     log_directory = tmp_path / 'retrieved_logs'
-    retriever = LogRetriever(test_url, 'token', log_directory)
+    retriever = LogRetriever(test_url, 'token', log_directory,
+                             ['filter_expression'])
     retriever.retrieve_logs()
 
     #  number of files and last retrieved timestamp after first request
@@ -58,7 +61,7 @@ def test_retrieve_logs_consecutive_requests(tmp_path, requests_mock):
     with file1.open('r') as csv_file_2:
         reader = DictReader(csv_file_2)
         assert reader.fieldnames == ['timestamp', 'correlationId',
-                                     'message', 'approach', 'consent']
+                                     'approach', 'consent', 'message']
         rows = list(reader)
         assert rows[0]['timestamp'] == '2020-01-01T01:00:00.000Z'
         assert rows[0]['correlationId'] == '1'
@@ -71,7 +74,7 @@ def test_retrieve_logs_consecutive_requests(tmp_path, requests_mock):
     with file2.open('r') as csv_file_2:
         reader = DictReader(csv_file_2)
         assert reader.fieldnames == ['timestamp', 'correlationId',
-                                     'message', 'approach', 'consent']
+                                     'approach', 'consent', 'message']
         rows = list(reader)
         assert rows[0]['timestamp'] == '2020-01-01T01:00:01.000Z'
         assert rows[0]['correlationId'] == '2'
@@ -95,7 +98,7 @@ def test_retrieve_logs_consecutive_requests(tmp_path, requests_mock):
     with file3.open('r') as csv_file_3:
         reader = DictReader(csv_file_3)
         assert reader.fieldnames == ['timestamp', 'correlationId',
-                                     'message', 'approach', 'consent']
+                                     'approach', 'consent', 'message']
         rows = list(reader)
         assert rows[0]['timestamp'] == '2020-01-01T01:01:04.000Z'
         assert rows[0]['correlationId'] == '3'

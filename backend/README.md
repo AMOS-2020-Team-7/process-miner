@@ -13,6 +13,8 @@ The file contains the following sections and entries:
 * `log_retriever`
     * `url` - URL of the Graylog instance logs should be retrieved from
     * `api_token` - Access Token used for authentication to the Graylog instance (see [Creating and using Access Token](https://docs.graylog.org/en/3.3/pages/configuration/rest_api.html#creating-and-using-access-token))
+* `filters`
+    * `filter_expressions` - Array of Regular Expressions that can be used to remove log entries that do not serve any purpose for the process mining
 
 ### Setup and running the code
 
@@ -45,3 +47,7 @@ The retrieving of logs is done by the class `LogRetriever` implemented in `log_r
 Before retrieving any logs the `LogRetriever` will check the target directory for the existence of the file `last_included_timestamp` which indicates that the directory has already been used and contains log entries up to the time specified by the timestamp found in the file. During repeated log retrieval to the same target directory all log entries up to that timestamp will not be retrieved again.
 
 Currently the retrieved values for each log entry are `timestamp`, `correlationId` and `message`. The retrieved log entries will be grouped by their `correlationId` and stored in separate files in the CSV format. The files will be named using the timestamp of the first contained log entry and the `correlationId` (eg. `2020-05-21T16_01_09.038Z_FD59B377DFE72EDE64C95C94C98182E4.csv`).
+
+The retrieved log entries will be filtered before being processed further. This is done by the class `LogFilter` implemented in `log_filter.py`. During this process all log entries missing either of the fields `timestamp`, `correlationId` or `message` will be removed. Additionally all entries with a `message` that matches any of the regular expressions supplied in the configuration file via `filter_expressions` will also be removed. By default the following expressions will be used:
+* `^Searching for ASPSPs:` - duplicate entries that seem to occur asynchronously after retrieving bank information
+* `^UTF-8 charset will be used for response body parsing$` - entries that provide information about how responses are processed without being a step of their own

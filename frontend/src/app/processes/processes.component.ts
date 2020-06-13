@@ -13,11 +13,16 @@ export interface Approach {
   styleUrls: ['./processes.component.css']
 })
 export class ProcessesComponent implements OnInit {
+  selectedApproach: string;
 
   approaches: Approach[] = [
     {item: 'REDIRECT', viewValue: 'REDIRECT'},
     {item: 'EMBEDDED', viewValue: 'EMBEDDED'}
   ];
+
+ changeApproach(data){
+    console.log("Approach selected: " + data.value);
+  }
 
   constructor() {
    }

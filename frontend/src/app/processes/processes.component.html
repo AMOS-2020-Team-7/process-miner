@@ -19,12 +19,12 @@
                         <div fxFlex="50%">
                             <div fxLayout="row" fxLayoutAlign="center stretch">
                                 <div fxFlex="25%" class="controls-main-selectors-labels">
-                                    Approach
+                                    Approach 
                                 </div>
                                 <div fxFlex="75%">
                                     <mat-form-field floatLabel='never'>
-                                        <mat-label>Select</mat-label>
-                                        <mat-select>
+                                        <mat-label>Select  </mat-label>
+                                        <mat-select [(ngModel)]="selectedApproach" (selectionChange)="changeApproach($event)">
                                             <mat-option *ngFor="let approach of approaches" [value]="approach.item">
                                                 {{ approach.viewValue }}
                                             </mat-option>

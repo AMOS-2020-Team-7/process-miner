@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Dict, Tuple
 
+from process_miner import LogTagger
 from . import graylog_access
 from .graylog_access import GraylogAccess
 from .log_filter import LogFilter
@@ -104,17 +105,19 @@ class LogRetriever:
     Class used for retrieving and storing log entries.
     """
     def __init__(self, graylog: GraylogAccess, target_dir: str,
-                 filter_expressions: List[str]):
+                 filter_expressions: List[str], log_taggers: List[LogTagger]):
         self.graylog_access = graylog
         self.log_filter = LogFilter(EXPORTED_FIELDS, 'message',
                                     filter_expressions)
         self.target_dir = Path(target_dir)
+        self.log_taggers = log_taggers
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__} [' \
                f'graylog_access <{self.graylog_access}>, ' \
                f'log_filter <{self.log_filter}>, ' \
-               f'target_dir <{self.target_dir}>]'
+               f'target_dir <{self.target_dir}>, ' \
+               f'log_taggers <{self.log_taggers}>]'
 
     def retrieve_logs(self) -> None:
         """
@@ -144,6 +147,12 @@ class LogRetriever:
 
         # add additional fields that were created during log processing
         fields.extend(ADDED_FIELDS)
+        # add fields based on log tag configuration
+        for tagger in self.log_taggers:
+            for entries in grouped_lines.values():
+                tagger.tag_entries(entries)
+            # make sure each taggers field is later written to the CSV files
+            fields.append(tagger.target_field)
 
         self._store_logs_as_csv(grouped_lines, fields)
         self._store_last_included_timestamp(last_timestamp)

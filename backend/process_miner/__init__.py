@@ -7,6 +7,7 @@ from pathlib import Path
 
 from flask import Flask
 
+from graylog_access import GraylogAccess
 from process_miner.configuration_loader import ConfigurationLoader
 from process_miner.log_retriever import LogRetriever
 
@@ -28,9 +29,12 @@ def setup_components():
     log_retriever_cfg = cfg_loader.get_section('log_retriever')
     filter_cfg = cfg_loader.get_section('filters')
 
+    log.info('setting up Graylog access')
+    graylog = GraylogAccess(log_retriever_cfg['url'],
+                            log_retriever_cfg['api_token'])
+
     log.info('setting up log retriever')
-    retriever = LogRetriever(log_retriever_cfg['url'],
-                             log_retriever_cfg['api_token'],
+    retriever = LogRetriever(graylog,
                              global_cfg['log_directory'],
                              filter_cfg['filter_expressions']
                              )

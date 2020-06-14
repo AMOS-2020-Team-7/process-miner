@@ -4,7 +4,20 @@ log_retriever:
   url: 'INSERT_GRAYLOG_URL_HERE'
   api_token: 'INSERT_API_TOKEN_HERE'
 filters:
-  'filter_expressions': [
-    '^Searching for ASPSPs:',
-    '^UTF-8 charset will be used for response body parsing$'
-  ]
+  'filter_expressions':
+    - '^Searching for ASPSPs:'
+    - '^(.+) charset will be used for response body parsing$'
+tags:
+  approach:                         # name of the field the tag gets written to (may be same as source if field value should replace old one)
+    source: 'message'               # field that gets matched to determine the tag value
+    tag_all: true                   # whether only the matching entry or all related entries should be tagged
+    default_value: 'not available'  # default value that is used if no matching value was found
+    mappings:                       # mapping of tag values to their respective keyword(s)
+      'embedded':
+        - 'approach=EMBEDDED'
+      'redirect':
+        - 'approach=REDIRECT'
+      'OAuth':
+        - 'approach=OAUTH'
+      'decoupled':
+        - 'approach=DECOUPLED'

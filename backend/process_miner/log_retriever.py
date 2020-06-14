@@ -17,12 +17,7 @@ log = logging.getLogger(__name__)
 
 TIMESTAMP_FILENAME = 'last_included_timestamp'
 EXPORTED_FIELDS = ['correlationId', 'timestamp', 'message']
-ADDED_FIELDS = ['approach', 'consent']
-
-APPROACHES = {'redirect': 'approach=REDIRECT',
-              'embedded': 'approach=EMBEDDED',
-              'OAuth': 'approach=OAUTH',
-              'Decoupled': 'approach=DECOUPLED'}
+ADDED_FIELDS = ['consent']
 
 CONSENT = {'GET_ACCOUNTS': 'get_accounts',
            'get account list': 'get_accounts',
@@ -51,33 +46,6 @@ def _sanitize_filename(filename: str) -> str:
     #  reserved character. There are more invalid characters but for now
     #  this should do.
     return filename.replace(':', '_')
-
-
-def _add_approach(grouped_dict) -> None:
-    """
-    add approach value to grouped dictionary before convert to csv
-    """
-    approach_list = dict()
-    for (correlation_id, log_entries) in grouped_dict.items():
-        unlabeled = True
-        for entry in log_entries:
-            # searching for signal words in message
-            # if signal word is found it will be added to a approach dictionary
-            # identified by correlation id
-
-            wholemessage = entry['message']
-
-            for key, approach in APPROACHES.items():
-                result = wholemessage.find(approach)
-                if result != -1 and unlabeled:
-                    approach_list[correlation_id] = key
-                    unlabeled = False
-                if result == -1 and unlabeled:
-                    approach_list[correlation_id] = MISSING_VALUE
-
-        # add to each row the approach value
-        for entry in log_entries:
-            entry['approach'] = approach_list[correlation_id]
 
 
 def _add_consent(grouped_dict) -> None:
@@ -141,8 +109,7 @@ class LogRetriever:
         self.log_filter.filter_log_entries(sorted_lines)
         # organize/collect related log entries
         grouped_lines, last_timestamp = self._process_csv_lines(sorted_lines)
-        # add approach and consent type
-        _add_approach(grouped_lines)
+        # add consent type
         _add_consent(grouped_lines)
 
         # add additional fields that were created during log processing

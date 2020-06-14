@@ -19,13 +19,6 @@ TIMESTAMP_FILENAME = 'last_included_timestamp'
 EXPORTED_FIELDS = ['correlationId', 'timestamp', 'message']
 ADDED_FIELDS = ['consent']
 
-CONSENT = {'GET_ACCOUNTS': 'get_accounts',
-           'get account list': 'get_accounts',
-           'GET_TRANSACTIONS': 'get_transactions',
-           'get transaction list': 'get_transactions'}
-
-MISSING_VALUE = 'not available'
-
 
 def _get_advanced_timestamp(timestamp: datetime) -> datetime:
     return timestamp + timedelta(milliseconds=1)
@@ -46,26 +39,6 @@ def _sanitize_filename(filename: str) -> str:
     #  reserved character. There are more invalid characters but for now
     #  this should do.
     return filename.replace(':', '_')
-
-
-def _add_consent(grouped_dict) -> None:
-    """
-    add consent value to grouped dictionary before convert to csv
-    """
-    for log_entries in grouped_dict.values():
-        # search for signal words
-        for entry in log_entries:
-            wholemessage = entry['message']
-            notlabeled = True
-            for keyword, consent in CONSENT.items():
-                result = wholemessage.find(keyword)
-                if result != -1 and notlabeled:
-                    entry['consent'] = consent
-                    notlabeled = False
-
-            # add no approach if no key word wasn't found
-            if result == -1 and notlabeled:
-                entry['consent'] = MISSING_VALUE
 
 
 class LogRetriever:
@@ -109,11 +82,7 @@ class LogRetriever:
         self.log_filter.filter_log_entries(sorted_lines)
         # organize/collect related log entries
         grouped_lines, last_timestamp = self._process_csv_lines(sorted_lines)
-        # add consent type
-        _add_consent(grouped_lines)
 
-        # add additional fields that were created during log processing
-        fields.extend(ADDED_FIELDS)
         # add fields based on log tag configuration
         for tagger in self.log_taggers:
             for entries in grouped_lines.values():

@@ -21,3 +21,14 @@ tags:
         - 'approach=OAUTH'
       'decoupled':
         - 'approach=DECOUPLED'
+  consent:
+    source: 'message'
+    tag_all: false
+    default_value: 'not available'
+    mappings:
+      'get_accounts':
+        - 'GET_ACCOUNTS'
+        - 'get account list'
+      'get_transactions':
+        - 'GET_TRANSACTIONS'
+        - 'get transaction list'

@@ -31,4 +31,8 @@ export class ProcessesComponent implements OnInit {
     wheelzoom(document.querySelector('img.zoom'));
   }
 
+  public loadGraph() {
+    console.log("loadGraphButton");
+  }
+
 }

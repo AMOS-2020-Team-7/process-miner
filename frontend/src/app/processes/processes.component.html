@@ -16,7 +16,7 @@
             <div class="container container-controls" fxLayout="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="stretch">
                 <div fxFlex="33%" class="controls-main-selectors">
                     <div fxLayout="column" fxLayoutAlign="stretch">
-                        <div fxFlex="50%">
+                        <div fxFlex="40%">
                             <div fxLayout="row" fxLayoutAlign="center stretch">
                                 <div fxFlex="25%" class="controls-main-selectors-labels">
                                     Approach 
@@ -33,7 +33,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxFlex="50%">
+                        <div fxFlex="40%">
                             <div fxLayout="row" fxLayoutAlign="center stretch">
                                 <div fxFlex="25%" class="controls-main-selectors-labels">
                                     Depth
@@ -43,14 +43,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div fxFlex="20%" fxLayoutAlign="left middle">
+                            <button (click) ="loadGraph()" class='load-graph-button' mat-raised-button>Load Graph</button>
+                        </div>
                     </div>
                 </div>
                 <mat-divider></mat-divider>
-                <div fxFlex="33%">
+                <div fxFlex="33%" xLayoutAlign="center stretch">
                     Consent
                 </div>
                 <mat-divider></mat-divider>
-                <div fxFlex="33%">
+                <div fxFlex="33%" xLayoutAlign="center stretch">
                     Variants
                 </div>
             </div>

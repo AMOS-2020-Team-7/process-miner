@@ -9,7 +9,7 @@
                 <p class='instructions-text'>
                     Scroll to zoom, drag and click to pan
                 </p>
-                <img class='zoom' src='assets/img/Petri Net_Graylog_Theory_Embedded.svg'>
+                <img class='zoom' [src]="trustedImageUrl">
             </div>
         </mat-grid-tile>
         <mat-grid-tile [colspan]="1" [rowspan]="1">
@@ -19,7 +19,7 @@
                         <div fxFlex="40%">
                             <div fxLayout="row" fxLayoutAlign="center stretch">
                                 <div fxFlex="25%" class="controls-main-selectors-labels">
-                                    Approach 
+                                    Approach
                                 </div>
                                 <div fxFlex="75%">
                                     <mat-form-field floatLabel='never'>

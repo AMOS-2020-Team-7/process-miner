@@ -18,11 +18,9 @@ export interface Approach {
   styleUrls: ['./processes.component.css']
 })
 export class ProcessesComponent implements OnInit, OnDestroy {
-  
   selectedApproach: string;
   destroy$: Subject<boolean> = new Subject<boolean>();
-  trustedImageUrl : SafeUrl;
-  
+  trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
 
   approaches: Approach[] = [
@@ -46,7 +44,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   }
 
  changeApproach(data){
-    console.log("Approach selected: " + data.value);
+    console.log('Approach selected: ' + data.value);
   }
 
   public loadGraph() {

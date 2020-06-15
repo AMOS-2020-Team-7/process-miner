@@ -41,3 +41,9 @@
 ::ng-deep .mat-accent .mat-slider-track-fill {
     background-color: black;
 } 
+
+.load-graph-button{
+    font-family: 'Montserrat', sans-serif;
+    color: #FFFFFF;;
+    background: #0984BF;
+}

@@ -23,7 +23,7 @@ This project has a template to interact with HTTP REQUESTS with the following ca
 
 Reference: 
 https://www.techiediaries.com/angular/angular-9-8-tutorial-by-example-rest-crud-apis-http-get-requests-with-httpclient/
-http://www.jacklmoore.com/wheelzoom/
+
 
 ## Image viewer is using WHEELZOOM
 
@@ -34,8 +34,12 @@ https://github.com/jackmoore/wheelzoom
 
 ## Layout is using FLEX-LAYOUT
 
-(Not a 100% for now, next Sprint will be fully flex-layout)
+(Not at 100% yet)
 
 Reference:
 https://github.com/angular/flex-layout
 
+## Graph for processes tab is being retrieved as a base64 image from the backend
+
+Example:
+https://www.base64-image.de

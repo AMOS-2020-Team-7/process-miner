@@ -9,6 +9,26 @@ from typing import Dict, List
 log = logging.getLogger(__name__)
 
 
+def create_log_taggers(cfg):
+    """
+    Factory method for creating LogTaggers from a configuration.
+    :param cfg: configuration containing the settings
+    :return: list containing the created taggers
+    """
+    taggers = []
+    for tag, config in cfg.items():
+        # allow bool and str in 'tag_all' value
+        tag_all = strtobool(str(config['tag_all']))
+        tagger = LogTagger(config['source'], tag, tag_all,
+                           config['default_value'])
+        # add all mappings to the tagger
+        for (label, expressions) in config['mappings'].items():
+            tagger.add_mapping(label, expressions)
+
+        taggers.append(tagger)
+    return taggers
+
+
 class LogTagger:
     """
     Class that handles creation of a single log entry field based on values
@@ -76,23 +96,3 @@ class LogTagger:
                   self.target_field)
         for entry in log_entries:
             entry[self.target_field] = label
-
-    @staticmethod
-    def create_log_taggers(cfg):
-        """
-        Factory method for creating LogTaggers from a configuration.
-        :param cfg: configuration containing the settings
-        :return: list containing the created taggers
-        """
-        taggers = []
-        for tag, config in cfg.items():
-            # allow bool and str in 'tag_all' value
-            tag_all = strtobool(str(config['tag_all']))
-            tagger = LogTagger(config['source'], tag, tag_all,
-                               config['default_value'])
-            # add all mappings to the tagger
-            for (label, expressions) in config['mappings'].items():
-                tagger.add_mapping(label, expressions)
-
-            taggers.append(tagger)
-        return taggers

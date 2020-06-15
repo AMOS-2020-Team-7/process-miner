@@ -1,47 +1,50 @@
+"""
+Module used for adding labels to message log entries.
+"""
 from csv import writer
 from csv import reader
 from csv import DictReader
 from csv import DictWriter
 
 
-header_of_new_col = 'label'
-blank = ' _else_ '
+HEADER_OF_NEW_COL = 'label'
+BLANK = ' _else_ '
 
-post = 'Server Response Message'                               # "POST" or "PUT"
-http = 'Server Request Message'                                # 'HTTP/'
+POST = 'Server Response Message'
+HTTP = 'Server Request Message'
 
-searching_aspsps = "ASPSPs searching"                          # 'Searching for ASPSPs' or 'Search ASPSPs'
-aspsp_not_found = "ASPSP not found"                            # 'Aspsp was not found for bankCode'
-processing = "processing"                                      # 'Processing'
+SEARCHING_ASPSPS = "ASPSPs searching"
+ASPSPS_NOT_FOUND = "ASPSP not found"
+PROCESSING = "processing"
 
-xs2a = "Xs2aAdapter"                                                # 'xs2a'
-profile = "active profile"                                          # 'profiles'
-consent = "consent"                                                 # 'consent'
-session = "session"                                                 # 'session'
-transaction = "transaction"                                         # 'transactions'
-charset = "charset"                                                 # 'charset'
-status = "status"                                                   # 'status'
-slack = "slack"                                                     # 'slack'
+XS2A = "Xs2aAdapter"
+PROFILE = "active profile"
+CONSENT = "consent"
+SESSION = "session"
+TRANSACTION = "transaction"
+CHARSET = "charset"
+STATUS = "status"
+SLACK = "slack"
 
-error_format = "ERROR_FORMAT"                                       # 'FORMAT_ERROR'
-error_internal_server = "ERROR_INTERNAL_SERVER"                     # 'INTERNAL_SERVER_ERROR'
-error_psu_credentials_invalid = "ERROR_PSU_CREDENTIALS_INVALID"     # 'PSU_CREDENTIALS_INVALID'
-error_service_invalid = "ERROR_SERVICE_INVALID"                     # 'SERVICE_INVALID'
-warning_service_unavailable = "WARNING_SERVICE_UNAVAILABLE"         # 'SERVICE_UNAVAILABLE'
-unhandeled_exception = "Unhandled exception"                        # 'Unhandled exception'
+E_FORMAT = "ERROR_FORMAT"
+E_INTERNAL_SERVER = "ERROR_INTERNAL_SERVER"
+E_PSU_INVALID = "ERROR_PSU_CREDENTIALS_INVALID"
+E_SERVICE_INVALID = "ERROR_SERVICE_INVALID"
+W_SERVICE_UNAVAILABLE = "WARNING_SERVICE_UNAVAILABLE"
+UNHANDLED_EXCEPTION = "Unhandled exception"
 
 
-
-def add_label_column_in_csv(input_file, output_file):                                               #In this function we need to pass an additional callback tansform_column_names, it receives list of column names and we can modify that based on our intent.
+def add_label_column_in_csv(input_file, output_file):
+    """ open, read and write the csv file """
     with open(input_file, 'r') as read_obj, \
-            open(output_file, 'w', newline='') as write_obj:                                             # Open the input_file in read mode and output_file in write mode and yaml file in read mode
+            open(output_file, 'w', newline='') as write_obj:
 
-        dict_reader = DictReader(read_obj)                      # Create a DictReader object from the input file object
-        field_names = dict_reader.fieldnames                    # Get a list of column names from the csv
+        dict_reader = DictReader(read_obj)
+        field_names = dict_reader.fieldnames
 
-        append_field(field_names)                               # Call the callback function to modify column name list
-        dict_writer = DictWriter(write_obj, field_names)        # Create a DictWriter object from the output file object by passing column / field names
-        dict_writer.writeheader()                               # Write the column names in output csv file
+        append_field(field_names)
+        dict_writer = DictWriter(write_obj, field_names)
+        dict_writer.writeheader()
 
         for row in dict_reader:
             if "POST" in row['message']:
@@ -49,33 +52,32 @@ def add_label_column_in_csv(input_file, output_file):                           
             elif "PUT" in row['message']:
                 add_post(row, dict_reader.line_num)
 
-            elif "HTTP/" in row['message']:
+            elif "TTP/" in row['message']:
                 add_http(row, dict_reader.line_num)
-            elif "Searching for ASPSPs" in row['message']:
+            elif "earching for ASPSPs" in row['message']:
                 add_aspsps_search(row, dict_reader.line_num)
-
-            elif "Search ASPSPs" in row['message']:
+            elif "earch ASPSPs" in row['message']:
                 add_aspsps_search(row, dict_reader.line_num)
-            elif "Aspsp was not found for bankCode" in row['message']:
+            elif "spsp was not found for bankCode" in row['message']:
                 add_aspsps_not_found(row, dict_reader.line_num)
-            elif "Processing" in row['message']:
+            elif "rocessing" in row['message']:
                 add_processing(row, dict_reader.line_num)
 
-            elif "Xs2aAdapter" in row['message']:
+            elif "s2aAdapter" in row['message']:
                 add_xs2a(row, dict_reader.line_num)
-            elif "profiles" in row['message']:
+            elif "rofiles" in row['message']:
                 add_profile(row, dict_reader.line_num)
-            elif "consent" in row['message']:
+            elif "onsent" in row['message']:
                 add_consent(row, dict_reader.line_num)
-            elif "session" in row['message']:
+            elif "ession" in row['message']:
                 add_session(row, dict_reader.line_num)
-            elif "transaction" in row['message']:
+            elif "ransaction" in row['message']:
                 add_transaction(row, dict_reader.line_num)
-            elif "charset" in row['message']:
+            elif "harset" in row['message']:
                 add_charset(row, dict_reader.line_num)
-            elif "status" in row['message']:
+            elif "tatus" in row['message']:
                 add_status(row, dict_reader.line_num)
-            elif "slack" in row['message']:
+            elif "lack" in row['message']:
                 add_slack(row, dict_reader.line_num)
 
             elif "FORMAT_ERROR" in row['message']:
@@ -88,59 +90,80 @@ def add_label_column_in_csv(input_file, output_file):                           
                 add_error_service_invalid(row, dict_reader.line_num)
             elif "SERVICE_UNAVAILABLE" in row['message']:
                 add_warning_service_unavailable(row, dict_reader.line_num)
-            elif "Unhandled exception" in row['message']:
+            elif "nhandled exception" in row['message']:
                 add_unhandeled_exception(row, dict_reader.line_num)
 
             else:
                 add_blank(row, dict_reader.line_num)
-            dict_writer.writerow(row)                           # Write the updated dictionary or row to the output file
+            dict_writer.writerow(row)
 
 
 def append_field(field_names):
-    field_names.append(header_of_new_col)
-    #field_names.insert(2, header_of_new_col)
+    """alternative: field_names.insert(2, header_of_new_col)"""
+    field_names.append(HEADER_OF_NEW_COL)
 def add_blank(row, line_num):
-    row.update({header_of_new_col: blank})
+    """ filling else """
+    row.update({HEADER_OF_NEW_COL: BLANK})
 
 def add_post(row, line_num):
-    row.update({header_of_new_col: post})
+    """ searching for key word post """
+    row.update({HEADER_OF_NEW_COL: POST})
 def add_http(row, line_num):
-    row.update({header_of_new_col: http})
+    """ searching for key word http """
+    row.update({HEADER_OF_NEW_COL: HTTP})
 def add_aspsps_search(row, line_num):
-    row.update({header_of_new_col: searching_aspsps})
+    """ searching for key word aspsps search """
+    row.update({HEADER_OF_NEW_COL: SEARCHING_ASPSPS})
 def add_aspsps_not_found(row, line_num):
-    row.update({header_of_new_col: aspsp_not_found})
+    """ searching for key word aspsps not found """
+    row.update({HEADER_OF_NEW_COL: ASPSPS_NOT_FOUND})
 def add_processing(row, line_num):
-    row.update({header_of_new_col: processing})
+    """ searching for key word processing """
+    row.update({HEADER_OF_NEW_COL: PROCESSING})
 def add_xs2a(row, line_num):
-    row.update({header_of_new_col: xs2a})
+    """ searching for key word xs2a """
+    row.update({HEADER_OF_NEW_COL: XS2A})
 def add_profile(row, line_num):
-    row.update({header_of_new_col: profile})
+    """ searching for key word profile """
+    row.update({HEADER_OF_NEW_COL: PROFILE})
 def add_consent(row, line_num):
-    row.update({header_of_new_col: consent})
+    """ searching for key word consent """
+    row.update({HEADER_OF_NEW_COL: CONSENT})
 def add_session(row, line_num):
-    row.update({header_of_new_col: session})
+    """ searching for key word session """
+    row.update({HEADER_OF_NEW_COL: SESSION})
 def add_transaction(row, line_num):
-    row.update({header_of_new_col: transaction})
+    """ searching for key word transaction """
+    row.update({HEADER_OF_NEW_COL: TRANSACTION})
 def add_charset(row, line_num):
-    row.update({header_of_new_col: charset})
+    """ searching for key word charset """
+    row.update({HEADER_OF_NEW_COL: CHARSET})
 def add_status(row, line_num):
-    row.update({header_of_new_col: status})
+    """ searching for key word status"""
+    row.update({HEADER_OF_NEW_COL: STATUS})
 def add_slack(row, line_num):
-    row.update({header_of_new_col: slack})
+    """ searching for key word slack """
+    row.update({HEADER_OF_NEW_COL: SLACK})
 
 
 def add_error_format(row, line_num):
-    row.update({header_of_new_col: error_format})
+    """ searching for error format """
+    row.update({HEADER_OF_NEW_COL: E_FORMAT})
 def add_error_internal_server(row, line_num):
-    row.update({header_of_new_col: error_internal_server})
+    """ searching for error server """
+    row.update({HEADER_OF_NEW_COL: E_INTERNAL_SERVER})
 def add_error_psu_credentials_invalid(row, line_num):
-    row.update({header_of_new_col: error_psu_credentials_invalid})
+    """ searching for error psu """
+    row.update({HEADER_OF_NEW_COL: E_PSU_INVALID})
 def add_error_service_invalid(row, line_num):
-    row.update({header_of_new_col: error_service_invalid})
+    """ searching for error service """
+    row.update({HEADER_OF_NEW_COL: E_SERVICE_INVALID})
 def add_warning_service_unavailable(row, line_num):
-    row.update({header_of_new_col: warning_service_unavailable})
+    """ searching for warning service """
+    row.update({HEADER_OF_NEW_COL: W_SERVICE_UNAVAILABLE})
 def add_unhandeled_exception(row, line_num):
-    row.update({header_of_new_col: unhandeled_exception})
+    """ searching for unhandeled exception  """
+    row.update({HEADER_OF_NEW_COL: UNHANDLED_EXCEPTION})
 
-add_label_column_in_csv('graylog-search-result-relative-0.csv', 'output_log_label_with_graylog_data.csv')
+add_label_column_in_csv('graylog-search-result-relative-0.csv',
+                        'output_log_label_with_graylog_data.csv')

@@ -17,7 +17,6 @@ log = logging.getLogger(__name__)
 
 TIMESTAMP_FILENAME = 'last_included_timestamp'
 EXPORTED_FIELDS = ['correlationId', 'timestamp', 'message']
-ADDED_FIELDS = ['consent']
 
 
 def _get_advanced_timestamp(timestamp: datetime) -> datetime:

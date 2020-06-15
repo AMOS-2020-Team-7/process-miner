@@ -1,6 +1,8 @@
 """
 Tests for the log_filter module
 """
+import copy
+
 from process_miner.log_filter import LogFilter
 
 
@@ -36,7 +38,7 @@ def test_filter_log_entries_no_match():
             'filtered_field': 'no filter1'
         }
     ]
-    expected_entries = entries.copy()
+    expected_entries = copy.deepcopy(entries)
     filter_instance.filter_log_entries(entries)
 
     assert entries == expected_entries
@@ -61,7 +63,7 @@ def test_filter_log_entries_incomplete_entries():
             'filtered_field': 'no filter2'
         }
     ]
-    expected_entries = entries[:1]
+    expected_entries = copy.deepcopy(entries[:1])
     filter_instance.filter_log_entries(entries)
 
     assert entries == expected_entries
@@ -83,7 +85,7 @@ def test_filter_log_entries_expression_matches():
             'filtered_field': 'filter1'
         }
     ]
-    expected_entries = entries[:1]
+    expected_entries = copy.deepcopy(entries[:1])
     filter_instance.filter_log_entries(entries)
 
     assert entries == expected_entries

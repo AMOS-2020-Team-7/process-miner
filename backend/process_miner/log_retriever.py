@@ -8,10 +8,10 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Dict, Tuple
 
-from process_miner import LogTagger
-from . import graylog_access
-from .graylog_access import GraylogAccess
-from .log_filter import LogFilter
+import process_miner.graylog_access as ga
+from process_miner.graylog_access import GraylogAccess
+from process_miner.log_filter import LogFilter
+from process_miner.log_tagger import LogTagger
 
 log = logging.getLogger(__name__)
 
@@ -105,10 +105,10 @@ class LogRetriever:
             log.info('reading last included timestamp from file "%s"',
                      timestamp_path)
             timestamp = _read_timestamp(timestamp_path)
-            if graylog_access.timestamp_format_is_valid(timestamp):
+            if ga.timestamp_format_is_valid(timestamp):
                 log.info('timestamp of last retrieved log entry: "%s"',
                          timestamp)
-                return graylog_access.get_datetime_from_timestamp(timestamp)
+                return ga.get_datetime_from_timestamp(timestamp)
             log.error('invalid timestamp format "%s"...', timestamp)
         else:
             log.info("information about last included timestamp not found in "
@@ -163,7 +163,7 @@ class LogRetriever:
             # move message to rightmost column
             fieldnames.remove('message')
             fieldnames.append('message')
-            with file_path.open("w", newline='') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames)
+            with file_path.open("w", newline='') as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames)
                 writer.writeheader()
                 writer.writerows(log_entries)

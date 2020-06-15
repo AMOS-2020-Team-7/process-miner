@@ -7,10 +7,10 @@ from pathlib import Path
 
 from flask import Flask
 
-from graylog_access import GraylogAccess
-from log_tagger import LogTagger
-from process_miner.configuration_loader import ConfigurationLoader
-from process_miner.log_retriever import LogRetriever
+import process_miner.configuration_loader as cl
+import process_miner.graylog_access as ga
+import process_miner.log_retriever as lr
+import process_miner.log_tagger as lt
 
 CONFIG_FILENAME = 'process_miner_config.yaml'
 
@@ -19,30 +19,32 @@ log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 
-def setup_components():
+def setup_components(config_file=CONFIG_FILENAME):
     """
     Sets up all components needed for running the process miner.
-    :return: a fully set up LogRetriever instance
+    :param config_file: path to the configuration file that should be used
+    :return: a tuple containing the fully set up components of the process
+    miner backend
     """
     log.info('setting up configuration')
-    cfg_loader = ConfigurationLoader(Path(CONFIG_FILENAME))
+    cfg_loader = cl.ConfigurationLoader(Path(config_file))
     global_cfg = cfg_loader.get_section('global')
     log_retriever_cfg = cfg_loader.get_section('log_retriever')
     filter_cfg = cfg_loader.get_section('filters')
     tag_cfg = cfg_loader.get_section('tags')
 
     log.info('setting up Graylog access')
-    graylog = GraylogAccess(log_retriever_cfg['url'],
-                            log_retriever_cfg['api_token'])
+    graylog = ga.GraylogAccess(log_retriever_cfg['url'],
+                               log_retriever_cfg['api_token'])
 
     log.info('setting up log taggers')
-    taggers = LogTagger.create_log_taggers(tag_cfg)
+    taggers = lt.create_log_taggers(tag_cfg)
 
     log.info('setting up log retriever')
-    retriever = LogRetriever(graylog,
-                             global_cfg['log_directory'],
-                             filter_cfg['filter_expressions'],
-                             taggers)
+    retriever = lr.LogRetriever(graylog,
+                                global_cfg['log_directory'],
+                                filter_cfg['filter_expressions'],
+                                taggers)
 
     return retriever
 
@@ -53,7 +55,7 @@ def create_app():
     flask app.
     :return: the Flask object
     """
-    retriever = setup_components()
+    (retriever) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
 

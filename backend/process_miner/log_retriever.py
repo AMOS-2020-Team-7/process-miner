@@ -136,6 +136,10 @@ class LogRetriever:
         fields, sorted_lines = self._convert_log_lines_to_dict(lines)
         # filter log entries before they get processed any further
         self.log_filter.filter_log_entries(sorted_lines)
+        if not sorted_lines:
+            log.info('no new entries after filtering')
+            return
+
         # organize/collect related log entries
         grouped_lines, last_timestamp = self._process_csv_lines(sorted_lines)
         # add approach and consent type

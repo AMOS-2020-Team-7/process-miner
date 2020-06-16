@@ -42,16 +42,40 @@ To run the `process_miner` packages main (eg. for testing purposes) use
 
 ### Functional overview
 
-The retrieving of logs is done by the class `LogRetriever` implemented in `log_retriever.py`. After configuring the class the retrieval process is started by calling the method `retrieve_logs`.
+The retrieving of logs is done by the class `LogRetriever` implemented in the module `log_retriever`. After configuring the class the retrieval process is started by calling the method `retrieve_logs`.
 
 Before retrieving any logs the `LogRetriever` will check the target directory for the existence of the file `last_included_timestamp` which indicates that the directory has already been used and contains log entries up to the time specified by the timestamp found in the file. During repeated log retrieval to the same target directory all log entries up to that timestamp will not be retrieved again.
 
 Currently the retrieved values for each log entry are `timestamp`, `correlationId` and `message`. The retrieved log entries will be grouped by their `correlationId` and stored in separate files in the CSV format. The files will be named using the timestamp of the first contained log entry and the `correlationId` (eg. `2020-05-21T16_01_09.038Z_FD59B377DFE72EDE64C95C94C98182E4.csv`).
 
-The retrieved log entries will be filtered before being processed further. This is done by the class `LogFilter` implemented in `log_filter.py`. During this process all log entries missing either of the fields `timestamp`, `correlationId` or `message` will be removed. Additionally all entries with a `message` that matches any of the regular expressions supplied in the configuration file via `filter_expressions` will also be removed. By default the following expressions will be used:
+#### Filtering
+
+The retrieved log entries will be filtered before being processed further. This is done by the class `LogFilter` implemented in the module `log_filter`. During this process all log entries missing either of the fields `timestamp`, `correlationId` or `message` will be removed. Additionally all entries with a `message` that matches any of the regular expressions supplied in the configuration file via `filter_expressions` will also be removed. By default the following expressions will be used:
 * `^Searching for ASPSPs:` - duplicate entries that seem to occur asynchronously after retrieving bank information
 * `^UTF-8 charset will be used for response body parsing$` - entries that provide information about how responses are processed without being a step of their own
 
+=======
+#### Tagging
+
+To aid the process mining the class `LogTagger` from the module `log_tagger` extracts information from the processed log entries fields. This is done by trying to match a pattern on the source field of each log entry and inserting a fixed value into a target field if the pattern was matched successfully. The source field, the used patterns and the inserted values can be configured in the `tags` section of the configuration file. For each subsection of `tags` an additional column named after the subsection is added to the output CSV files. An example configuration may look like this:
+
+    tags:
+      fieldname:                  # name of the field the tag gets written to
+        source: 'source'          # field that gets matched to determine the tag value
+        tag_all: false            # whether only the matching entry or all related entries should be tagged
+        default_value: 'default'  # default value that is used if no matching value was found
+        mappings:                 # mapping of tag values to their respective keyword(s)
+          'value1':               # value that is inserted if one of its patterns matched
+            - 'pattern11'
+            - 'pattern12'
+          'value2':               # another pattern
+            - 'pattern21'
+      'another fieldname':
+        .....
+
+Even if none of the patterns matched each tags field will be present in the output files. For concrete usage examples see `docs/example_process_miner_config.yaml`.
+
+=======
 ## Common Paths for all Approaches
 The graphs are stored in the directory `common_path` as Scalable Vector Graphics.
 

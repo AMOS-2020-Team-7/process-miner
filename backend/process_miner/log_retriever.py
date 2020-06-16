@@ -8,27 +8,15 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Dict, Tuple
 
-from . import graylog_access
-from .graylog_access import GraylogAccess
-from .log_filter import LogFilter
+import process_miner.graylog_access as ga
+from process_miner.graylog_access import GraylogAccess
+from process_miner.log_filter import LogFilter
+from process_miner.log_tagger import LogTagger
 
 log = logging.getLogger(__name__)
 
 TIMESTAMP_FILENAME = 'last_included_timestamp'
 EXPORTED_FIELDS = ['correlationId', 'timestamp', 'message']
-ADDED_FIELDS = ['approach', 'consent']
-
-APPROACHES = {'redirect': 'approach=REDIRECT',
-              'embedded': 'approach=EMBEDDED',
-              'OAuth': 'approach=OAUTH',
-              'Decoupled': 'approach=DECOUPLED'}
-
-CONSENT = {'GET_ACCOUNTS': 'get_accounts',
-           'get account list': 'get_accounts',
-           'GET_TRANSACTIONS': 'get_transactions',
-           'get transaction list': 'get_transactions'}
-
-MISSING_VALUE = 'not available'
 
 
 def _get_advanced_timestamp(timestamp: datetime) -> datetime:
@@ -52,69 +40,24 @@ def _sanitize_filename(filename: str) -> str:
     return filename.replace(':', '_')
 
 
-def _add_approach(grouped_dict) -> None:
-    """
-    add approach value to grouped dictionary before convert to csv
-    """
-    approach_list = dict()
-    for (correlation_id, log_entries) in grouped_dict.items():
-        unlabeled = True
-        for entry in log_entries:
-            # searching for signal words in message
-            # if signal word is found it will be added to a approach dictionary
-            # identified by correlation id
-
-            wholemessage = entry['message']
-
-            for key, approach in APPROACHES.items():
-                result = wholemessage.find(approach)
-                if result != -1 and unlabeled:
-                    approach_list[correlation_id] = key
-                    unlabeled = False
-                if result == -1 and unlabeled:
-                    approach_list[correlation_id] = MISSING_VALUE
-
-        # add to each row the approach value
-        for entry in log_entries:
-            entry['approach'] = approach_list[correlation_id]
-
-
-def _add_consent(grouped_dict) -> None:
-    """
-    add consent value to grouped dictionary before convert to csv
-    """
-    for log_entries in grouped_dict.values():
-        # search for signal words
-        for entry in log_entries:
-            wholemessage = entry['message']
-            notlabeled = True
-            for keyword, consent in CONSENT.items():
-                result = wholemessage.find(keyword)
-                if result != -1 and notlabeled:
-                    entry['consent'] = consent
-                    notlabeled = False
-
-            # add no approach if no key word wasn't found
-            if result == -1 and notlabeled:
-                entry['consent'] = MISSING_VALUE
-
-
 class LogRetriever:
     """
     Class used for retrieving and storing log entries.
     """
-    def __init__(self, url: str, api_token: str, target_dir: str,
-                 filter_expressions: List[str]):
-        self.graylog_access = GraylogAccess(url, api_token)
+    def __init__(self, graylog: GraylogAccess, target_dir: str,
+                 filter_expressions: List[str], log_taggers: List[LogTagger]):
+        self.graylog_access = graylog
         self.log_filter = LogFilter(EXPORTED_FIELDS, 'message',
                                     filter_expressions)
         self.target_dir = Path(target_dir)
+        self.log_taggers = log_taggers
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__} [' \
                f'graylog_access <{self.graylog_access}>, ' \
                f'log_filter <{self.log_filter}>, ' \
-               f'target_dir <{self.target_dir}>]'
+               f'target_dir <{self.target_dir}>, ' \
+               f'log_taggers <{self.log_taggers}>]'
 
     def retrieve_logs(self) -> None:
         """
@@ -142,12 +85,13 @@ class LogRetriever:
 
         # organize/collect related log entries
         grouped_lines, last_timestamp = self._process_csv_lines(sorted_lines)
-        # add approach and consent type
-        _add_approach(grouped_lines)
-        _add_consent(grouped_lines)
 
-        # add additional fields that were created during log processing
-        fields.extend(ADDED_FIELDS)
+        # add fields based on log tag configuration
+        for tagger in self.log_taggers:
+            for entries in grouped_lines.values():
+                tagger.tag_entries(entries)
+            # make sure each taggers field is later written to the CSV files
+            fields.append(tagger.target_field)
 
         self._store_logs_as_csv(grouped_lines, fields)
         self._store_last_included_timestamp(last_timestamp)
@@ -164,10 +108,10 @@ class LogRetriever:
             log.info('reading last included timestamp from file "%s"',
                      timestamp_path)
             timestamp = _read_timestamp(timestamp_path)
-            if graylog_access.timestamp_format_is_valid(timestamp):
+            if ga.timestamp_format_is_valid(timestamp):
                 log.info('timestamp of last retrieved log entry: "%s"',
                          timestamp)
-                return graylog_access.get_datetime_from_timestamp(timestamp)
+                return ga.get_datetime_from_timestamp(timestamp)
             log.error('invalid timestamp format "%s"...', timestamp)
         else:
             log.info("information about last included timestamp not found in "
@@ -222,7 +166,7 @@ class LogRetriever:
             # move message to rightmost column
             fieldnames.remove('message')
             fieldnames.append('message')
-            with file_path.open("w", newline='') as csvfile:
-                writer = csv.DictWriter(csvfile, fieldnames)
+            with file_path.open("w", newline='') as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames)
                 writer.writeheader()
                 writer.writerows(log_entries)

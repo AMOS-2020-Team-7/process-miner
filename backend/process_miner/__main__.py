@@ -13,7 +13,7 @@ APPROACH = "embedded"
 
 
 def _main():
-    retriever = setup_components()
+    (retriever) = setup_components()
     log.info('starting log retrieval')
     retriever.retrieve_logs()
     create_results(APPROACH)

@@ -54,6 +54,7 @@ The retrieved log entries will be filtered before being processed further. This 
 * `^Searching for ASPSPs:` - duplicate entries that seem to occur asynchronously after retrieving bank information
 * `^UTF-8 charset will be used for response body parsing$` - entries that provide information about how responses are processed without being a step of their own
 
+=======
 #### Tagging
 
 To aid the process mining the class `LogTagger` from the module `log_tagger` extracts information from the processed log entries fields. This is done by trying to match a pattern on the source field of each log entry and inserting a fixed value into a target field if the pattern was matched successfully. The source field, the used patterns and the inserted values can be configured in the `tags` section of the configuration file. For each subsection of `tags` an additional column named after the subsection is added to the output CSV files. An example configuration may look like this:
@@ -73,3 +74,24 @@ To aid the process mining the class `LogTagger` from the module `log_tagger` ext
         .....
 
 Even if none of the patterns matched each tags field will be present in the output files. For concrete usage examples see `docs/example_process_miner_config.yaml`.
+
+=======
+## Common Paths for all Approaches
+The graphs are stored in the directory `common_path` as Scalable Vector Graphics.
+
+Naming conditions:
+{visualization type}_{approach type}.svg
+
+`visualization type`:
+- `heuristicnet`: Heuristic Net
+
+- `dfg`: Directly-Follows-Graph
+
+Results are available for the `approach type`:
+- `all` All approaches combined
+
+- `embedded` Embedded approach
+
+- `redirect` Redirect approach
+
+- `not available` Entries without available approach type

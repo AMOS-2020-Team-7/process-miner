@@ -2,6 +2,8 @@
 Module used for importing tagged logs into heuristic miner
 """
 import os
+import logging
+from pathlib import Path
 
 from pm4py.objects.log.adapters.pandas import csv_import_adapter
 
@@ -17,9 +19,12 @@ from pm4py.util import constants
 
 from pm4py.algo.filtering.pandas.attributes import attributes_filter
 
-POSSIBLE_APPROACHES = {"embedded": "embedded", "redirect": "redirect",
-                       "OAuth": "OAuth", "all": "all",
-                       "not available": "not available"}
+log_info = logging.getLogger(__name__)
+
+POSSIBLE_APPROACHES = ["embedded", "redirect",
+                       "OAuth", "all", "not available"]
+
+APPROACH_DEFAULT = "all"
 
 
 def create_dataframe():
@@ -41,19 +46,14 @@ def filter_by_approach(approach, dataframe):
     dataframe gets filtered by approach
     """
     dataframe_approach = dataframe
-    if approach == POSSIBLE_APPROACHES['all']:
+    if approach == APPROACH_DEFAULT:
         return dataframe_approach
-
-    all_approaches = attributes_filter.get_attribute_values(
-        dataframe, attribute_key="case:approach")
-    print("INFO: all approaches ", all_approaches)
 
     dataframe_approach = attributes_filter.apply \
         (dataframe, [approach], parameters={
             attributes_filter.Parameters.CASE_ID_KEY: "case:concept:name",
             attributes_filter.Parameters.ATTRIBUTE_KEY: "case:approach",
             attributes_filter.Parameters.POSITIVE: True})
-
     return dataframe_approach
 
 
@@ -73,6 +73,7 @@ def create_graphs(log, approach):
     # create dfg
     path = "common_path"
     vis_type = "dfg"
+    file = f"{vis_type}_{approach}.svg"
     filename = f"{path}/{vis_type}_{approach}.svg"
     parameters = {constants.PARAMETER_CONSTANT_ACTIVITY_KEY:
                       "concept:name", "format": "svg"}
@@ -82,9 +83,11 @@ def create_graphs(log, approach):
                                   parameters=parameters)
     dfg_vis_factory.view(gviz1)
     dfg_vis_factory.save(gviz1, filename)
+    log_info.info("DFG has been stored in '%s' in file '%s'", path, file)
 
     # create heuristic net
     vis_type = "heuristicnet"
+    file = f"{vis_type}_{approach}.svg"
     filename = f"{path}/{vis_type}_{approach}.svg"
     heu_net = heuristics_miner.apply_heu(log, parameters={
         heuristics_miner.Variants.CLASSIC.value.Parameters.DEPENDENCY_THRESH:
@@ -94,6 +97,8 @@ def create_graphs(log, approach):
             hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: "svg"})
     hn_vis.view(gviz2)
     hn_vis.save(gviz2, filename)
+    log_info.info("Heuristic Net has been stored in '%s' in file '%s'",
+                  path, file)
 
 
 def file_available():
@@ -108,17 +113,11 @@ def check_selected_approach(approach):
     """
     check for only valid statements for approach type
     """
-    for i in POSSIBLE_APPROACHES:
-        result = POSSIBLE_APPROACHES[i].find(approach)
-        print("result: ", result)
-        print("gefundenes wort: ", POSSIBLE_APPROACHES[i])
-        if result == 1:
-            return True
-
-    if result == -1:
-        print("INFO: filter by approach not possible, "
-              "no valid approach selected")
-    return False
+    check = approach in POSSIBLE_APPROACHES
+    if not check:
+        log_info.info("INFO: filter by approach not possible, "
+                      "no valid approach selected")
+    return check
 
 
 def create_results(approachtype):
@@ -126,9 +125,10 @@ def create_results(approachtype):
     check if concated csv file is available, filter log by selected approach,
     creates and saves DFG and Heuristic Net in directory common_path
     """
+
     file = file_available()
     if not file:
-        print("NO CONCATED FILE AVAILABLE!!!")
+        log_info.info('NO CONCATED FILE AVAILABLE')
         return
 
     valid_approach = check_selected_approach(approachtype)
@@ -139,3 +139,23 @@ def create_results(approachtype):
     dataframe_approach = filter_by_approach(approachtype, dataframe)
     log = create_log(dataframe_approach)
     create_graphs(log, approachtype)
+
+
+class Miner:
+    """
+    class to create directory for storing the graphs
+    """
+    def __init__(self, graph_dir: str):
+        self.graph_dir = Path(graph_dir)
+
+    def __str__(self) -> str:
+        return f'{self.__class__.__name__} ['f'graph_dir <{self.graph_dir}>]'
+
+    def prepare_graph_dir(self):
+        """
+        if not available, creates directory for storing the graphs
+        """
+        log_info.info('preparing graph directory "%s"', self.graph_dir)
+        if not self.graph_dir.exists():
+            log_info.info('creating missing graph directory (and parents)...')
+            self.graph_dir.mkdir(parents=True, exist_ok=True)

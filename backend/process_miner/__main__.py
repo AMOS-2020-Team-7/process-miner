@@ -9,13 +9,14 @@ from process_miner.logs_process_miner import create_results
 log = logging.getLogger(__name__)
 
 # embedded, redirect, OAuth, Decoupled, all, not available
-APPROACH = "embedded"
+APPROACH = "all"
 
 
 def _main():
-    (retriever) = setup_components()
+    (retriever, miner) = setup_components()
     log.info('starting log retrieval')
     retriever.retrieve_logs()
+    miner.prepare_graph_dir()
     create_results(APPROACH)
 
 

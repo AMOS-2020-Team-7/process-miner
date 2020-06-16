@@ -9,7 +9,7 @@ import { retry, catchError, tap } from 'rxjs/operators';
 })
 export class DataService {
 
-  private REST_API_SERVER_TESTS = 'http://localhost:4200/assets/tests/response.json';
+  private REST_API_SERVER_TESTS = 'assets/tests/response.json';
 
   constructor(private httpClient: HttpClient) { }
 

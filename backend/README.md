@@ -51,3 +51,23 @@ Currently the retrieved values for each log entry are `timestamp`, `correlationI
 The retrieved log entries will be filtered before being processed further. This is done by the class `LogFilter` implemented in `log_filter.py`. During this process all log entries missing either of the fields `timestamp`, `correlationId` or `message` will be removed. Additionally all entries with a `message` that matches any of the regular expressions supplied in the configuration file via `filter_expressions` will also be removed. By default the following expressions will be used:
 * `^Searching for ASPSPs:` - duplicate entries that seem to occur asynchronously after retrieving bank information
 * `^UTF-8 charset will be used for response body parsing$` - entries that provide information about how responses are processed without being a step of their own
+
+## Common Paths for all Approaches
+The graphs are stored in the directory `common_path` as Scalable Vector Graphics.
+
+Naming conditions:
+{visualization type}_{approach type}.svg
+
+`visualization type`:
+- `heuristicnet`: Heuristic Net
+
+- `dfg`: Directly-Follows-Graph
+
+Results are available for the `approach type`:
+- `all` All approaches combined
+
+- `embedded` Embedded approach
+
+- `redirect` Redirect approach
+
+- `not available` Entries without available approach type

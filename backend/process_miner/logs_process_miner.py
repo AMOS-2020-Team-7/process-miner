@@ -44,14 +44,6 @@ def filter_by_approach(approach, dataframe):
     if approach == POSSIBLE_APPROACHES['all']:
         return dataframe_approach
 
-    # only valid statements
-    for i in POSSIBLE_APPROACHES:
-        result = POSSIBLE_APPROACHES[i].find(approach)
-        if result:
-            break
-    if not result:
-        return dataframe_approach
-
     all_approaches = attributes_filter.get_attribute_values(
         dataframe, attribute_key="case:approach")
     print("INFO: all approaches ", all_approaches)
@@ -112,6 +104,23 @@ def file_available():
     return file
 
 
+def check_selected_approach(approach):
+    """
+    check for only valid statements for approach type
+    """
+    for i in POSSIBLE_APPROACHES:
+        result = POSSIBLE_APPROACHES[i].find(approach)
+        print("result: ", result)
+        print("gefundenes wort: ", POSSIBLE_APPROACHES[i])
+        if result == 1:
+            return True
+
+    if result == -1:
+        print("INFO: filter by approach not possible, "
+              "no valid approach selected")
+    return False
+
+
 def create_results(approachtype):
     """
     check if concated csv file is available, filter log by selected approach,
@@ -121,6 +130,11 @@ def create_results(approachtype):
     if not file:
         print("NO CONCATED FILE AVAILABLE!!!")
         return
+
+    valid_approach = check_selected_approach(approachtype)
+    if not valid_approach:
+        return
+
     dataframe = create_dataframe()
     dataframe_approach = filter_by_approach(approachtype, dataframe)
     log = create_log(dataframe_approach)

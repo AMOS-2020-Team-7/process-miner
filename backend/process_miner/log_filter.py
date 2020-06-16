@@ -35,10 +35,10 @@ class LogFilter:
             if entry not in entries:
                 continue
             if not self._required_fields_present(entry):
-                log.info('removing incomplete entry %s', entry)
+                log.debug('removing incomplete entry %s', entry)
                 entries.remove(entry)
             elif self._entry_matches_filter_expressions(entry):
-                log.info('removing filtered entry %s', entry)
+                log.debug('removing filtered entry %s', entry)
                 entries.remove(entry)
 
     def _required_fields_present(self, entry: Dict[str, str]) -> bool:

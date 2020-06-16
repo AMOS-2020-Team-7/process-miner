@@ -4,6 +4,12 @@ __pycache__/
 # System Files
 .DS_Store
 
+# IDE related stuff
+.idea/
+
 # config files containing possibly sensitive data
 process_miner_config.yaml
 /example_process_miner_config.yaml
+
+# default output directory
+retrieved_logs/

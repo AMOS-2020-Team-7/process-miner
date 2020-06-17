@@ -5,13 +5,24 @@ import logging
 
 from process_miner import setup_components
 
+from process_miner.log_importer import concat_files
+
+from process_miner.logs_process_miner import create_results
+
+
 log = logging.getLogger(__name__)
+
+# embedded, redirect, OAuth, Decoupled, all, not available
+APPROACH = "all"
 
 
 def _main():
-    retriever = setup_components()
+    (retriever, miner) = setup_components()
     log.info('starting log retrieval')
     retriever.retrieve_logs()
+    miner.prepare_graph_dir()
+    concat_files()
+    create_results(APPROACH)
 
 
 if __name__ == '__main__':

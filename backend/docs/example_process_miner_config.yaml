@@ -1,10 +1,92 @@
 global:
   log_directory: 'retrieved_logs'
+  graph_directory: 'common_path'
 log_retriever:
   url: 'INSERT_GRAYLOG_URL_HERE'
   api_token: 'INSERT_API_TOKEN_HERE'
 filters:
-  'filter_expressions': [
-    '^Searching for ASPSPs:',
-    '^UTF-8 charset will be used for response body parsing$'
-  ]
+  'filter_expressions':
+    - '^Searching for ASPSPs:'
+    - '^(.+) charset will be used for response body parsing$'
+tags:
+  approach:                         # name of the field the tag gets written to (may be same as source if field value should replace old one)
+    source: 'message'               # field that gets matched to determine the tag value
+    tag_all: true                   # whether only the matching entry or all related entries should be tagged
+    default_value: 'not available'  # default value that is used if no matching value was found
+    mappings:                       # mapping of tag values to their respective keyword(s)
+      'embedded':
+        - 'approach=EMBEDDED'
+      'redirect':
+        - 'approach=REDIRECT'
+      'OAuth':
+        - 'approach=OAUTH'
+      'decoupled':
+        - 'approach=DECOUPLED'
+  consent:
+    source: 'message'
+    tag_all: false
+    default_value: 'not available'
+    mappings:
+      'get_accounts':
+        - 'GET_ACCOUNTS'
+        - 'get account list'
+      'get_transactions':
+        - 'GET_TRANSACTIONS'
+        - 'get transaction list'
+
+  label:
+    source: 'message'
+    tag_all: false
+    defalt_value: '_else_'
+    mapping:
+      'server_response':
+        - 'POST'
+        - 'PUT'
+      'server_request':
+        - 'HTTP'
+        - 'http'
+      'aspsps_search':
+        - 'Searching for ASPSPs'
+        - 'searching for ASPSPs'
+        - 'Search ASPSPs'
+        - 'search ASPSPs'
+      'aspsps_not_found':
+        - 'Aspsp was not found'
+        - 'aspsp was not found'
+      'processing':
+        - 'Processing'
+        - 'processing'
+      'xs2a':
+        - 'Xs2aAdapter'
+        - 'xs2aAdapter'
+      'profile':
+        - 'Profile'
+        - 'profile'
+      'session':
+        - 'Session'
+        - 'session'
+      'transaction':
+        - 'Transaction'
+        - 'transaction'
+      'charset':
+        - 'Charset'
+        - 'charset'
+      'status':
+        - 'Status'
+        - 'status'
+      'slack':
+        - 'Slack'
+        - 'slack'
+      'error_format':
+        - 'FORMAT_ERROR'
+      'error_internal_server':
+        - 'INTERNAL_SERVER_ERROR'
+      'error_psu_credentials_invalid':
+        - 'PSU_CREDENTIALS_INVALID'
+      'error_service_invalid':
+        - 'SERVICE_INVALID'
+      'error_service_unavailable':
+        - 'SERVICE_UNAVAILABLE'
+      'warning_unhandeled exception':
+          - 'Unhandled exception'
+          - 'unhandled exception'

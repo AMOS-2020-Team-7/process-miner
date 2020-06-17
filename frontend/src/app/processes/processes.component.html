@@ -9,22 +9,22 @@
                 <p class='instructions-text'>
                     Scroll to zoom, drag and click to pan
                 </p>
-                <img class='zoom' src='assets/img/Petri Net_Graylog_Theory_Embedded.svg'>
+                <img class='zoom' [src]="trustedImageUrl">
             </div>
         </mat-grid-tile>
         <mat-grid-tile [colspan]="1" [rowspan]="1">
             <div class="container container-controls" fxLayout="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="stretch">
                 <div fxFlex="33%" class="controls-main-selectors">
                     <div fxLayout="column" fxLayoutAlign="stretch">
-                        <div fxFlex="50%">
+                        <div fxFlex="40%">
                             <div fxLayout="row" fxLayoutAlign="center stretch">
                                 <div fxFlex="25%" class="controls-main-selectors-labels">
                                     Approach
                                 </div>
                                 <div fxFlex="75%">
                                     <mat-form-field floatLabel='never'>
-                                        <mat-label>Select</mat-label>
-                                        <mat-select>
+                                        <mat-label>Select  </mat-label>
+                                        <mat-select [(ngModel)]="selectedApproach" (selectionChange)="changeApproach($event)">
                                             <mat-option *ngFor="let approach of approaches" [value]="approach.item">
                                                 {{ approach.viewValue }}
                                             </mat-option>
@@ -33,7 +33,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxFlex="50%">
+                        <div fxFlex="40%">
                             <div fxLayout="row" fxLayoutAlign="center stretch">
                                 <div fxFlex="25%" class="controls-main-selectors-labels">
                                     Depth
@@ -42,6 +42,9 @@
                                     <mat-slider></mat-slider>
                                 </div>
                             </div>
+                        </div>
+                        <div fxFlex="20%" fxLayoutAlign="left middle">
+                            <button (click) ="loadGraph()" class='load-graph-button' mat-raised-button>Load Graph</button>
                         </div>
                     </div>
                 </div>

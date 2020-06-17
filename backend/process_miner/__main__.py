@@ -4,7 +4,11 @@ Main module of the process miner package used to start the process miner.
 import logging
 
 from process_miner import setup_components
+
+from process_miner.log_importer import concat_files
+
 from process_miner.logs_process_miner import create_results
+
 
 log = logging.getLogger(__name__)
 
@@ -17,6 +21,7 @@ def _main():
     log.info('starting log retrieval')
     retriever.retrieve_logs()
     miner.prepare_graph_dir()
+    concat_files()
     create_results(APPROACH)
 
 

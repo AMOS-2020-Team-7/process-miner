@@ -11,6 +11,7 @@ import process_miner.configuration_loader as cl
 import process_miner.graylog_access as ga
 import process_miner.log_retriever as lr
 import process_miner.log_tagger as lt
+import process_miner.logs_process_miner as pm
 
 CONFIG_FILENAME = 'process_miner_config.yaml'
 
@@ -46,7 +47,8 @@ def setup_components(config_file=CONFIG_FILENAME):
                                 filter_cfg['filter_expressions'],
                                 taggers)
 
-    return retriever
+    miner = pm.Miner(global_cfg['graph_directory'])
+    return retriever, miner
 
 
 def create_app():
@@ -55,7 +57,7 @@ def create_app():
     flask app.
     :return: the Flask object
     """
-    (retriever) = setup_components()
+    (retriever, miner) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
 
@@ -66,6 +68,7 @@ def create_app():
         #  TODO CPU intensive tasks should be executed asynchronously but this
         #   will do for now as this just serves as an example endpoint
         retriever.retrieve_logs()
+        miner.prepare_graph_dir()
         return 'Done'
     # used instead of @app.route to make method usage visible to pylint
     process_miner_app.add_url_rule('/logs/refresh', view_func=refresh_logs)

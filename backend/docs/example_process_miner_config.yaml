@@ -1,5 +1,6 @@
 global:
   log_directory: 'retrieved_logs'
+  graph_directory: 'common_path'
 log_retriever:
   url: 'INSERT_GRAYLOG_URL_HERE'
   api_token: 'INSERT_API_TOKEN_HERE'

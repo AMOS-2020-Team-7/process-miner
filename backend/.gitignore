@@ -13,3 +13,9 @@ process_miner_config.yaml
 
 # default output directory
 retrieved_logs/
+
+# default graphs directory
+common_path/
+
+# concatenated logs
+concatenated_files.csv

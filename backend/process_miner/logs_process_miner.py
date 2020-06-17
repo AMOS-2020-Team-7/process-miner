@@ -4,6 +4,8 @@ Module used for importing tagged logs into heuristic miner
 import os
 import logging
 from pathlib import Path
+import glob
+import pandas as pd
 
 from pm4py.objects.log.adapters.pandas import csv_import_adapter
 
@@ -19,6 +21,7 @@ from pm4py.util import constants
 
 from pm4py.algo.filtering.pandas.attributes import attributes_filter
 
+
 log_info = logging.getLogger(__name__)
 
 POSSIBLE_APPROACHES = ["embedded", "redirect",
@@ -27,12 +30,22 @@ POSSIBLE_APPROACHES = ["embedded", "redirect",
 APPROACH_DEFAULT = "all"
 
 
+def concat_files():
+    """
+        all CSV files get concatenated into one file
+    """
+    all_filenames = glob.glob('retrieved_logs/*.csv')
+    combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames])
+    combined_csv.to_csv("concatenated_files.csv",
+                        index=False, encoding='utf-8-sig')
+
+
 def create_dataframe():
     """
     create dataframe
     """
     dataframe = csv_import_adapter.import_dataframe_from_path(
-        'concated_files.csv', sep=",")
+        'concatenated_files.csv', sep=",")
     dataframe = dataframe.rename(
         columns={'correlationId': 'case:concept:name',
                  'timestamp': 'time:timestamp',
@@ -105,7 +118,7 @@ def file_available():
     """
     checks if selected file is available
     """
-    file = os.path.isfile("concated_files.csv")
+    file = os.path.isfile("concatenated_files.csv")
     return file
 
 
@@ -125,7 +138,7 @@ def create_results(approachtype):
     check if concated csv file is available, filter log by selected approach,
     creates and saves DFG and Heuristic Net in directory common_path
     """
-
+    concat_files()
     file = file_available()
     if not file:
         log_info.info('NO CONCATED FILE AVAILABLE')

@@ -6,12 +6,17 @@ import logging
 from pathlib import Path
 
 from flask import Flask
+from flask_caching import Cache
+from flask_cors import CORS
 
 import process_miner.configuration_loader as cl
 import process_miner.graylog_access as ga
 import process_miner.log_retriever as lr
 import process_miner.log_tagger as lt
 import process_miner.logs_process_miner as pm
+import process_miner.mining.graph_factory as gf
+from process_miner.access.blueprints import logs, request_result, graphs
+from process_miner.access.work.request_processing import RequestManager
 
 CONFIG_FILENAME = 'process_miner_config.yaml'
 
@@ -47,8 +52,11 @@ def setup_components(config_file=CONFIG_FILENAME):
                                 filter_cfg['filter_expressions'],
                                 taggers)
 
+    log.info('setting up graph factory')
+    graph_factory = gf.GraphFactory(Path(global_cfg['log_directory']))
+
     miner = pm.Miner(global_cfg['graph_directory'])
-    return retriever, miner
+    return retriever, graph_factory, miner
 
 
 def create_app():
@@ -57,20 +65,25 @@ def create_app():
     flask app.
     :return: the Flask object
     """
-    (retriever, miner) = setup_components()
+    (retriever, graph_factory, _) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
+    # enable cross origin resource sharing
+    # TODO evaluate if this is required in the final application
+    CORS(process_miner_app)
+    log.info('setting up cache')
+    cache = Cache(process_miner_app, config={'CACHE_TYPE': 'simple'})
+    log.info('linking request manager to flask app')
+    request_manager = RequestManager(process_miner_app)
 
-    def refresh_logs():
-        """
-        Triggers the retrieval of logs from Graylog.
-        """
-        #  TODO CPU intensive tasks should be executed asynchronously but this
-        #   will do for now as this just serves as an example endpoint
-        retriever.retrieve_logs()
-        miner.prepare_graph_dir()
-        return 'Done'
-    # used instead of @app.route to make method usage visible to pylint
-    process_miner_app.add_url_rule('/logs/refresh', view_func=refresh_logs)
+    # create all required blueprints
+    used_blueprints = [
+        logs.create_blueprint(request_manager, cache, retriever),
+        request_result.create_blueprint(request_manager),
+        graphs.create_blueprint(request_manager, cache, graph_factory)
+    ]
+    # register created blueprints on the flask app
+    for blueprint in used_blueprints:
+        process_miner_app.register_blueprint(blueprint)
 
     return process_miner_app

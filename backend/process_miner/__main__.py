@@ -15,7 +15,7 @@ APPROACH = "all"
 
 
 def _main():
-    (retriever, miner) = setup_components()
+    (retriever, _, miner) = setup_components()
     log.info('starting log retrieval')
     retriever.retrieve_logs()
     miner.prepare_graph_dir()

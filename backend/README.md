@@ -77,16 +77,18 @@ Even if none of the patterns matched each tags field will be present in the outp
 
 =======
 ## Common Paths for all Approaches
-The graphs are stored in the directory `common_path` as Scalable Vector Graphics.
+The graphs are stored in the directory `common_path`
 
 Naming conditions:
-{visualization type}_{approach type}.svg
+{visualization type}_{approach type}.{output_format}
 
+### Visualization Type
 `visualization type`:
 - `heuristicnet`: Heuristic Net
 
 - `dfg`: Directly-Follows-Graph
 
+### Approach Type
 Results are available for the `approach type`:
 - `all` All approaches combined
 
@@ -95,3 +97,37 @@ Results are available for the `approach type`:
 - `redirect` Redirect approach
 
 - `not available` Entries without available approach type
+
+### Output format
+Use one of the formats that are supported by PyDotPlus that provides a Python Interface to Graphviz’s Dot:
+- bmp
+- canon
+- cmap, cmapx, cmapx_np
+- dot
+- emf, emfplus
+- eps
+- fig
+- gd, gd2
+- gif
+- gv
+- imap, imap_np, ismap
+- jpe jpeg jpg
+- metafile
+- pdf
+- pic
+- plain, plain-ext
+- png
+- pov
+- ps, ps2
+- svg svgz
+- tif tiff
+- tk
+- vml, vmlz, vrml
+- wbmp
+- xdot, xdot1.2, xdot1.4
+
+further details and explanation can be looked up here: https://graphviz.org/doc/info/output.html
+
+`plain`, `plain-ext`:
+- https://graphviz.org/doc/info/output.html#d:plain-ext
+- contains four types of statements: graph, node, edge, stop

@@ -119,8 +119,8 @@ def create_graphs(log, approach):
         heu_net, parameters={
             hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: "plain-ext"})
     hn_vis.save(gviz_plain_ext, filename)
-    log_info.info("Heuristic Net as .plain-ext has been stored in '%s' in file '%s'",
-                  path, file)
+    log_info.info("Heuristic Net as .plain-ext has been stored in '%s' "
+                  "in file '%s'", path, file)
 
 
 def file_available():

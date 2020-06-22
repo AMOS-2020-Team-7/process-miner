@@ -19,9 +19,11 @@ export interface Approach {
 })
 export class ProcessesComponent implements OnInit, OnDestroy {
   selectedApproach: string;
+  selectedDepth: number;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
+
 
   approaches: Approach[] = [
     {item: 'REDIRECT', viewValue: 'REDIRECT'},
@@ -48,9 +50,10 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   }
 
   public loadGraph() {
-      this.dataService.sendGetRequestForImageGraph().pipe(takeUntil(this.destroy$)).subscribe((res: HttpResponse < any[] > ) => {
-        this.loadNewImageToImageViewer(JSON.stringify(res.body[0].image));
-    });
+    //  this.dataService.sendGetRequestForImageGraph().pipe(takeUntil(this.destroy$)).subscribe((res: HttpResponse < any[] > ) => {
+    //    this.loadNewImageToImageViewer(JSON.stringify(res.body[0].image));
+    //});
+    console.log('Approach selected: ' + this.selectedApproach + '/ Depth Selected: ' + this.selectedDepth);
   }
 
   public loadNewImageToImageViewer(encodedImage){

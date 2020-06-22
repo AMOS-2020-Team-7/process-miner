@@ -18,9 +18,9 @@ def get_state_response(ticket_id: str):
     :return: JSON representation of the state url response
     """
     return jsonify({
-        'state_url': url_for('requests.get_state',
-                             request_id=ticket_id,
-                             _external=USE_EXTERNAL_URLS)
+        'stateUrl': url_for('requests.get_state',
+                            request_id=ticket_id,
+                            _external=USE_EXTERNAL_URLS)
     })
 
 
@@ -40,7 +40,7 @@ def create_blueprint(request_manager):
         # TODO 404 on invalid request_id or no futures
         return jsonify({
             'done': request_manager.request_processed(request_id),
-            'result_url':
+            'resultUrl':
                 url_for('requests.get_result',
                         request_id=request_id,
                         _external=USE_EXTERNAL_URLS)

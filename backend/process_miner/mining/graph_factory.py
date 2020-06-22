@@ -1,6 +1,7 @@
 """
 Module for creating different graph types
 """
+import logging
 from pathlib import Path
 
 import pm4py.algo.discovery.dfg.algorithm as dfg_alg
@@ -12,6 +13,8 @@ from pm4py.util import constants
 
 import process_miner.mining.util.data as data_util
 
+log = logging.getLogger(__name__)
+
 COLUMN_MAPPINGS = {
     'timestamp': 'time:timestamp',
     'correlationId': 'case:concept:name',
@@ -20,10 +23,10 @@ COLUMN_MAPPINGS = {
 }
 
 
-def create_directly_follows_graph(log: EventLog):
+def create_directly_follows_graph(event_log: EventLog):
     """
     Creates a Directly Follows Graph from the supplied EventLog.
-    :param log: the event log
+    :param event_log: the event log
     :return: object representing the created graph
     """
     parameters = {
@@ -32,25 +35,26 @@ def create_directly_follows_graph(log: EventLog):
     }
     variant = 'frequency'
     # TODO dfg breaks at this point
-    graph = dfg_alg.apply(log=log,
+    graph = dfg_alg.apply(log=event_log,
                           parameters=parameters,
                           variant=variant)
     visualization = dfg_vis.apply(graph,
-                                  log=log,
+                                  log=event_log,
                                   parameters=parameters,
                                   variant=variant)
 
     return visualization
 
 
-def create_heuristic_net(log: EventLog, threshold: float = 0.00):
+def create_heuristic_net(event_log: EventLog, threshold: float = 0.00):
     """
     Creates a Heuristic Net from the supplied EventLog.
-    :param log: the EventLog
+    :param event_log: the EventLog
     :param threshold: the threshold to use during creation
     :return: object representing the created graph
     """
-    heu_net = hn_alg.apply_heu(log=log, parameters={
+    log.info('creating heuristic net with threshold %s', threshold)
+    heu_net = hn_alg.apply_heu(log=event_log, parameters={
         hn_alg.Variants.CLASSIC.value.Parameters.DEPENDENCY_THRESH: threshold
     })
 

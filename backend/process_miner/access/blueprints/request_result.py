@@ -58,8 +58,7 @@ def create_blueprint(request_manager):
                      request_id)
             abort(404)
         result = request_manager.get_result(request_id)
-        print(type(result))
-        print(result)
+        log.debug(result)
         if not result:
             return jsonify({})
         return jsonify(result)

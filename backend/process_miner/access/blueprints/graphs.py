@@ -37,6 +37,7 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
                 'utf-8')
         }
 
+    # pylint: disable=unused-variable
     @blueprint.route('dfg/get')
     def get_dfg():
         """

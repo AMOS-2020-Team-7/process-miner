@@ -14,6 +14,11 @@ class _TicketDispenser:
         self._next_ticket = 1
         self._lock = threading.Lock()
 
+    def __str__(self):
+        return f'{self.__class__.__name__} [' \
+               f'_next_ticket <{self._next_ticket}>, ' \
+               f'_lock <{self._lock}>]'
+
     def get_ticket(self) -> str:
         """
         Retrieves the next ticket

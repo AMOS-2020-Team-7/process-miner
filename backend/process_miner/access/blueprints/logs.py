@@ -23,6 +23,7 @@ def create_blueprint(executor, cache, log_retriever):
         cache.clear()  # TODO use a more fine grained approach?
         return {}
 
+    # pylint: disable=unused-variable
     @blueprint.route('refresh')
     def refresh():
         """

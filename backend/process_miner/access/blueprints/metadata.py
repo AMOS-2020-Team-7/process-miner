@@ -24,6 +24,7 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
     def _count_approach_type_counts():
         return metadata_factory.get_approach_type_count()
 
+    # pylint: disable=unused-variable
     @blueprint.route('consent/count')
     def get_consent_count():
         """

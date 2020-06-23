@@ -30,6 +30,7 @@ def create_blueprint(request_manager):
     """
     blueprint = Blueprint('requests', __name__, url_prefix='/requests')
 
+    # pylint: disable=unused-variable
     @blueprint.route('<request_id>/state')
     def get_state(request_id):
         """

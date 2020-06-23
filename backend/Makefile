@@ -15,7 +15,7 @@ setup-dev-env: setup-env
 	pipenv install --dev
 
 test:
-	pipenv run pytest
+	pipenv run pytest --cov=$(MODULE_DIR) --cov-fail-under=50 --cov-report term-missing
 
 lint:
 	pipenv run pylint $(SOURCES)

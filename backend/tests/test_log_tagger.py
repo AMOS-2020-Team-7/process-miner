@@ -8,25 +8,32 @@ from process_miner.log_tagger import LogTagger
 DEFAULT_VALUE = 'default'
 
 
-def _create_taggers():
-    # will only tag matching entries
+def _create_single_tagger():
     tagger_single = LogTagger('source', 'target_single', False, DEFAULT_VALUE)
     tagger_single.add_mapping('single_tagger_value',
                               [
                                   'single'
                               ])
-    # will tag all entries on match
+    return tagger_single
+
+
+def _create_all_tagger():
     tagger_all = LogTagger('source', 'target_all', True, DEFAULT_VALUE)
     tagger_all.add_mapping('all_tagger_value',
                            [
                                'all'
                            ])
+    return tagger_all
 
-    return [tagger_single, tagger_all]
+
+def _create_extractor_tagger():
+    tagger_extract = LogTagger('source', 'target_extract', True, DEFAULT_VALUE)
+    tagger_extract.add_extractor('value=(\\d+)')
+    return tagger_extract
 
 
-def _tag_entries(entries):
-    for tagger in _create_taggers():
+def _tag_entries(entries, taggers):
+    for tagger in taggers:
         tagger.tag_entries(entries)
 
 
@@ -42,9 +49,8 @@ def test_tag_entries_no_matches():
     expected_entries = copy.deepcopy(entries)
     for entry in expected_entries:
         entry['target_single'] = DEFAULT_VALUE
-        entry['target_all'] = DEFAULT_VALUE
 
-    _tag_entries(entries)
+    _create_single_tagger().tag_entries(entries)
 
     assert entries == expected_entries
 
@@ -61,10 +67,8 @@ def test_tag_entries_single_matches():
     expected_entries = copy.deepcopy(entries)
     expected_entries[0]['target_single'] = 'single_tagger_value'
     expected_entries[1]['target_single'] = DEFAULT_VALUE
-    for entry in expected_entries:
-        entry['target_all'] = DEFAULT_VALUE
 
-    _tag_entries(entries)
+    _create_single_tagger().tag_entries(entries)
 
     assert entries == expected_entries
 
@@ -80,9 +84,27 @@ def test_tag_entries_all_matches():
 
     expected_entries = copy.deepcopy(entries)
     for entry in expected_entries:
-        entry['target_single'] = DEFAULT_VALUE
         entry['target_all'] = 'all_tagger_value'
 
-    _tag_entries(entries)
+    _create_all_tagger().tag_entries(entries)
+
+    assert entries == expected_entries
+
+
+def test_tag_entries_extract():
+    """
+    Checks if all entries get tagged properly if tag_all was enabled.
+    """
+    entries = [
+        {'unrelated_field': 'value', 'source': 'some'},
+        {'unrelated_field': 'value', 'source': 'another'},
+        {'unrelated_field': 'value', 'source': 'value=123456'}
+    ]
+
+    expected_entries = copy.deepcopy(entries)
+    for entry in expected_entries:
+        entry['target_extract'] = '123456'
+
+    _create_extractor_tagger().tag_entries(entries)
 
     assert entries == expected_entries

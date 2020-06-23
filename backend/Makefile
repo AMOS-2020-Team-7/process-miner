@@ -3,6 +3,7 @@
 
 MODULE_DIR=process_miner
 TEST_DIR=tests
+SOURCES = $(shell find $(TEST_DIR) $(MODULE_DIR) -name '*.py')
 
 all: setup-dev-env check run
 
@@ -14,10 +15,10 @@ setup-dev-env: setup-env
 	pipenv install --dev
 
 test:
-	pipenv run pytest
+	pipenv run pytest --cov=$(MODULE_DIR) --cov-fail-under=50 --cov-report term-missing
 
 lint:
-	pipenv run pylint $(MODULE_DIR) $(TEST_DIR)
+	pipenv run pylint $(SOURCES)
 
 security-check:
 	pipenv run bandit -r $(MODULE_DIR)
@@ -27,7 +28,7 @@ check: test lint security-check
 run: run-backend
 
 run-main:
-	pipenv run python -m process_miner
+	pipenv run python -m $(MODULE_DIR)
 
 run-backend:
 	FLASK_APP=$(MODULE_DIR) pipenv run flask run

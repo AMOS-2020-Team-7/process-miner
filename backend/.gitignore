@@ -1,6 +1,9 @@
 # compiled stuff
 __pycache__/
 
+# test related stuff
+.coverage
+
 # System Files
 .DS_Store
 

@@ -1,8 +1,7 @@
 name: Lint and test backend
 
 on:
-  pull_request:
-    branches: [ master ]
+  push:
 
 jobs:
   build:
@@ -20,10 +19,10 @@ jobs:
       - name: Install pipenv
         uses: dschep/install-pipenv-action@v1
       - name: Install dependencies
-        run: pipenv install --dev
+        run: make setup-dev-env
       - name: Test with pytest
-        run: pipenv run pytest
+        run: make test
       - name: Lint with pylint
-        run: pipenv run pylint process_miner tests
-      - name: Check for security issues with bandit
-        run: pipenv run bandit -r process_miner
+        run: make lint
+      - name: Check for security issues
+        run: make security-check

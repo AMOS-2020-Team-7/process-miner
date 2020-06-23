@@ -128,6 +128,16 @@ Use one of the formats that are supported by PyDotPlus that provides a Python In
 
 further details and explanation can be looked up here: https://graphviz.org/doc/info/output.html
 
+#### Output Formats to Consider
+
 `plain`, `plain-ext`:
 - https://graphviz.org/doc/info/output.html#d:plain-ext
-- contains four types of statements: graph, node, edge, stop
+- contains four types of statements
+  - graph: _scale width height_
+  - node: _node x y witdht height label style shape color fillcolor_
+  - edge: _tail head n x1 y1 ... xn yn [label xl yl] style color_
+  - stop
+
+`dot`, `xdot`:
+- https://graphviz.org/doc/info/output.html#d:dot
+- contains information about nodes and their labels

@@ -24,8 +24,8 @@ interface ImageResult {
   styleUrls: ['./processes.component.css']
 })
 export class ProcessesComponent implements OnInit, OnDestroy {
-  selectedApproach: string = '';
-  selectedDepth: number = 0.0;
+  selectedApproach = '';
+  selectedDepth = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';

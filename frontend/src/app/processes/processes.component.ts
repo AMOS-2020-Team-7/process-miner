@@ -7,9 +7,15 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 
 declare const wheelzoom: any;
 
+const REST_API_HN = 'http://127.0.0.1:5000/graphs/hn/get';
+
 export interface Approach {
   item: string;
   viewValue: string;
+}
+
+interface ImageResult {
+  image: string;
 }
 
 @Component({
@@ -48,8 +54,8 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   }
 
   public loadGraph() {
-      this.dataService.sendGetRequestForImageGraph().pipe(takeUntil(this.destroy$)).subscribe((res: HttpResponse < any[] > ) => {
-        this.loadNewImageToImageViewer(JSON.stringify(res.body[0].image));
+    this.dataService.requestData<ImageResult>(REST_API_HN, {}).subscribe(data => {
+      this.loadNewImageToImageViewer(JSON.stringify(data.image));
     });
   }
 
@@ -59,5 +65,3 @@ export class ProcessesComponent implements OnInit, OnDestroy {
         this.trustedImageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.imageEncodedInBase64);
   }
 }
-
-

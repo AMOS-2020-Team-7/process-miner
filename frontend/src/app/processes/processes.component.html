@@ -24,7 +24,7 @@
                                 <div fxFlex="75%">
                                     <mat-form-field floatLabel='never'>
                                         <mat-label>Select  </mat-label>
-                                        <mat-select [(ngModel)]="selectedApproach" (selectionChange)="changeApproach($event)">
+                                        <mat-select [(ngModel)]="selectedApproach">
                                             <mat-option *ngFor="let approach of approaches" [value]="approach.item">
                                                 {{ approach.viewValue }}
                                             </mat-option>
@@ -39,7 +39,7 @@
                                     Depth
                                 </div>
                                 <div fxFlex="75%">
-                                    <mat-slider></mat-slider>
+                                    <mat-slider [(ngModel)]="selectedDepth" [max]="1" [min]="0" [step]="0.1" [thumbLabel]="true"></mat-slider>
                                 </div>
                             </div>
                         </div>

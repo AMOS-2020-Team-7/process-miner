@@ -1,7 +1,8 @@
 name: Lint and test backend
 
 on:
-  push:
+  pull_request:
+    branches: [ master ]
 
 jobs:
   build:
@@ -12,15 +13,33 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Cache project virtualenvs
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-virtualenvs
+        with:
+          path: ~/.local/share/virtualenvs/
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/Pipfile.lock') }}
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: 3.x
+
       - name: Install dependencies
         run: make setup-dev-env
+
       - name: Test with pytest
         run: make test
+
       - name: Lint with pylint
         run: make lint
+
       - name: Check for security issues
         run: make security-check

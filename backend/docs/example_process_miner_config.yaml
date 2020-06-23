@@ -33,3 +33,59 @@ tags:
       'get_transactions':
         - 'GET_TRANSACTIONS'
         - 'get transaction list'
+  label:
+    source: 'message'
+    tag_all: false
+    defalt_value: '_else_'
+    mapping:
+      'server_response':
+        - 'POST'
+        - 'PUT'
+      'server_request':
+        - 'HTTP'
+        - 'http'
+      'aspsps_search':
+        - 'Searching for ASPSPs'
+        - 'searching for ASPSPs'
+        - 'Search ASPSPs'
+        - 'search ASPSPs'
+      'aspsps_not_found':
+        - 'Aspsp was not found'
+        - 'aspsp was not found'
+      'processing':
+        - 'Processing'
+        - 'processing'
+      'xs2a':
+        - 'Xs2aAdapter'
+        - 'xs2aAdapter'
+      'profile':
+        - 'Profile'
+        - 'profile'
+      'session':
+        - 'Session'
+        - 'session'
+      'transaction':
+        - 'Transaction'
+        - 'transaction'
+      'charset':
+        - 'Charset'
+        - 'charset'
+      'status':
+        - 'Status'
+        - 'status'
+      'slack':
+        - 'Slack'
+        - 'slack'
+      'error_format':
+        - 'FORMAT_ERROR'
+      'error_internal_server':
+        - 'INTERNAL_SERVER_ERROR'
+      'error_psu_credentials_invalid':
+        - 'PSU_CREDENTIALS_INVALID'
+      'error_service_invalid':
+        - 'SERVICE_INVALID'
+      'error_service_unavailable':
+        - 'SERVICE_UNAVAILABLE'
+      'warning_unhandeled exception':
+        - 'Unhandled exception'
+        - 'unhandled exception'

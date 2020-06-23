@@ -15,7 +15,9 @@ import process_miner.log_retriever as lr
 import process_miner.log_tagger as lt
 import process_miner.logs_process_miner as pm
 import process_miner.mining.graph_factory as gf
-from process_miner.access.blueprints import logs, request_result, graphs
+import process_miner.mining.metadata_factory as mf
+from process_miner.access.blueprints import logs, request_result, graphs, \
+                                            metadata
 from process_miner.access.work.request_processing import RequestManager
 
 CONFIG_FILENAME = 'process_miner_config.yaml'
@@ -55,8 +57,11 @@ def setup_components(config_file=CONFIG_FILENAME):
     log.info('setting up graph factory')
     graph_factory = gf.GraphFactory(Path(global_cfg['log_directory']))
 
+    log.info('setting up metadata factory')
+    metadata_factory = mf.MetadataFactory(Path(global_cfg['log_directory']))
+
     miner = pm.Miner(global_cfg['graph_directory'])
-    return retriever, graph_factory, miner
+    return retriever, graph_factory, metadata_factory, miner
 
 
 def create_app():
@@ -65,7 +70,7 @@ def create_app():
     flask app.
     :return: the Flask object
     """
-    (retriever, graph_factory, _) = setup_components()
+    (retriever, graph_factory, metadata_factory, _) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
     # enable cross origin resource sharing
@@ -78,9 +83,10 @@ def create_app():
 
     # create all required blueprints
     used_blueprints = [
-        logs.create_blueprint(request_manager, cache, retriever),
         request_result.create_blueprint(request_manager),
-        graphs.create_blueprint(request_manager, cache, graph_factory)
+        logs.create_blueprint(request_manager, cache, retriever),
+        graphs.create_blueprint(request_manager, cache, graph_factory),
+        metadata.create_blueprint(request_manager, cache, metadata_factory)
     ]
     # register created blueprints on the flask app
     for blueprint in used_blueprints:

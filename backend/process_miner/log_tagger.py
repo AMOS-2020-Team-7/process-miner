@@ -22,8 +22,13 @@ def create_log_taggers(cfg):
         tagger = LogTagger(config['source'], tag, tag_all,
                            config['default_value'])
         # add all mappings to the tagger
-        for (label, expressions) in config['mappings'].items():
-            tagger.add_mapping(label, expressions)
+        if 'mappings' in config:
+            for (label, expressions) in config['mappings'].items():
+                tagger.add_mapping(label, expressions)
+        # add all extractors to the tagger
+        if 'extractors' in config:
+            for pattern in config['extractors']:
+                tagger.add_extractor(pattern)
 
         taggers.append(tagger)
     return taggers
@@ -40,7 +45,8 @@ class LogTagger:
         self.target_field = target_field
         self.tag_all = tag_all
         self.default_value = default_value
-        self.mapping = dict()
+        self.extractors = list()
+        self.mappings = dict()
 
     def __str__(self):
         return f'{self.__class__.__name__} [' \
@@ -48,7 +54,8 @@ class LogTagger:
                f'target_field <{self.target_field}>, ' \
                f'tag_all <{self.tag_all}>, ' \
                f'default_value <{self.default_value}>, ' \
-               f'mapping <{self.mapping}>]'
+               f'extractors <{self.extractors}>]' \
+               f'mappings <{self.mappings}>]'
 
     def add_mapping(self, value: str, expressions: List[str]) -> None:
         """
@@ -58,12 +65,30 @@ class LogTagger:
         :param expressions: expressions that used to determine if the supplied
         value should be added to the target field.
         """
-        self.mapping[value] = [re.compile(expr) for expr in expressions]
+        self.mappings[value] = [re.compile(expr) for expr in expressions]
+
+    def add_extractor(self, pattern: str):
+        """
+        Adds an extractor pattern to the LogTagger. The pattern has to contain
+        at least one capture group. In case there are more than one group only
+        the first group will be used to extract values from the source field.
+        :param pattern: the pattern
+        """
+        pattern = re.compile(pattern)
+        if not pattern.groups:
+            log.warning('pattern "%s" contains no groups and will be ignored',
+                        pattern.pattern)
+            return
+        if pattern.groups > 1:
+            log.warning('pattern "%s" contains more than one group -> '
+                        'only first group will be used', pattern.pattern)
+        self.extractors.append(pattern)
 
     def tag_entries(self, entries: List[Dict[str, str]]) -> None:
         """
         Processes log entries and adds values to the target field if one of
-        their respective patterns matches.
+        the patterns matches or one of the extractors was able to capture a
+        value on its first capture group.
         :param entries: a list of log entries
         """
         for entry in entries:
@@ -79,16 +104,36 @@ class LogTagger:
                 entry[self.target_field] = self.default_value
 
     def _get_tag_value(self, entry) -> str:
-        for label, patterns in self.mapping.items():
-            for pattern in patterns:
-                source_field_content = entry[self.source_field]
-                if pattern.search(source_field_content):
-                    log.debug('matched "%s" in field "%s" with value "%s"',
-                              pattern.pattern, self.source_field,
-                              source_field_content)
-                    return label
+        source_field_content = entry[self.source_field]
+        # try to find a static mapping
+        tag_value = self._calculate_mapped_tag_value(source_field_content)
+        if tag_value:
+            log.debug('found mapping "%s" in value "%s" of field "%s"',
+                      tag_value, source_field_content, self.source_field)
+            return tag_value
+        # try to extract values via available extractor patterns
+        tag_value = self._calculate_extracted_tag_value(source_field_content)
+        if tag_value:
+            log.debug('extracted tag "%s" from value "%s" of field "%s"',
+                      tag_value, source_field_content, self.source_field)
+            return tag_value
+
         log.debug('no matching tag value for field "%s" found on entry "%s"',
                   self.target_field, entry)
+        return None
+
+    def _calculate_mapped_tag_value(self, field_value):
+        for label, patterns in self.mappings.items():
+            for pattern in patterns:
+                if pattern.search(field_value):
+                    return label
+        return None
+
+    def _calculate_extracted_tag_value(self, field_value):
+        for extractor in self.extractors:
+            match = extractor.search(field_value)
+            if match:
+                return match.group(1)
         return None
 
     def _tag_all_entries(self, label, log_entries):

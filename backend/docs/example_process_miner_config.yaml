@@ -36,7 +36,7 @@ tags:
   label:
     source: 'message'
     tag_all: false
-    defalt_value: '_else_'
+    default_value: '_else_'
     mappings:
       'server_response':
         - 'POST'

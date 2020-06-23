@@ -25,9 +25,11 @@ interface ImageResult {
 })
 export class ProcessesComponent implements OnInit, OnDestroy {
   selectedApproach: string;
+  selectedDepth: number;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
+
 
   approaches: Approach[] = [
     {item: 'REDIRECT', viewValue: 'REDIRECT'},
@@ -49,12 +51,9 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
- changeApproach(data){
-    console.log('Approach selected: ' + data.value);
-  }
-
   public loadGraph() {
-    this.dataService.requestData<ImageResult>(REST_API_HN, {}).subscribe(data => {
+    // tslint:disable-next-line:max-line-length
+    this.dataService.requestData<ImageResult>(REST_API_HN, {selectedApproach: this.selectedApproach , selectedDepth: this.selectedDepth}).subscribe(data => {
       this.loadNewImageToImageViewer(JSON.stringify(data.image));
     });
   }

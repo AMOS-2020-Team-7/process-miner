@@ -37,7 +37,7 @@ tags:
     source: 'message'
     tag_all: false
     defalt_value: '_else_'
-    mapping:
+    mappings:
       'server_response':
         - 'POST'
         - 'PUT'

@@ -19,13 +19,13 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
     blueprint = Blueprint('graphs', __name__, url_prefix='/graphs')
 
     @cache.memoize()
-    def _create_dfg():
-        graph = graph_factory.get_directly_follows_graph()
+    def _create_dfg(approach):
+        graph = graph_factory.get_directly_follows_graph(approach)
         return _package_response(graph)
 
     @cache.memoize()
-    def _create_heuristic_net(threshold: float = 0.0):
-        graph = graph_factory.get_heuristic_net(threshold)
+    def _create_heuristic_net(approach, threshold):
+        graph = graph_factory.get_heuristic_net(approach, threshold)
         return _package_response(graph)
 
     def _package_response(graph):
@@ -42,7 +42,8 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         """
         Triggers the creation of a Directly Follows Graph.
         """
-        ticket = request_manager.submit_ticketed(_create_dfg)
+        approach = request.args.get('approach', '', str).lower()
+        ticket = request_manager.submit_ticketed(_create_dfg, approach)
         return get_state_response(ticket)
 
     @blueprint.route('hn/get')
@@ -50,11 +51,10 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         """
         Triggers the creation of a Heuristic net.
         """
-        threshold = float(request.args.get('threshold', 0))
-        print(threshold)
-        print(type(threshold))
+        approach = request.args.get('approach', '', str).lower()
+        threshold = request.args.get('threshold', 0.0, float)
         ticket = request_manager.submit_ticketed(_create_heuristic_net,
-                                                 threshold)
+                                                 approach, threshold)
         return get_state_response(ticket)
 
     return blueprint

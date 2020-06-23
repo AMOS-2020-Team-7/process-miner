@@ -34,10 +34,10 @@ def create_directly_follows_graph(event_log: EventLog):
         "format": "svg"
     }
     variant = 'frequency'
-    # TODO dfg breaks at this point
     graph = dfg_alg.apply(log=event_log,
                           parameters=parameters,
                           variant=variant)
+    # TODO dfg breaks at this point
     visualization = dfg_vis.apply(graph,
                                   log=event_log,
                                   parameters=parameters,
@@ -70,24 +70,28 @@ class GraphFactory:
     def __init__(self, source_directory: Path):
         self._source_directory = source_directory
 
-    def get_directly_follows_graph(self):
+    def get_directly_follows_graph(self, approach: str = None):
         """
         Creates a Directly Follows Graph from the available data.
+        :param approach: approach that should be used (all if none specified)
         :return: object representing the created graph
         """
-        event_log = self._get_prepared_event_log()
+        event_log = self._get_prepared_event_log(approach)
         return create_directly_follows_graph(event_log)
 
-    def get_heuristic_net(self, threshold: float = 0.00):
+    def get_heuristic_net(self, approach: str = None, threshold: float = 0.0):
         """
         Creates a Heuristic Net from the available data.
+        :param approach: approach that should be used (all if none specified)
         :param threshold: the threshold to use during creation
         :return: object representing the created graph
         """
-        event_log = self._get_prepared_event_log()
+        event_log = self._get_prepared_event_log(approach)
         return create_heuristic_net(event_log, threshold)
 
-    def _get_prepared_event_log(self):
+    def _get_prepared_event_log(self, approach):
         frame = data_util.get_merged_csv_files(self._source_directory)
+        if approach:
+            frame = data_util.filter_by_field(frame, 'approach', approach)
         data_util.rename_columns(frame, COLUMN_MAPPINGS)
         return data_util.convert_to_log(frame)

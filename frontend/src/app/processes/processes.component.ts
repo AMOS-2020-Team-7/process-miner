@@ -24,8 +24,8 @@ interface ImageResult {
   styleUrls: ['./processes.component.css']
 })
 export class ProcessesComponent implements OnInit, OnDestroy {
-  selectedApproach: string;
-  selectedDepth: number;
+  selectedApproach: string = '';
+  selectedDepth: number = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
@@ -53,7 +53,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<ImageResult>(REST_API_HN, {selectedApproach: this.selectedApproach , selectedDepth: this.selectedDepth}).subscribe(data => {
+    this.dataService.requestData<ImageResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth}).subscribe(data => {
       this.loadNewImageToImageViewer(JSON.stringify(data.image));
     });
   }

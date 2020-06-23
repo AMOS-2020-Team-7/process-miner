@@ -62,4 +62,5 @@ def filter_by_field(frame: DataFrame, field: str, value: str) -> DataFrame:
     :param value: the value that is expected in the filter field
     :return: a DataFrame representing a filtered view of the original DataFrame
     """
-    return frame.loc[frame[f"case:{field}"] == value]
+    log.info('filtering log entries by value "%s" on field "%s"', value, field)
+    return frame.loc[frame[field] == value]

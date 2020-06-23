@@ -23,7 +23,10 @@ def get_merged_csv_files(source: Path, sort_column: str = None) -> DataFrame:
     :param sort_column: column the resulting DataFrame should be sorted by
     :return: the resulting DataFrame
     """
-    assert source.is_dir()
+    if not source.is_dir():
+        log.error('%s is not a directory', source)
+        raise Exception()
+
     files = source.glob(f"*.{FILE_EXTENSION}")
     csv_files = [pandas.read_csv(file) for file in files]
     log.info('combining %s files from path %s', len(csv_files), source)

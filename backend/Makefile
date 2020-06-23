@@ -3,6 +3,7 @@
 
 MODULE_DIR=process_miner
 TEST_DIR=tests
+SOURCES = $(shell find $(TEST_DIR) $(MODULE_DIR) -name '*.py')
 
 all: setup-dev-env check run
 
@@ -17,7 +18,7 @@ test:
 	pipenv run pytest
 
 lint:
-	pipenv run pylint $(MODULE_DIR) $(TEST_DIR)
+	pipenv run pylint $(SOURCES)
 
 security-check:
 	pipenv run bandit -r $(MODULE_DIR)

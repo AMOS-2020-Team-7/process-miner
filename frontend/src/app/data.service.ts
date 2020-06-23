@@ -45,6 +45,7 @@ export class DataService {
     }).pipe(
       catchError(this.handleError),
       switchMap((requestResponse: RequestResponse) => {
+        console.log('Call: ' + requestResponse);
         const stateUrl = requestResponse.stateUrl;
         console.log(`Getting state from url ${stateUrl}`);
         // get state object

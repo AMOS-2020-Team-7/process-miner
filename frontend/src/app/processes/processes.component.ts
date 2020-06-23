@@ -51,21 +51,11 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
- changeApproach(data){
-    console.log('Approach selected: ' + data.value);
-  }
-
   public loadGraph() {
-<<<<<<< HEAD
-    //  this.dataService.sendGetRequestForImageGraph().pipe(takeUntil(this.destroy$)).subscribe((res: HttpResponse < any[] > ) => {
-    //    this.loadNewImageToImageViewer(JSON.stringify(res.body[0].image));
-    //});
-    console.log('Approach selected: ' + this.selectedApproach + '/ Depth Selected: ' + this.selectedDepth);
-=======
-    this.dataService.requestData<ImageResult>(REST_API_HN, {}).subscribe(data => {
+    // tslint:disable-next-line:max-line-length
+    this.dataService.requestData<ImageResult>(REST_API_HN, {selectedApproach: this.selectedApproach , selectedDepth: this.selectedDepth}).subscribe(data => {
       this.loadNewImageToImageViewer(JSON.stringify(data.image));
     });
->>>>>>> origin/master
   }
 
   public loadNewImageToImageViewer(encodedImage){

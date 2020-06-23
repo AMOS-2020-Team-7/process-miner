@@ -7,9 +7,15 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 
 declare const wheelzoom: any;
 
+const REST_API_HN = 'http://127.0.0.1:5000/graphs/hn/get';
+
 export interface Approach {
   item: string;
   viewValue: string;
+}
+
+interface ImageResult {
+  image: string;
 }
 
 @Component({
@@ -19,9 +25,11 @@ export interface Approach {
 })
 export class ProcessesComponent implements OnInit, OnDestroy {
   selectedApproach: string;
+  selectedDepth: number;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
+
 
   approaches: Approach[] = [
     {item: 'REDIRECT', viewValue: 'REDIRECT'},
@@ -43,13 +51,10 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
- changeApproach(data){
-    console.log('Approach selected: ' + data.value);
-  }
-
   public loadGraph() {
-      this.dataService.sendGetRequestForImageGraph().pipe(takeUntil(this.destroy$)).subscribe((res: HttpResponse < any[] > ) => {
-        this.loadNewImageToImageViewer(JSON.stringify(res.body[0].image));
+    // tslint:disable-next-line:max-line-length
+    this.dataService.requestData<ImageResult>(REST_API_HN, {selectedApproach: this.selectedApproach , selectedDepth: this.selectedDepth}).subscribe(data => {
+      this.loadNewImageToImageViewer(JSON.stringify(data.image));
     });
   }
 
@@ -59,5 +64,3 @@ export class ProcessesComponent implements OnInit, OnDestroy {
         this.trustedImageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.imageEncodedInBase64);
   }
 }
-
-

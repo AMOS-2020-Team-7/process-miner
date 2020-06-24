@@ -89,3 +89,10 @@ tags:
       'warning_unhandeled exception':
         - 'Unhandled exception'
         - 'unhandled exception'
+
+  banks:
+    source: 'message'
+    tag_all: true
+    default_value: 'not available'
+    extractors:
+      - 'bic='

@@ -122,6 +122,23 @@ def create_graphs(log, approach):
     log_info.info("Heuristic Net as .plain-ext has been stored in '%s' "
                   "in file '%s'", path, file)
 
+    # save heuristic net in dot format
+    filename = f"{path}/{vis_type}_{approach}.dot"
+    gviz_plain_ext = hn_vis.apply(
+        heu_net, parameters={
+            hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: "dot"})
+    hn_vis.save(gviz_plain_ext, filename)
+    log_info.info("Heuristic Net as .dot has been stored in '%s' "
+                  "in file '%s'", path, file)
+
+    # save heuristic net in xdot format
+    filename = f"{path}/{vis_type}_{approach}.xdot"
+    gviz_plain_ext = hn_vis.apply(
+        heu_net, parameters={
+            hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: "xdot"})
+    hn_vis.save(gviz_plain_ext, filename)
+    log_info.info("Heuristic Net as .xdot has been stored in '%s' "
+                  "in file '%s'", path, file)
 
 def file_available():
     """

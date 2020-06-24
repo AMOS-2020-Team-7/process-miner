@@ -13,7 +13,11 @@ pytest-cov = "*"
 [packages]
 requests = "*"
 flask = "*"
+flask-caching = "*"
 pm4py = "*"
+flask-executor = "*"
+pandas = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.8"

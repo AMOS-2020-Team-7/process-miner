@@ -95,4 +95,4 @@ tags:
     tag_all: true
     default_value: 'not available'
     extractors:
-      - 'bic='
+      - bic='(\w+)'

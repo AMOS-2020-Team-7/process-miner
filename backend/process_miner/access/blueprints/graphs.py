@@ -1,8 +1,8 @@
 """
 Blueprint module responsible for retrieving different graph types
 """
-import base64
 
+import datauri
 from flask import Blueprint, request
 from flask_caching import Cache
 
@@ -24,17 +24,17 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         return _package_response(graph)
 
     @cache.memoize()
-    def _create_heuristic_net(approach, threshold):
-        graph = graph_factory.get_heuristic_net(approach, threshold)
+    def _create_heuristic_net(approach, threshold, output_format):
+        graph = graph_factory.get_heuristic_net(approach, threshold,
+                                                output_format)
         return _package_response(graph)
 
     def _package_response(graph):
-        with open(graph.name) as file:
-            contents = file.read().encode('utf-8')
-        base64_bytes = base64.b64encode(contents)
+        uri = datauri.DataURI.from_file(graph.name, 'utf-8')
+        # make sure there are no newlines/carriage returns in the uri
+        sanitized_uri = uri.replace('\n', '').replace('\r', '')
         return {
-            'image': 'data:image/svg+xml;base64,' + base64_bytes.decode(
-                'utf-8')
+            'image': sanitized_uri
         }
 
     # pylint: disable=unused-variable
@@ -54,8 +54,10 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         """
         approach = request.args.get('approach', '', str).lower()
         threshold = request.args.get('threshold', 0.0, float)
+        output_format = request.args.get('format', 'svg', str).lower()
         ticket = request_manager.submit_ticketed(_create_heuristic_net,
-                                                 approach, threshold)
+                                                 approach, threshold,
+                                                 output_format)
         return get_state_response(ticket)
 
     return blueprint

@@ -29,6 +29,15 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
     def get_consent_count():
         """
         Triggers calculation of number of consent types per approach.
+        ---
+        response:
+          200:
+            description: The retrieved result will be a JSON object
+                         representing the number of different consent types pre
+                         approach.
+            application/json:
+              schema:
+                $ref: '#/definitions/RequestResponse'
         """
         ticket = request_manager.submit_ticketed(_count_consent_type_counts)
         return get_state_response(ticket)
@@ -38,6 +47,15 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         """
         Computes which approach types are present in the available data and how
         many sessions each of them was used in.
+        ---
+        response:
+          200:
+            description: The retrieved result will be a JSON object
+                         representing the number of sessions each approach was
+                         used in.
+            application/json:
+              schema:
+                $ref: '#/definitions/RequestResponse'
         """
         ticket = request_manager.submit_ticketed(_count_approach_type_counts)
         return get_state_response(ticket)

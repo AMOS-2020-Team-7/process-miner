@@ -35,8 +35,36 @@ def create_blueprint(request_manager):
     def get_state(request_id):
         """
         Retrieves the state of the specified request.
-        :param request_id: id of the request
-        :return: JSON object representing the requests state
+        ---
+        parameters:
+          - name: request_id
+            description: id of the request
+            in: path
+            type: string
+            required: true
+        definitions:
+          RequestResponse:
+            description: Object containing the URL of a requests state
+            type: object
+            properties:
+              stateUrl:
+                description: URL the requests state can be retrieved from
+                type: string
+          StateResponse:
+            description: Object describing request state and result url
+            type: object
+            properties:
+              done:
+                description: whether the processing of the request is done
+                type: boolean
+              resultUrl:
+                description: URL the requests result can be retrieved from
+                type: string
+        responses:
+          200:
+            application/json:
+              schema:
+                $ref: '#/definitions/StateResponse'
         """
         # TODO 404 on invalid request_id or no futures
         return jsonify({
@@ -51,8 +79,19 @@ def create_blueprint(request_manager):
     def get_result(request_id):
         """
         Retrieves the result of the specified request.
-        :param request_id: request_id: id of the request
-        :return: JSON object representing the requests state
+        ---
+        parameters:
+          - name: request_id
+            description: id of the request
+            in: path
+            type: string
+            required: true
+        responses:
+          200:
+            application/json:
+              schema:
+                description: object defined by the type of request
+                type: object
         """
         if not request_manager.request_processed(request_id):
             log.info('request "%s" not done or result already retrieved',

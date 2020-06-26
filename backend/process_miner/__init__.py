@@ -5,6 +5,7 @@ service of the process miner.
 import logging
 from pathlib import Path
 
+from flasgger import Swagger
 from flask import Flask
 from flask_caching import Cache
 from flask_cors import CORS
@@ -73,6 +74,8 @@ def create_app():
     (retriever, graph_factory, metadata_factory, _) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
+    swagger = Swagger(process_miner_app)
+    log.info('swagger %s set up', swagger)
     # enable cross origin resource sharing
     # TODO evaluate if this is required in the final application
     CORS(process_miner_app)

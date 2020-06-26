@@ -51,6 +51,31 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
     def get_hn():
         """
         Triggers the creation of a Heuristic net.
+        ---
+        parameters:
+          - name: approach
+            in: query
+            type: string
+            default: ''
+            example: 'embedded'
+            description: the approach the data used for creating the graph
+                         should be limited to
+          - name: threshold
+            in: query
+            type: float
+            minimum: 0
+            maximum: 1
+            default: '0'
+          - name: output_format
+            in: query
+            type: string
+            default: 'svg'
+        responses:
+          200:
+            description: The result will contain a base64 encoded DataURI
+                         representing the generated graph.
+            schema:
+              $ref: '#/definitions/RequestResponse'
         """
         approach = request.args.get('approach', '', str).lower()
         threshold = request.args.get('threshold', 0.0, float)

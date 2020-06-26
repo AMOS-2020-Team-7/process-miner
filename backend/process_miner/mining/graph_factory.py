@@ -46,11 +46,13 @@ def create_directly_follows_graph(event_log: EventLog):
     return visualization
 
 
-def create_heuristic_net(event_log: EventLog, threshold: float = 0.00):
+def create_heuristic_net(event_log: EventLog, threshold: float = 0.00,
+                         output_format: str = 'svg'):
     """
     Creates a Heuristic Net from the supplied EventLog.
     :param event_log: the EventLog
     :param threshold: the threshold to use during creation
+    :param output_format: desired output format
     :return: object representing the created graph
     """
     log.info('creating heuristic net with threshold %s', threshold)
@@ -59,7 +61,7 @@ def create_heuristic_net(event_log: EventLog, threshold: float = 0.00):
     })
 
     return hn_vis.apply(heu_net=heu_net, parameters={
-        hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: 'svg'
+        hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: output_format
     })
 
 
@@ -79,15 +81,17 @@ class GraphFactory:
         event_log = self._get_prepared_event_log(approach)
         return create_directly_follows_graph(event_log)
 
-    def get_heuristic_net(self, approach: str = None, threshold: float = 0.0):
+    def get_heuristic_net(self, approach: str = None, threshold: float = 0.0,
+                          output_format: str = 'svg'):
         """
         Creates a Heuristic Net from the available data.
         :param approach: approach that should be used (all if none specified)
         :param threshold: the threshold to use during creation
+        :param output_format: desired output format
         :return: object representing the created graph
         """
         event_log = self._get_prepared_event_log(approach)
-        return create_heuristic_net(event_log, threshold)
+        return create_heuristic_net(event_log, threshold, output_format)
 
     def _get_prepared_event_log(self, approach):
         frame = data_util.get_merged_csv_files(self._source_directory)

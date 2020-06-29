@@ -14,6 +14,11 @@ export interface Approach {
   viewValue: string;
 }
 
+export interface Consent {
+  item: string;
+  viewValue: string;
+}
+
 interface ImageResult {
   image: string;
 }
@@ -24,7 +29,8 @@ interface ImageResult {
   styleUrls: ['./processes.component.css']
 })
 export class ProcessesComponent implements OnInit, OnDestroy {
-  selectedApproach = '';
+  selectedApproach = 'None';
+  selectedConsent = 'None';
   selectedDepth = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
@@ -32,8 +38,12 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
 
   approaches: Approach[] = [
-    {item: 'REDIRECT', viewValue: 'REDIRECT'},
-    {item: 'EMBEDDED', viewValue: 'EMBEDDED'}
+    {item: 'REDIRECT', viewValue: 'Redirect'},
+    {item: 'EMBEDDED', viewValue: 'Embedded'}
+  ];
+  consents: Consent[] = [
+    {item: 'get_accounts', viewValue: 'Get Accounts'},
+    {item: 'get_transactions', viewValue: 'Get Transactions'}
   ];
   encodedImage: any;
 
@@ -53,7 +63,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<ImageResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth}).subscribe(data => {
+    this.dataService.requestData<ImageResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, consent_type: this.selectedConsent}).subscribe(data => {
       this.loadNewImageToImageViewer(JSON.stringify(data.image));
     });
   }

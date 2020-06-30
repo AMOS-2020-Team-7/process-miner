@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 COLUMN_MAPPINGS = {
     'timestamp': 'time:timestamp',
     'correlationId': 'case:concept:name',
-    'message': 'concept:name',
+    'label': 'concept:name',
     'approach': 'case:approach'
 }
 

@@ -33,7 +33,7 @@
     padding: 27px 0px;
 }
 .controls-main-selectors-labels{
-    padding: 10px 0px;
+    padding: 18px 0px;
 }
 ::ng-deep .mat-accent .mat-slider-thumb {
     background-color: #054F72;
@@ -50,3 +50,9 @@
     color: #FFFFFF;;
     background: #0984BF;
 }
+::ng-deep.mat-form-field-ripple {
+    /*change color of underline when focused*/
+    background-color: #054F72 !important;;
+    color: white!important;;
+}
+  

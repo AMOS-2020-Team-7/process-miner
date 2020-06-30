@@ -49,11 +49,36 @@
                     </div>
                 </div>
                 <mat-divider></mat-divider>
-                <div fxFlex="33%">
-                    Consent
+                <div fxFlex="33%" class="controls-main-selectors">
+                    <!-- Consent section -->
+                    <div fxLayout="column" fxLayoutAlign="stretch">
+                        <div fxFlex="25%">
+                            <div fxLayout="row" fxLayoutAlign="center" >
+                                <div fxFlex="25%"  class="controls-main-selectors-labels">
+                                    Consent
+                                </div>
+                                <div fxFlex="75%">
+                                    <mat-form-field floatLabel='never'>
+                                        <mat-label>Select consent </mat-label>
+                                        <mat-select [(ngModel)]="selectedConsent">
+                                            <mat-option *ngFor="let consent of consents" [value]="consent.item">
+                                                {{ consent.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div fxFlex="75%">
+                            <div fxLayout="row" fxLayoutAlign="center stretch">
+                                  <!-- Here it goes the bar chart section -->
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <mat-divider></mat-divider>
-                <div fxFlex="33%">
+                <!-- Variants section -->
+                <div fxFlex="33%" class="controls-main-selectors">
                     Variants
                 </div>
             </div>

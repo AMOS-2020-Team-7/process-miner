@@ -87,3 +87,15 @@ def filter_by_field(frame: DataFrame, field: str, value: str) -> DataFrame:
     """
     log.info('filtering log entries by value "%s" on field "%s"', value, field)
     return frame.loc[frame[field] == value]
+
+
+def dataframe_has_value_in_column(frame: DataFrame, column: str, value: str) \
+        -> DataFrame:
+    """
+    Determines if a column of a DataFrame contains a value.
+    :param frame: the DataFrame
+    :param column: the column
+    :param value: the value that should occur in that column
+    :return: whether the value was found in the column
+    """
+    return value in frame[column].values

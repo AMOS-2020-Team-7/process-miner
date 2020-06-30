@@ -21,7 +21,6 @@ from pm4py.util import constants
 
 from pm4py.algo.filtering.pandas.attributes import attributes_filter
 
-
 log_info = logging.getLogger(__name__)
 
 POSSIBLE_APPROACHES = ["embedded", "redirect",
@@ -49,8 +48,10 @@ def create_dataframe():
     dataframe = dataframe.rename(
         columns={'correlationId': 'case:concept:name',
                  'timestamp': 'time:timestamp',
-                 'message': 'concept:name',
-                 'approach': 'case:approach'})
+                 'label': 'concept:name',
+                 'approach': 'case:approach',
+                 'errortype': 'case:errortype',
+                 'status': 'case:status'})
     return dataframe
 
 
@@ -70,6 +71,18 @@ def filter_by_approach(approach, dataframe):
     return dataframe_approach
 
 
+def filter_by_errortype(errortype, dataframe):
+    """
+    filters dataframe by chosen error type
+    """
+    dataframe_errortype = attributes_filter.apply \
+        (dataframe, [errortype], parameters={
+            attributes_filter.Parameters.CASE_ID_KEY: "case:concept:name",
+            attributes_filter.Parameters.ATTRIBUTE_KEY: "case:errortype",
+            attributes_filter.Parameters.POSITIVE: True})
+    return dataframe_errortype
+
+
 def create_log(dataframe):
     """
     creates log out of dataframe
@@ -78,67 +91,105 @@ def create_log(dataframe):
     return log
 
 
-def create_graphs(log, approach):
+def create_graphs(without_error, log, approach):
     """
     creates visualization: Directly-Follows-Graph and Heuristic Net
     """
 
-    # create dfg
+    # create dfg frequency
     path = "common_path"
-    vis_type = "dfg"
-    file = f"{vis_type}_{approach}.svg"
-    filename = f"{path}/{vis_type}_{approach}.svg"
+    vis_type = "dfg_frequency"
+    naming_error = "with_error"
+    if without_error:
+        naming_error = "no_error"
+    file = f"{vis_type}_{approach}_{naming_error}.svg"
+    filename = f"{path}/{vis_type}_{approach}_{naming_error}.svg"
     parameters = {constants.PARAMETER_CONSTANT_ACTIVITY_KEY:
                       "concept:name", "format": "svg"}
     variant = 'frequency'
     dfg = dfg_factory.apply(log, variant=variant, parameters=parameters)
-    gviz1 = dfg_vis_factory.apply(dfg, log=log, variant=variant,
-                                  parameters=parameters)
-    dfg_vis_factory.view(gviz1)
-    dfg_vis_factory.save(gviz1, filename)
-    log_info.info("DFG has been stored in '%s' in file '%s'", path, file)
+    gviz = dfg_vis_factory.apply(dfg, log=log, variant=variant,
+                                 parameters=parameters)
+    dfg_vis_factory.view(gviz)
+    dfg_vis_factory.save(gviz, filename)
+    log_info.info("DFG frequency has been stored in '%s' in file '%s'",
+                  path, file)
+
+    # create dfg performance
+    vis_type = "dfg_performance"
+    file = f"{vis_type}_{approach}_{naming_error}.svg"
+    filename = f"{path}/{vis_type}_{approach}_{naming_error}.svg"
+    variant = 'performance'
+    dfg = dfg_factory.apply(log, variant=variant, parameters=parameters)
+    gviz = dfg_vis_factory.apply(dfg, log=log, variant=variant,
+                                 parameters=parameters)
+    dfg_vis_factory.view(gviz)
+    dfg_vis_factory.save(gviz, filename)
+    log_info.info("DFG performance has been stored in '%s' in file '%s'",
+                  path, file)
 
     # create heuristic net
     vis_type = "heuristicnet"
-    file = f"{vis_type}_{approach}.svg"
-    filename = f"{path}/{vis_type}_{approach}.svg"
+    file = f"{vis_type}_{approach}_{naming_error}.svg"
+    filename = f"{path}/{vis_type}_{approach}_{naming_error}.svg"
     heu_net = heuristics_miner.apply_heu(log, parameters={
         heuristics_miner.Variants.CLASSIC.value.Parameters.DEPENDENCY_THRESH:
-            0.00})
-    gviz2 = hn_vis.apply(
+            0.60})
+    gviz = hn_vis.apply(
         heu_net, parameters={
             hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: "svg"})
-    hn_vis.view(gviz2)
-    hn_vis.save(gviz2, filename)
+    hn_vis.view(gviz)
+    hn_vis.save(gviz, filename)
     log_info.info("Heuristic Net has been stored in '%s' in file '%s'",
                   path, file)
 
     # save heuristic net in plain-ext format
-    filename = f"{path}/{vis_type}_{approach}.plain-ext"
-    gviz_plain_ext = hn_vis.apply(
+    file = f"{vis_type}_{approach}_{naming_error}.plain-ext"
+    filename = f"{path}/{vis_type}_{approach}_{naming_error}.plain-ext"
+    gviz = hn_vis.apply(
         heu_net, parameters={
             hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: "plain-ext"})
-    hn_vis.save(gviz_plain_ext, filename)
+    hn_vis.save(gviz, filename)
     log_info.info("Heuristic Net as .plain-ext has been stored in '%s' "
                   "in file '%s'", path, file)
 
     # save heuristic net in dot format
-    filename = f"{path}/{vis_type}_{approach}.dot"
-    gviz_plain_ext = hn_vis.apply(
+    file = f"{vis_type}_{approach}_{naming_error}.dot"
+    filename = f"{path}/{vis_type}_{approach}_{naming_error}.dot"
+    gviz = hn_vis.apply(
         heu_net, parameters={
             hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: "dot"})
-    hn_vis.save(gviz_plain_ext, filename)
+    hn_vis.save(gviz, filename)
     log_info.info("Heuristic Net as .dot has been stored in '%s' "
                   "in file '%s'", path, file)
 
     # save heuristic net in xdot format
-    filename = f"{path}/{vis_type}_{approach}.xdot"
-    gviz_plain_ext = hn_vis.apply(
+    file = f"{vis_type}_{approach}_{naming_error}.xdot"
+    filename = f"{path}/{vis_type}_{approach}_{naming_error}.xdot"
+    gviz = hn_vis.apply(
         heu_net, parameters={
             hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: "xdot"})
-    hn_vis.save(gviz_plain_ext, filename)
+    hn_vis.save(gviz, filename)
     log_info.info("Heuristic Net as .xdot has been stored in '%s' "
                   "in file '%s'", path, file)
+
+
+def create_graphs_errortypes(log, errortype):
+    """
+    creates visualization for the error types: Heuristic Net
+    """
+    path = "documentation_errortypes"
+    vis_type = "heuristicnet"
+    filename = f"{path}/{vis_type}_{errortype}.svg"
+    heu_net = heuristics_miner.apply_heu(log, parameters={
+        heuristics_miner.Variants.CLASSIC.value.Parameters.DEPENDENCY_THRESH:
+            0.00})
+    gviz_error = hn_vis.apply(
+        heu_net, parameters={
+            hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: "svg"})
+    hn_vis.view(gviz_error)
+    hn_vis.save(gviz_error, filename)
+
 
 def file_available():
     """
@@ -159,7 +210,19 @@ def check_selected_approach(approach):
     return check
 
 
-def create_results(approachtype):
+def filter_error(dataframe):
+    """
+    filter the logs with occured errors
+    """
+    dataframe_filtered_error = attributes_filter.apply \
+        (dataframe, ["error"], parameters={
+            attributes_filter.Parameters.CASE_ID_KEY: "case:concept:name",
+            attributes_filter.Parameters.ATTRIBUTE_KEY: "case:status",
+            attributes_filter.Parameters.POSITIVE: False})
+    return dataframe_filtered_error
+
+
+def create_results(without_error, approachtype, errortype):
     """
     check if concated csv file is available, filter log by selected approach,
     creates and saves DFG and Heuristic Net in directory common_path
@@ -176,14 +239,23 @@ def create_results(approachtype):
 
     dataframe = create_dataframe()
     dataframe_approach = filter_by_approach(approachtype, dataframe)
+
+    if without_error:
+        dataframe_approach = filter_error(dataframe_approach)
+
     log = create_log(dataframe_approach)
-    create_graphs(log, approachtype)
+    create_graphs(without_error, log, approachtype)
+
+    dataframe_errortype = filter_by_errortype(errortype, dataframe)
+    log_errortype = create_log(dataframe_errortype)
+    create_graphs_errortypes(log_errortype, errortype)
 
 
 class Miner:
     """
     class to create directory for storing the graphs
     """
+
     def __init__(self, graph_dir: str):
         self.graph_dir = Path(graph_dir)
 
@@ -198,3 +270,25 @@ class Miner:
         if not self.graph_dir.exists():
             log_info.info('creating missing graph directory (and parents)...')
             self.graph_dir.mkdir(parents=True, exist_ok=True)
+
+
+class Error:
+    """
+    class to create directory for storing error paths
+    """
+
+    def __init__(self, error_dir: str):
+        self.error_dir = Path(error_dir)
+
+    def __str__(self) -> str:
+        return f'{self.__class__.__name__} ['f'error_dir <{self.error_dir}>]'
+
+    def prepare_graph_dir(self):
+        """
+        if not available, creates directory for storing the error graphs
+        """
+        log_info.info('preparing error graph directory "%s"', self.error_dir)
+        if not self.error_dir.exists():
+            log_info.info('creating missing error graph directory '
+                          '(and parents)...')
+            self.error_dir.mkdir(parents=True, exist_ok=True)

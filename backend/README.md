@@ -10,6 +10,8 @@ The file contains the following sections and entries:
 
 * `global`
     * `log_directory` - Target directory for the retrieved logs (may be an absolute or relative path)
+    * `graph_directory' - Target directory for the retrieved graphs`
+    * `error_directory' - Target directory for the retrieved graphs of the identified error types`
 * `log_retriever`
     * `url` - URL of the Graylog instance logs should be retrieved from
     * `api_token` - Access Token used for authentication to the Graylog instance (see [Creating and using Access Token](https://docs.graylog.org/en/3.3/pages/configuration/rest_api.html#creating-and-using-access-token))
@@ -80,7 +82,7 @@ Even if none of the patterns matched each tags field will be present in the outp
 The graphs are stored in the directory `common_path`
 
 Naming conditions:
-{visualization type}_{approach type}.{output_format}
+{visualization type}_{approach type}_{with or without errors}.{output_format}
 
 ### Visualization Type
 `visualization type`:
@@ -89,7 +91,7 @@ Naming conditions:
 - `dfg`: Directly-Follows-Graph
 
 ### Approach Type
-Results are available for the `approach type`:
+Results are available for the `approach type` that needs to be chosen in `__main__.py`:
 - `all` All approaches combined
 
 - `embedded` Embedded approach
@@ -97,6 +99,9 @@ Results are available for the `approach type`:
 - `redirect` Redirect approach
 
 - `not available` Entries without available approach type
+
+### With or Without error_sca_status_405
+Choose in `__main__.py` if you want to filter or if you want to include the logs where an error occured.
 
 ### Output format
 Use one of the formats that are supported by PyDotPlus that provides a Python Interface to Graphviz’s Dot:

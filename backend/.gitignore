@@ -22,3 +22,6 @@ common_path/
 
 # concatenated logs
 concatenated_files.csv
+
+# graphs for different error types
+documentation_errortypes/

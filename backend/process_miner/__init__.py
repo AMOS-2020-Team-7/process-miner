@@ -18,7 +18,7 @@ import process_miner.logs_process_miner as pm
 import process_miner.mining.graph_factory as gf
 import process_miner.mining.metadata_factory as mf
 from process_miner.access.blueprints import logs, request_result, graphs, \
-                                            metadata
+    metadata
 from process_miner.access.work.request_processing import RequestManager
 
 CONFIG_FILENAME = 'process_miner_config.yaml'
@@ -88,7 +88,8 @@ def create_app():
     used_blueprints = [
         request_result.create_blueprint(request_manager),
         logs.create_blueprint(request_manager, cache, retriever),
-        graphs.create_blueprint(request_manager, cache, graph_factory),
+        graphs.create_blueprint(request_manager, cache, graph_factory,
+                                metadata_factory),
         metadata.create_blueprint(request_manager, cache, metadata_factory)
     ]
     # register created blueprints on the flask app

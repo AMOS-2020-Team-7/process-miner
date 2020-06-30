@@ -31,6 +31,16 @@ class MetadataFactory:
                                      aggfunc='size').to_dict()
         return _convert_to_multi_level_dict(raw_dict)
 
+    def get_consent_types(self):
+        """
+        Extracts all available consent types.
+        :return: list of all available consent types
+        """
+        types = set()
+        for value in self.get_consent_types_per_approach().values():
+            types.update(value.keys())
+        return list(types)
+
     def get_approach_type_count(self) -> Dict[str, int]:
         """
         Extracts all approach types and how many sessions they each were used
@@ -41,3 +51,10 @@ class MetadataFactory:
         relevant_rows = frame.loc[:, ['approach', 'correlationId']]
         unique_combinations = relevant_rows.drop_duplicates()
         return unique_combinations.groupby(['approach']).size().to_dict()
+
+    def get_approach_types(self):
+        """
+        Extracts all available approach types.
+        :return: list of all available approach types
+        """
+        return list(self.get_approach_type_count().keys())

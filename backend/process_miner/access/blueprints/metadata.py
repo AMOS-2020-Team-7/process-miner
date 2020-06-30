@@ -33,7 +33,7 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         response:
           200:
             description: The retrieved result will be a JSON object
-                         representing the number of different consent types pre
+                         representing the number of different consent types per
                          approach.
             application/json:
               schema:

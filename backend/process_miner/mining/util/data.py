@@ -3,7 +3,7 @@ Utility module for working with log data in various formats
 """
 import logging
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 
 import pandas
 from pandas import DataFrame
@@ -23,13 +23,33 @@ def get_merged_csv_files(source: Path, sort_column: str = None) -> DataFrame:
     :param sort_column: column the resulting DataFrame should be sorted by
     :return: the resulting DataFrame
     """
+    csv_files = read_csv_files(source)
+    log.info('combining %s files from path %s', len(csv_files), source)
+    return merge_and_sort_dataframes(csv_files, sort_column)
+
+
+def read_csv_files(source: Path) -> List[DataFrame]:
+    """
+    Reads all CSV files from the specified path to DataFrames.
+    :param source: the source directory
+    :return: a list containing the DataFrames
+    """
     if not source.is_dir():
         log.error('%s is not a directory', source)
         raise Exception()
-
     files = source.glob(f"*.{FILE_EXTENSION}")
-    csv_files = [pandas.read_csv(file) for file in files]
-    log.info('combining %s files from path %s', len(csv_files), source)
+    return [pandas.read_csv(file) for file in files]
+
+
+def merge_and_sort_dataframes(csv_files: List[DataFrame],
+                              sort_column: str = None) -> DataFrame:
+    """
+    Merges the supplied DataFrames into a single DataFrame and optionally sorts
+    them by the supplied column.
+    :param csv_files: the initial DataFrames
+    :param sort_column: the column to sort by
+    :return: the resulting DataFrame
+    """
     frame = pandas.concat(csv_files)
     if not sort_column:
         return frame

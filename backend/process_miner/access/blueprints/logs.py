@@ -28,6 +28,19 @@ def create_blueprint(executor, cache, log_retriever):
     def refresh():
         """
         Triggers the retrieval of logs from Graylog.
+        ---
+        parameters:
+          - name: force
+            in: query
+            type: boolean
+            default: 'False'
+            description: force retrieval of logs that were already downloaded
+        responses:
+          200:
+            description: The result will not contain any value after retrieval.
+            application/json:
+              schema:
+                $ref: '#/definitions/RequestResponse'
         """
         ticket = executor.submit_ticketed(_refresh_logs)
         return get_state_response(ticket)

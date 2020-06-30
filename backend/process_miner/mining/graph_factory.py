@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 COLUMN_MAPPINGS = {
     'timestamp': 'time:timestamp',
     'correlationId': 'case:concept:name',
-    'message': 'concept:name',
+    'label': 'concept:name',
     'approach': 'case:approach'
 }
 
@@ -38,19 +38,19 @@ def create_directly_follows_graph(event_log: EventLog):
                           parameters=parameters,
                           variant=variant)
     # TODO dfg breaks at this point
-    visualization = dfg_vis.apply(graph,
-                                  log=event_log,
-                                  parameters=parameters,
-                                  variant=variant)
-
-    return visualization
+    return dfg_vis.apply(graph,
+                         log=event_log,
+                         parameters=parameters,
+                         variant=variant)
 
 
-def create_heuristic_net(event_log: EventLog, threshold: float = 0.00):
+def create_heuristic_net(event_log: EventLog, threshold: float,
+                         output_format: str):
     """
     Creates a Heuristic Net from the supplied EventLog.
     :param event_log: the EventLog
     :param threshold: the threshold to use during creation
+    :param output_format: desired output format
     :return: object representing the created graph
     """
     log.info('creating heuristic net with threshold %s', threshold)
@@ -59,7 +59,7 @@ def create_heuristic_net(event_log: EventLog, threshold: float = 0.00):
     })
 
     return hn_vis.apply(heu_net=heu_net, parameters={
-        hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: 'svg'
+        hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: output_format
     })
 
 
@@ -70,27 +70,44 @@ class GraphFactory:
     def __init__(self, source_directory: Path):
         self._source_directory = source_directory
 
-    def get_directly_follows_graph(self, approach: str = None):
+    def get_directly_follows_graph(self, approach: str = '',
+                                   consent_type: str = ''):
         """
         Creates a Directly Follows Graph from the available data.
         :param approach: approach that should be used (all if none specified)
+        :param consent_type: consent that has to be used during all sessions
+        that should be considered during graph creation
         :return: object representing the created graph
         """
-        event_log = self._get_prepared_event_log(approach)
+        event_log = self._get_prepared_event_log(approach, consent_type)
         return create_directly_follows_graph(event_log)
 
-    def get_heuristic_net(self, approach: str = None, threshold: float = 0.0):
+    def get_heuristic_net(self, approach: str = '', consent_type: str = '',
+                          threshold: float = 0.0, output_format: str = 'svg'):
         """
         Creates a Heuristic Net from the available data.
         :param approach: approach that should be used (all if none specified)
+        :param consent_type: consent that has to be used during all sessions
+        that should be considered during net creation
         :param threshold: the threshold to use during creation
+        :param output_format: desired output format
         :return: object representing the created graph
         """
-        event_log = self._get_prepared_event_log(approach)
-        return create_heuristic_net(event_log, threshold)
+        event_log = self._get_prepared_event_log(approach, consent_type)
+        return create_heuristic_net(event_log, threshold, output_format)
 
-    def _get_prepared_event_log(self, approach):
-        frame = data_util.get_merged_csv_files(self._source_directory)
+    def _get_prepared_event_log(self, approach, consent_type):
+        frames = data_util.read_csv_files(self._source_directory)
+        # filter by consent
+        if consent_type:
+            def consent_is_present(frame):
+                return data_util.dataframe_has_value_in_column(frame,
+                                                               'consent',
+                                                               consent_type)
+            frames = [frame for frame in frames if consent_is_present(frame)]
+
+        frame = data_util.merge_and_sort_dataframes(frames, 'timestamp')
+        # filter by approach
         if approach:
             frame = data_util.filter_by_field(frame, 'approach', approach)
         data_util.rename_columns(frame, COLUMN_MAPPINGS)

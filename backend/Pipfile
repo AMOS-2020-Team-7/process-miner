@@ -18,6 +18,8 @@ pm4py = "*"
 flask-executor = "*"
 pandas = "*"
 flask-cors = "*"
+python-datauri = "*"
+flasgger = "*"
 
 [requires]
 python_version = "3.8"

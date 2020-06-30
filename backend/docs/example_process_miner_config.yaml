@@ -33,49 +33,32 @@ tags:
       'get_transactions':
         - 'GET_TRANSACTIONS'
         - 'get transaction list'
+
   label:
     source: 'message'
     tag_all: false
     default_value: '_else_'
     mappings:
-      'server_response':
-        - 'POST'
-        - 'PUT'
-      'server_request':
-        - 'HTTP'
-        - 'http'
-      'aspsps_search':
-        - 'Searching for ASPSPs'
-        - 'searching for ASPSPs'
-        - 'Search ASPSPs'
-        - 'search ASPSPs'
-      'aspsps_not_found':
-        - 'Aspsp was not found'
-        - 'aspsp was not found'
-      'processing':
-        - 'Processing'
-        - 'processing'
-      'xs2a':
-        - 'Xs2aAdapter'
-        - 'xs2aAdapter'
-      'profile':
-        - 'Profile'
-        - 'profile'
-      'session':
-        - 'Session'
-        - 'session'
-      'transaction':
-        - 'Transaction'
-        - 'transaction'
-      'charset':
-        - 'Charset'
-        - 'charset'
-      'status':
-        - 'Status'
-        - 'status'
-      'slack':
-        - 'Slack'
-        - 'slack'
+      'status_200':
+        - 'Status - 200'
+        - 'status - 200'
+      'status_201':
+        - 'response status - 201'
+        - 'Response status - 201'
+      'status_400':
+        - 'Status - 400'
+        - 'status - 400'
+      'status_401':
+        - 'Response status - 401'
+        - 'response status - 401'
+      'status_403':
+        - 'response status - 403'
+        - 'Response status - 403'
+      'error_sca_status_405':
+        - 'code=405'
+        - 'Code=405'
+      'error_consent_invalid':
+        - 'CONSENT_INVALID'
       'error_format':
         - 'FORMAT_ERROR'
       'error_internal_server':
@@ -86,9 +69,125 @@ tags:
         - 'SERVICE_INVALID'
       'error_service_unavailable':
         - 'SERVICE_UNAVAILABLE'
-      'warning_unhandeled exception':
+      'error_processing':
+        - 'Processing Error'
+      'transaction_status_is_ACSP':
+        - 'Transaction status is ACSP'
+      'aspsps_search':
+        - 'Searching for ASPSPs'
+        - 'searching for ASPSPs'
+        - 'Search ASPSPs'
+        - 'search ASPSPs'
+      'aspsps_not_found':
+        - 'Aspsp was not found'
+        - 'aspsp was not found'
+      'create_new_session':
+        - 'create a new session'
+      'consent_status_valid':
+        - 'Consent status is valid'
+      'delete_consent_status':
+        - 'Delete consent status'
+      'get_account_list':
+        - 'get account list'
+      'get_transaction_list':
+        - 'get transaction list'
+      'load_transactions':
+        - 'load transactions'
+        - 'Load transactions'
+      'no_information_about_transactions':
+        - 'no information about transactions'
+      'processing_AspspFoundEvent':
+        - 'Processing AspspFoundEvent'
+        - 'processing AspspFoundEvent'
+      'processing_TransactionsReceivedEvent':
+        - 'Processing TransactionsReceivedEvent'
+        - 'processing TransactionsReceivedEvent'
+      'processing_AccountsFoundEvent':
+        - 'Processing AccountFoundEvent'
+        - 'processing AccountFoundEvent'
+      'redirect_to_online_banking page':
+        - 'Redirect to online banking page'
+      'redirect_from_ASPSP':
+        - 'redirect from ASPSP'
+      'sca_status_is_finalised':
+        - 'status is finalised'
+      'SESSION':
+        - 'Session'
+      'server_request_POST':
+        - 'POST'
+      'server_request_PUT':
+        - 'PUT'
+      'server_response_200':
+        - 'HTTP/1.1 200'
+      'server_response_201':
+        - 'HTTP/1.1 201'
+      'server_response_204':
+        - 'HTTP/1.1 204'
+      'show_payment_details':
+        - 'show payment details'
+      'show_transactions':
+        - 'show transactions'
+        - 'Show transactions'
+      'slack':
+        - 'Slack'
+        - 'slack'
+      'step_aspsp_lookup':
+        - 'step=ASPSP_LOOKUP'
+      'step_authenticate_psu':
+        - 'step=AUTHENTICATE_PSU'
+      'step_create_consent':
+        - 'step=CREATE_CONSENT'
+      'step_get_accounts':
+        - 'step=GET_ACCOUNTS'
+      'step_get_transactions':
+        - 'step=GET_TRANSACTIONS'
+      'step_initiate_payment':
+        - 'step=INITIATE_PAYMENT'
+      'step_psu_redirect':
+        - 'step=PSU_REDIRECT'
+      'step_select_sca':
+        - 'step=SELECT_SCA'
+      'step_send_otp':
+        - 'step=SEND_OTP'
+      'update_consent_PSU_data':
+        - 'update consent PSU data'
+      'warning_unhandeled_exception':
         - 'Unhandled exception'
         - 'unhandled exception'
+
+  status:
+    source: 'label'
+    tag_all: true
+    default_value: 'aborted'
+    mappings:
+      'error':
+        - 'error'
+      'succeed':
+        - 'delete_consent_status'
+
+  errortype:
+    source: 'label'
+    tag_all: true
+    default_value: 'no error'
+    mappings:
+      'error_401_psu_credentials_invalid':
+        - 'status_401'
+        - 'error_psu_credentials_invalid'
+      'error_ASPSP_not_found':
+        - 'aspsps_not_found'
+      'error_400_service_invalid_for_step_create_consent':
+        - 'error_service_invalid'
+      'error_403_consent_invalid':
+        - 'error_consent_invalid'
+        - 'status_403'
+      'error_internal_server':
+        - 'error_internal_server'
+      'error_service_unavailable':
+        - 'error_service_unavailable'
+      'error_400_format':
+        - 'error_format'
+      'error_sca_status_405':
+        - 'error_sca_status_405'
 
   banks:
     source: 'message'

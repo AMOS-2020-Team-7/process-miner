@@ -61,7 +61,8 @@ def setup_components(config_file=CONFIG_FILENAME):
     metadata_factory = mf.MetadataFactory(Path(global_cfg['log_directory']))
 
     miner = pm.Miner(global_cfg['graph_directory'])
-    return retriever, graph_factory, metadata_factory, miner
+    error_dir = pm.Error(global_cfg['error_directory'])
+    return retriever, graph_factory, metadata_factory, miner, error_dir
 
 
 def create_app():
@@ -70,7 +71,7 @@ def create_app():
     flask app.
     :return: the Flask object
     """
-    (retriever, graph_factory, metadata_factory, _) = setup_components()
+    (retriever, graph_factory, metadata_factory, _, _) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
     # enable cross origin resource sharing

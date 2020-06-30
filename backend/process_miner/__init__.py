@@ -74,8 +74,9 @@ def create_app():
     (retriever, graph_factory, metadata_factory, _) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
-    swagger = Swagger(process_miner_app)
-    log.info('swagger %s set up', swagger)
+    Swagger(process_miner_app)
+    # TODO create that url dynamically
+    log.info('SwaggerUI reachable at http://localhost:5000/apidocs/index.html')
     # enable cross origin resource sharing
     # TODO evaluate if this is required in the final application
     CORS(process_miner_app)

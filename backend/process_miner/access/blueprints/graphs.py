@@ -24,15 +24,21 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
     """
     blueprint = Blueprint('graphs', __name__, url_prefix='/graphs')
 
-    @cache.memoize()
     def _get_checked_approach():
-        valid_approach_types = metadata_factory.get_approach_types()
+        valid_approach_types = _wrapper_get_approach_types()
         return _get_checked_str_arg('approach', valid_approach_types, '')
 
     @cache.memoize()
+    def _wrapper_get_approach_types():
+        return metadata_factory.get_approach_types()
+
     def _get_checked_consent():
-        valid_consent_types = metadata_factory.get_consent_types()
+        valid_consent_types = _wrapper_get_consent_types()
         return _get_checked_str_arg('consent', valid_consent_types, '')
+
+    @cache.memoize()
+    def _wrapper_get_consent_types():
+        return metadata_factory.get_consent_types()
 
     def _get_checked_str_arg(arg: str, valid_values: List[str],
                              default_value: str):

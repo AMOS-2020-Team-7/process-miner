@@ -5,6 +5,7 @@ service of the process miner.
 import logging
 from pathlib import Path
 
+from flasgger import Swagger
 from flask import Flask
 from flask_caching import Cache
 from flask_cors import CORS
@@ -17,7 +18,7 @@ import process_miner.logs_process_miner as pm
 import process_miner.mining.graph_factory as gf
 import process_miner.mining.metadata_factory as mf
 from process_miner.access.blueprints import logs, request_result, graphs, \
-                                            metadata
+    metadata
 from process_miner.access.work.request_processing import RequestManager
 
 CONFIG_FILENAME = 'process_miner_config.yaml'
@@ -73,6 +74,9 @@ def create_app():
     (retriever, graph_factory, metadata_factory, _) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
+    Swagger(process_miner_app)
+    # TODO create that url dynamically
+    log.info('SwaggerUI reachable at http://localhost:5000/apidocs/index.html')
     # enable cross origin resource sharing
     # TODO evaluate if this is required in the final application
     CORS(process_miner_app)
@@ -85,7 +89,8 @@ def create_app():
     used_blueprints = [
         request_result.create_blueprint(request_manager),
         logs.create_blueprint(request_manager, cache, retriever),
-        graphs.create_blueprint(request_manager, cache, graph_factory),
+        graphs.create_blueprint(request_manager, cache, graph_factory,
+                                metadata_factory),
         metadata.create_blueprint(request_manager, cache, metadata_factory)
     ]
     # register created blueprints on the flask app

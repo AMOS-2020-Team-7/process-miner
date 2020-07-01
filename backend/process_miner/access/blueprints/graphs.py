@@ -15,6 +15,9 @@ from process_miner.mining.metadata_factory import MetadataFactory
 
 log = logging.getLogger(__name__)
 
+ARG_APPROACH = 'approach'
+ARG_CONSENT_TYPE = 'consent_type'
+
 
 def create_blueprint(request_manager: RequestManager, cache: Cache,
                      graph_factory: GraphFactory,
@@ -26,7 +29,7 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
 
     def _get_checked_approach():
         valid_approach_types = _wrapper_get_approach_types()
-        return _get_checked_str_arg('approach', valid_approach_types, '')
+        return _get_checked_str_arg(ARG_APPROACH, valid_approach_types, '')
 
     @cache.memoize()
     def _wrapper_get_approach_types():
@@ -34,7 +37,7 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
 
     def _get_checked_consent():
         valid_consent_types = _wrapper_get_consent_types()
-        return _get_checked_str_arg('consent', valid_consent_types, '')
+        return _get_checked_str_arg(ARG_CONSENT_TYPE, valid_consent_types, '')
 
     @cache.memoize()
     def _wrapper_get_consent_types():

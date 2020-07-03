@@ -3,7 +3,7 @@ Tests for the log_filter module
 """
 import copy
 
-from process_miner.log_filter import LogFilter
+from process_miner.log_handling.log_filter import LogFilter
 
 
 def _create_log_filter():

@@ -11,10 +11,9 @@ from flask_caching import Cache
 from flask_cors import CORS
 
 import process_miner.configuration_loader as cl
-import process_miner.graylog_access as ga
-import process_miner.log_retriever as lr
-import process_miner.log_tagger as lt
-import process_miner.logs_process_miner as pm
+import process_miner.log_handling.graylog_access as ga
+import process_miner.log_handling.log_retriever as lr
+import process_miner.log_handling.log_tagger as lt
 import process_miner.mining.graph_factory as gf
 import process_miner.mining.metadata_factory as mf
 from process_miner.access.blueprints import logs, request_result, graphs, \

@@ -4,9 +4,9 @@ Tests for log_retriever module
 import os
 from csv import DictReader
 
-import process_miner.log_retriever as lr
-from process_miner.graylog_access import GraylogAccess
-from process_miner.log_retriever import LogRetriever
+import process_miner.log_handling.log_retriever as lr
+from process_miner.log_handling.graylog_access import GraylogAccess
+from process_miner.log_handling.log_retriever import LogRetriever
 
 
 def test_retrieve_logs_no_new_logs(tmp_path, requests_mock):

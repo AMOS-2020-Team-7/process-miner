@@ -76,9 +76,8 @@ class LogTagger:
         """
         pattern = re.compile(pattern)
         if not pattern.groups:
-            log.warning('pattern "%s" contains no groups and will be ignored',
-                        pattern.pattern)
-            return
+            log.error('pattern "%s" contains no groups', pattern.pattern)
+            raise Exception(f'no group in extractor pattern {pattern.pattern}')
         if pattern.groups > 1:
             log.warning('pattern "%s" contains more than one group -> '
                         'only first group will be used', pattern.pattern)

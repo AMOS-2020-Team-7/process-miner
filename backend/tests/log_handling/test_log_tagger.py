@@ -3,7 +3,7 @@ Tests for the log_tagger module
 """
 import copy
 
-from process_miner.log_tagger import LogTagger
+from process_miner.log_handling.log_tagger import LogTagger
 
 DEFAULT_VALUE = 'default'
 

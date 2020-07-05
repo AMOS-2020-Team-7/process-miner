@@ -23,8 +23,8 @@ class ConfigurationLoader:
     - YAML
     """
     def __init__(self, path: Path):
-        self.path = path
-        self.cfg = _load_config(path)
+        self._path = path
+        self._cfg = _load_config(path)
 
     def get_section(self, section: str):
         """
@@ -32,7 +32,7 @@ class ConfigurationLoader:
         :param section: name of the section
         :return: dictionary containing contents of the section
         """
-        return self.cfg[section]
+        return self._cfg[section]
 
     def get_entry(self, section: str, name: str):
         """
@@ -41,10 +41,13 @@ class ConfigurationLoader:
         :param name: name of the entry
         :return: value of the entry
         """
-        return self.cfg[section][name]
+        cfg_section = self._cfg[section]
+        if not cfg_section:
+            raise KeyError(section)
+        return cfg_section[name]
 
     def reload_config(self):
         """
         Reloads the config file from disk.
         """
-        self.cfg = _load_config(self.path)
+        self._cfg = _load_config(self._path)

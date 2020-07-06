@@ -76,6 +76,6 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   }
 
   public resetPage(){
-    window.location.reload()
+    window.location.reload();
   }
 }

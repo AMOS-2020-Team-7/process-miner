@@ -3,15 +3,16 @@ Module used for retrieving log entries and storing them for later analysis.
 """
 import csv
 import logging
+import os
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List, Dict, Tuple
 
-import process_miner.graylog_access as ga
-from process_miner.graylog_access import GraylogAccess
-from process_miner.log_filter import LogFilter
-from process_miner.log_tagger import LogTagger
+import process_miner.log_handling.graylog_access as ga
+from process_miner.log_handling.graylog_access import GraylogAccess
+from process_miner.log_handling.log_filter import LogFilter
+from process_miner.log_handling.log_tagger import LogTagger
 
 log = logging.getLogger(__name__)
 
@@ -59,13 +60,16 @@ class LogRetriever:
                f'target_dir <{self.target_dir}>, ' \
                f'log_taggers <{self.log_taggers}>]'
 
-    def retrieve_logs(self) -> None:
+    def retrieve_logs(self, force: bool = False) -> None:
         """
         Retrieves logs from the configured Graylog instance. Logs are stored
         in the configured directory grouped by their correlationID in separate
         CSV files.
+        :param force: force download of already saved logs
         """
         self._prepare_target_dir()
+        if force:
+            self._clear_logs()
 
         last_retrieved_timestamp = self._load_last_included_timestamp()
         first_timestamp = _get_advanced_timestamp(last_retrieved_timestamp)
@@ -101,6 +105,11 @@ class LogRetriever:
         if not self.target_dir.exists():
             log.info('creating missing target directory (and parents)...')
             self.target_dir.mkdir(parents=True, exist_ok=True)
+
+    def _clear_logs(self):
+        log.info('clearing log directory')
+        for file in os.listdir(self.target_dir):
+            os.remove(self.target_dir / file)
 
     def _load_last_included_timestamp(self) -> datetime:
         timestamp_path = self.target_dir.joinpath(TIMESTAMP_FILENAME)

@@ -11,24 +11,23 @@ from flask_caching import Cache
 from flask_cors import CORS
 
 import process_miner.configuration_loader as cl
-import process_miner.graylog_access as ga
-import process_miner.log_retriever as lr
-import process_miner.log_tagger as lt
-import process_miner.logs_process_miner as pm
+import process_miner.log_handling.graylog_access as ga
+import process_miner.log_handling.log_retriever as lr
+import process_miner.log_handling.log_tagger as lt
 import process_miner.mining.graph_factory as gf
 import process_miner.mining.metadata_factory as mf
 from process_miner.access.blueprints import logs, request_result, graphs, \
     metadata
 from process_miner.access.work.request_processing import RequestManager
 
-CONFIG_FILENAME = 'process_miner_config.yaml'
+_DEFAULT_CONFIG_FILE = 'process_miner_config.yaml'
 
 log = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.INFO)
 
 
-def setup_components(config_file=CONFIG_FILENAME):
+def setup_components(config_file=_DEFAULT_CONFIG_FILE):
     """
     Sets up all components needed for running the process miner.
     :param config_file: path to the configuration file that should be used
@@ -61,9 +60,7 @@ def setup_components(config_file=CONFIG_FILENAME):
     log.info('setting up metadata factory')
     metadata_factory = mf.MetadataFactory(Path(global_cfg['log_directory']))
 
-    miner = pm.Miner(global_cfg['graph_directory'])
-    error_dir = pm.Error(global_cfg['error_directory'])
-    return retriever, graph_factory, metadata_factory, miner, error_dir
+    return cfg_loader, retriever, graph_factory, metadata_factory
 
 
 def create_app():
@@ -72,7 +69,7 @@ def create_app():
     flask app.
     :return: the Flask object
     """
-    (retriever, graph_factory, metadata_factory, _, _) = setup_components()
+    (_, retriever, graph_factory, metadata_factory) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
     Swagger(process_miner_app)

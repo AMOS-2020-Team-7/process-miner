@@ -42,6 +42,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     {item: 'EMBEDDED', viewValue: 'Embedded'}
   ];
   consents: Consent[] = [
+    {item: 'all', viewValue: 'All'},
     {item: 'get_accounts', viewValue: 'Get Accounts'},
     {item: 'get_transactions', viewValue: 'Get Transactions'}
   ];
@@ -72,5 +73,9 @@ export class ProcessesComponent implements OnInit, OnDestroy {
         this.imageEncodedInBase64 = encodedImage.substr(1);
         this.imageEncodedInBase64 = this.imageEncodedInBase64.slice(0, -1);
         this.trustedImageUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.imageEncodedInBase64);
+  }
+
+  public resetPage(){
+    window.location.reload()
   }
 }

@@ -43,9 +43,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxFlex="20%" fxLayoutAlign="left middle">
-                            <button (click) ="loadGraph()" class='load-graph-button' mat-raised-button>Load Graph</button>
-                        </div>
                     </div>
                 </div>
                 <mat-divider></mat-divider>
@@ -80,6 +77,20 @@
                 <!-- Variants section -->
                 <div fxFlex="33%" class="controls-main-selectors">
                     Variants
+                </div>
+                <!-- Load, Reset buttons -->
+                <div fxFlex="20%">
+                  <div fxLayout="row" fxLayoutAlign="left">
+                    <div fxFlex="20%" fxLayoutAlign="left center">
+                      <button (click) ="loadGraph()" class='load-graph-button' mat-raised-button>Load Graph</button>
+                    </div>
+                    <div fxFlex="20%" fxLayoutAlign="center">
+                      <button (click) ="resetPage()" class='reset-settings-button' mat-raised-button>Reset</button>
+                    </div>
+                    <div fxFlex="20%" fxLayoutAlign="right center">
+                      <button (click) ="resetPage()" class='reset-settings-button' mat-raised-button>Export Graph</button>
+                    </div>
+                  </div>
                 </div>
             </div>
         </mat-grid-tile>

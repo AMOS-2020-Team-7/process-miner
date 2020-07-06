@@ -1,25 +1,20 @@
 """
 Module used for importing tagged logs into heuristic miner
 """
-import os
-import logging
-from pathlib import Path
 import glob
+import logging
+import os
+from pathlib import Path
+
 import pandas as pd
-
-from pm4py.objects.log.adapters.pandas import csv_import_adapter
-
-from pm4py.objects.conversion.log import factory as conversion_factory
-
-from pm4py.algo.discovery.heuristics import algorithm as heuristics_miner
-from pm4py.visualization.heuristics_net import visualizer as hn_vis
-
-from pm4py.visualization.dfg import factory as dfg_vis_factory
 from pm4py.algo.discovery.dfg import factory as dfg_factory
-
-from pm4py.util import constants
-
+from pm4py.algo.discovery.heuristics import algorithm as heuristics_miner
 from pm4py.algo.filtering.pandas.attributes import attributes_filter
+from pm4py.objects.conversion.log import factory as conversion_factory
+from pm4py.objects.log.adapters.pandas import csv_import_adapter
+from pm4py.util import constants
+from pm4py.visualization.dfg import factory as dfg_vis_factory
+from pm4py.visualization.heuristics_net import visualizer as hn_vis
 
 log_info = logging.getLogger(__name__)
 

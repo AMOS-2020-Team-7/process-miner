@@ -35,7 +35,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
-
+  dotString:string;
 
   approaches: Approach[] = [
     {item: 'REDIRECT', viewValue: 'Redirect'},

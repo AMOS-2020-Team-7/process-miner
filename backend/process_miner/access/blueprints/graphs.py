@@ -10,8 +10,8 @@ from flask_caching import Cache
 
 from process_miner.access.blueprints.request_result import get_state_response
 from process_miner.access.work.request_processing import RequestManager
-from process_miner.mining.graph_factory import GraphFactory
-from process_miner.mining.metadata_factory import MetadataFactory
+from process_miner.mining import graphs, metadata
+from process_miner.mining.dataset_factory import DatasetFactory
 
 log = logging.getLogger(__name__)
 
@@ -20,8 +20,7 @@ ARG_CONSENT_TYPE = 'consent_type'
 
 
 def create_blueprint(request_manager: RequestManager, cache: Cache,
-                     graph_factory: GraphFactory,
-                     metadata_factory: MetadataFactory):
+                     dataset_factory: DatasetFactory):
     """
     Creates an instance of the blueprint.
     """
@@ -33,7 +32,8 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
 
     @cache.memoize()
     def _wrapper_get_approach_types():
-        return metadata_factory.get_approach_types()
+        frame = dataset_factory.get_prepared_data_frame()
+        return metadata.get_approach_types(frame)
 
     def _get_checked_consent():
         valid_consent_types = _wrapper_get_consent_types()
@@ -41,7 +41,8 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
 
     @cache.memoize()
     def _wrapper_get_consent_types():
-        return metadata_factory.get_consent_types()
+        frame = dataset_factory.get_prepared_data_frame()
+        return metadata.get_consent_types(frame)
 
     def _get_checked_str_arg(arg: str, valid_values: List[str],
                              default_value: str):
@@ -54,14 +55,17 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
 
     @cache.memoize()
     def _create_dfg(approach):
-        graph = graph_factory.get_directly_follows_graph(approach)
+        event_log = dataset_factory.get_prepared_event_log(approach)
+        graph = graphs.create_directly_follows_graph(event_log)
         return _package_response(graph)
 
     @cache.memoize()
     def _create_heuristic_net(approach, consent_type, threshold,
                               output_format):
-        graph = graph_factory.get_heuristic_net(approach, consent_type,
-                                                threshold, output_format)
+        event_log = dataset_factory.get_prepared_event_log(approach,
+                                                           consent_type)
+        graph = graphs.create_heuristic_net(event_log, threshold,
+                                            output_format)
         return _package_response(graph)
 
     def _package_response(graph):
@@ -108,7 +112,7 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
             minimum: 0
             maximum: 1
             default: '0'
-          - name: output_format
+          - name: format
             in: query
             type: string
             default: 'svg'

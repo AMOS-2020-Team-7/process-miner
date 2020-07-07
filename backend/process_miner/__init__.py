@@ -14,8 +14,7 @@ import process_miner.configuration_loader as cl
 import process_miner.log_handling.graylog_access as ga
 import process_miner.log_handling.log_retriever as lr
 import process_miner.log_handling.log_tagger as lt
-import process_miner.mining.graph_factory as gf
-import process_miner.mining.metadata_factory as mf
+import process_miner.mining.dataset_factory as dsf
 from process_miner.access.blueprints import logs, request_result, graphs, \
     metadata
 from process_miner.access.work.request_processing import RequestManager
@@ -54,13 +53,10 @@ def setup_components(config_file=_DEFAULT_CONFIG_FILE):
                                 filter_cfg['filter_expressions'],
                                 taggers)
 
-    log.info('setting up graph factory')
-    graph_factory = gf.GraphFactory(Path(global_cfg['log_directory']))
-
     log.info('setting up metadata factory')
-    metadata_factory = mf.MetadataFactory(Path(global_cfg['log_directory']))
+    dataset_factory = dsf.DatasetFactory(Path(global_cfg['log_directory']))
 
-    return cfg_loader, retriever, graph_factory, metadata_factory
+    return cfg_loader, retriever, dataset_factory
 
 
 def create_app():
@@ -69,7 +65,7 @@ def create_app():
     flask app.
     :return: the Flask object
     """
-    (_, retriever, graph_factory, metadata_factory) = setup_components()
+    (_, retriever, dataset_factory) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
     Swagger(process_miner_app)
@@ -87,9 +83,8 @@ def create_app():
     used_blueprints = [
         request_result.create_blueprint(request_manager),
         logs.create_blueprint(request_manager, cache, retriever),
-        graphs.create_blueprint(request_manager, cache, graph_factory,
-                                metadata_factory),
-        metadata.create_blueprint(request_manager, cache, metadata_factory)
+        graphs.create_blueprint(request_manager, cache, dataset_factory),
+        metadata.create_blueprint(request_manager, cache, dataset_factory)
     ]
     # register created blueprints on the flask app
     for blueprint in used_blueprints:

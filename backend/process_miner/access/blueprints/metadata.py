@@ -6,11 +6,12 @@ from flask_caching import Cache
 
 from process_miner.access.blueprints.request_result import get_state_response
 from process_miner.access.work.request_processing import RequestManager
-from process_miner.mining.metadata_factory import MetadataFactory
+from process_miner.mining import metadata
+from process_miner.mining.dataset_factory import DatasetFactory
 
 
 def create_blueprint(request_manager: RequestManager, cache: Cache,
-                     metadata_factory: MetadataFactory):
+                     dataset_factory: DatasetFactory):
     """
     Creates an instance of the blueprint.
     """
@@ -18,11 +19,13 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
 
     @cache.memoize()
     def _count_consent_type_counts():
-        return metadata_factory.get_consent_types_per_approach()
+        frame = dataset_factory.get_prepared_data_frame()
+        return metadata.get_consent_types_per_approach(frame)
 
     @cache.memoize()
     def _count_approach_type_counts():
-        return metadata_factory.get_approach_type_count()
+        frame = dataset_factory.get_prepared_data_frame()
+        return metadata.get_approach_type_count(frame)
 
     # pylint: disable=unused-variable
     @blueprint.route('consent/count')

@@ -78,4 +78,11 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   public resetPage(){
     window.location.reload();
   }
+
+  public reset(){
+    this.selectedApproach = 'None';
+    this.selectedConsent = 'None';
+    this.selectedDepth = 0.0;
+    this.loadGraph();
+  }
 }

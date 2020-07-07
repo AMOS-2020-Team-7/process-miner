@@ -7,6 +7,7 @@ from typing import Dict, List
 
 import pandas
 from pandas import DataFrame
+from pm4py.algo.filtering.pandas.attributes import attributes_filter
 from pm4py.objects.conversion.log import factory as event_log_factory
 from pm4py.objects.log.log import EventLog
 
@@ -99,3 +100,25 @@ def dataframe_has_value_in_column(frame: DataFrame, column: str, value: str) \
     :return: whether the value was found in the column
     """
     return value in frame[column].values
+
+
+def filter_related_entries(frame: DataFrame, session_field: str,
+                           attribute_field: str, values: List[str],
+                           keep: bool = True) -> DataFrame:
+    """
+    Filters related entries from a DataFrame based on the values of one of the
+    entries fields.
+    :param frame: the DataFrame
+    :param session_field: the field that marks related entries
+    :param attribute_field: the field that should be checked for desired values
+    :param values: the desired values
+    :param keep: whether the matching entries or non-matching entries should
+    be kept
+    :return: a filtered representation of the initial DataFrame
+    """
+    parameters = {
+        attributes_filter.Parameters.CASE_ID_KEY: session_field,
+        attributes_filter.Parameters.ATTRIBUTE_KEY: attribute_field,
+        attributes_filter.Parameters.POSITIVE: keep
+    }
+    return attributes_filter.apply(frame, values, parameters=parameters)

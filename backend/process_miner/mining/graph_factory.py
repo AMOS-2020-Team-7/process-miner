@@ -97,16 +97,12 @@ class GraphFactory:
         return create_heuristic_net(event_log, threshold, output_format)
 
     def _get_prepared_event_log(self, approach, consent_type):
-        frames = data_util.read_csv_files(self._source_directory)
+        frame = data_util.get_merged_csv_files(self._source_directory,
+                                               'timestamp')
         # filter by consent
         if consent_type:
-            def consent_is_present(frame):
-                return data_util.dataframe_has_value_in_column(frame,
-                                                               'consent',
-                                                               consent_type)
-            frames = [frame for frame in frames if consent_is_present(frame)]
-
-        frame = data_util.merge_and_sort_dataframes(frames, 'timestamp')
+            frame = data_util.filter_related_entries(frame, 'correlationId',
+                                                     'consent', [consent_type])
         # filter by approach
         if approach:
             frame = data_util.filter_by_field(frame, 'approach', approach)

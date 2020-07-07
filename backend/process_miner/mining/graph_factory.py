@@ -44,6 +44,16 @@ def create_directly_follows_graph(event_log: EventLog):
                          variant=variant)
 
 
+def save_directly_follows_graph(graph, path):
+    """
+    Saves a directly-follows graph to the specified path.
+    :param graph: the directly-follows graph
+    :param path: the path
+    """
+    log.info('saving directly follows graph %s to path %s', graph, path)
+    dfg_vis.save(graph, path)
+
+
 def create_heuristic_net(event_log: EventLog, threshold: float,
                          output_format: str):
     """
@@ -61,6 +71,16 @@ def create_heuristic_net(event_log: EventLog, threshold: float,
     return hn_vis.apply(heu_net=heu_net, parameters={
         hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: output_format
     })
+
+
+def save_heuristic_net(net, path):
+    """
+    Saves a heuristic net to the specified path.
+    :param net: the heuristic net
+    :param path: the path
+    """
+    log.info('saving heuristic net %s to path %s', net, path)
+    hn_vis.save(net, path)
 
 
 class GraphFactory:

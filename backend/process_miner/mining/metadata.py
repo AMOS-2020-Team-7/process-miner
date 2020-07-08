@@ -12,9 +12,19 @@ log = logging.getLogger(__name__)
 DEFAULT_MISSING_VALUE = 'not available'
 
 
+def get_sessions_per_error_type(frame: DataFrame):
+    """
+    Counts number of sessions each error type occurs in in the supplied
+    DataFrame.
+    :param frame:
+    :return:
+    """
+    return _count_values_per_session(frame, 'errortype')
+
+
 def get_sessions_per_consent_type(frame: DataFrame):
     """
-    Counts number of session each consent type occurs in in the supplied
+    Counts number of sessions each consent type occurs in in the supplied
     DataFrame.
     :param frame: the DataFrame
     :return: dict containing number of occurrences
@@ -24,7 +34,7 @@ def get_sessions_per_consent_type(frame: DataFrame):
 
 def get_sessions_per_bank(frame: DataFrame):
     """
-    Counts number of session each bank occurs in in the supplied DataFrame.
+    Counts number of sessions each bank occurs in in the supplied DataFrame.
     :param frame: the DataFrame
     :return: dict containing number of occurrences
     """
@@ -43,7 +53,6 @@ def _count_values_per_session(frame, column):
     return counts
 
 
-# TODO: look for possible code deduplication (see count_consents)
 def get_consent_type_count_per_approach(frame: DataFrame):
     """
     Extracts the count of different approaches per consent type.

@@ -12,8 +12,6 @@ from process_miner.access.blueprints.request_result import get_state_response
 from process_miner.access.work.request_processing import RequestManager
 from process_miner.mining import graphs, metadata
 from process_miner.mining.dataset_factory import DatasetFactory
-from process_miner.mining.metadata import get_sessions_per_consent_type, \
-    get_sessions_per_bank
 
 log = logging.getLogger(__name__)
 
@@ -73,11 +71,13 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         return _package_response(graph, session_count, additional_metadata)
 
     def _extract_metadata(frame):
-        consent_counts = get_sessions_per_consent_type(frame)
-        bank_counts = get_sessions_per_bank(frame)
+        consent_counts = metadata.get_sessions_per_consent_type(frame)
+        bank_counts = metadata.get_sessions_per_bank(frame)
+        error_counts = metadata.get_sessions_per_error_type(frame)
         return {
             'consents': consent_counts,
-            'banks': bank_counts
+            'banks': bank_counts,
+            'errors': error_counts
         }
 
     def _package_response(graph, session_count, additional_metadata):

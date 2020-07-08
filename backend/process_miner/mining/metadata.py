@@ -1,26 +1,66 @@
 """
 Module for extracting metadata from log data
 """
+import logging
+from collections import defaultdict
 from typing import Dict
 
 from pandas import DataFrame
 
+log = logging.getLogger(__name__)
 
-def _convert_to_multi_level_dict(raw_dict):
-    prepared_dict = {}
-    for (first_key, second_key), count in raw_dict.items():
-        prepared_dict.setdefault(first_key, {})[second_key] = count
-    return prepared_dict
+DEFAULT_MISSING_VALUE = 'not available'
 
 
-def get_consent_types_per_approach(frame: DataFrame):
+def get_sessions_per_consent_type(frame: DataFrame):
+    """
+    Counts number of session each consent type occurs in in the supplied
+    DataFrame.
+    :param frame: the DataFrame
+    :return: dict containing number of occurrences
+    """
+    consents_counts = defaultdict(int)
+    for _, session_frame in frame.groupby(['correlationId']):
+        consents = _get_unique_column_values('consent', session_frame)
+        # make sure we don't count a missing value if session has values
+        if len(consents) > 1:
+            consents.remove(DEFAULT_MISSING_VALUE)
+        for consent in consents:
+            consents_counts[consent] += 1
+
+    return consents_counts
+
+
+def get_banks(frame: DataFrame):
+    """
+    Extracts all banks that occur in the supplied DataFrame.
+    :param frame: the DataFrame
+    :return: a list containing the banks names
+    """
+    return _get_unique_column_values('bank', frame)
+
+
+# TODO: look for possible code deduplication (see count_consents)
+def get_consent_type_count_per_approach(frame: DataFrame):
     """
     Extracts the count of different approaches per consent type.
     :return: dict containing consent counts for each approach
     """
-    raw_dict = frame.pivot_table(index=['approach', 'consent'],
-                                 aggfunc='size').to_dict()
-    return _convert_to_multi_level_dict(raw_dict)
+    consents_counts_per_approach = defaultdict(lambda: defaultdict(int))
+    for session, session_frame in frame.groupby(['correlationId']):
+        approaches = _get_unique_column_values('approach', session_frame)
+        approach = approaches[0]
+        if len(approaches) > 1:
+            log.warning('more than one approach in session %s', session)
+            log.warning('using first occured approach %s', approach)
+        consents = _get_unique_column_values('consent', session_frame)
+        # make sure we don't count a missing value if session has values
+        if len(consents) > 1:
+            consents.remove(DEFAULT_MISSING_VALUE)
+        for consent in consents:
+            consents_counts_per_approach[approach][consent] += 1
+
+    return dict(consents_counts_per_approach)
 
 
 def get_consent_types(frame: DataFrame):
@@ -28,10 +68,7 @@ def get_consent_types(frame: DataFrame):
     Extracts all available consent types.
     :return: list of all available consent types
     """
-    types = set()
-    for value in get_consent_types_per_approach(frame).values():
-        types.update(value.keys())
-    return list(types)
+    return _get_unique_column_values('consent', frame)
 
 
 def get_approach_type_count(frame: DataFrame) -> Dict[str, int]:
@@ -50,4 +87,8 @@ def get_approach_types(frame: DataFrame):
     Extracts all available approach types.
     :return: list of all available approach types
     """
-    return list(get_approach_type_count(frame).keys())
+    return _get_unique_column_values('approach', frame)
+
+
+def _get_unique_column_values(column, frame):
+    return frame[column].unique().tolist()

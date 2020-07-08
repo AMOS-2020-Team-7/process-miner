@@ -189,7 +189,7 @@ tags:
       'error_sca_status_405':
         - 'error_sca_status_405'
 
-  banks:
+  bank:
     source: 'message'
     tag_all: true
     default_value: 'not available'

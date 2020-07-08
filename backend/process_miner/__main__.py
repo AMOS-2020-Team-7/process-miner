@@ -24,7 +24,7 @@ WITHOUT_ERROR = True
 
 
 def _main():
-    (cfg, retriever, _, _) = setup_components()
+    (cfg, retriever, _) = setup_components()
     log.info('starting log retrieval')
     retriever.retrieve_logs()
     global_cfg = cfg.get_section('global')

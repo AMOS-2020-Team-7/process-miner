@@ -19,25 +19,28 @@ def get_sessions_per_consent_type(frame: DataFrame):
     :param frame: the DataFrame
     :return: dict containing number of occurrences
     """
-    consents_counts = defaultdict(int)
-    for _, session_frame in frame.groupby(['correlationId']):
-        consents = _get_unique_column_values('consent', session_frame)
-        # make sure we don't count a missing value if session has values
-        if len(consents) > 1:
-            consents.remove(DEFAULT_MISSING_VALUE)
-        for consent in consents:
-            consents_counts[consent] += 1
-
-    return consents_counts
+    return _count_values_per_session(frame, 'consent')
 
 
-def get_banks(frame: DataFrame):
+def get_sessions_per_bank(frame: DataFrame):
     """
-    Extracts all banks that occur in the supplied DataFrame.
+    Counts number of session each bank occurs in in the supplied DataFrame.
     :param frame: the DataFrame
-    :return: a list containing the banks names
+    :return: dict containing number of occurrences
     """
-    return _get_unique_column_values('bank', frame)
+    return _count_values_per_session(frame, 'bank')
+
+
+def _count_values_per_session(frame, column):
+    counts = defaultdict(int)
+    for _, session_frame in frame.groupby(['correlationId']):
+        values = _get_unique_column_values(column, session_frame)
+        # make sure we don't count a missing value if session has values
+        if len(values) > 1:
+            values.remove(DEFAULT_MISSING_VALUE)
+        for value in values:
+            counts[value] += 1
+    return counts
 
 
 # TODO: look for possible code deduplication (see count_consents)

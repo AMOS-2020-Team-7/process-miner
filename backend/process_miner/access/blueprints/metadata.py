@@ -18,12 +18,12 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
     blueprint = Blueprint('metadata', __name__, url_prefix='/metadata')
 
     @cache.memoize()
-    def _count_consent_type_counts():
+    def _get_consent_types_per_approach():
         frame = dataset_factory.get_prepared_data_frame()
-        return metadata.get_consent_types_per_approach(frame)
+        return metadata.get_consent_type_count_per_approach(frame)
 
     @cache.memoize()
-    def _count_approach_type_counts():
+    def _get_approach_type_counts():
         frame = dataset_factory.get_prepared_data_frame()
         return metadata.get_approach_type_count(frame)
 
@@ -42,7 +42,8 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
               schema:
                 $ref: '#/definitions/RequestResponse'
         """
-        ticket = request_manager.submit_ticketed(_count_consent_type_counts)
+        ticket = request_manager.submit_ticketed(
+            _get_consent_types_per_approach)
         return get_state_response(ticket)
 
     @blueprint.route('approaches/count')
@@ -60,7 +61,7 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
               schema:
                 $ref: '#/definitions/RequestResponse'
         """
-        ticket = request_manager.submit_ticketed(_count_approach_type_counts)
+        ticket = request_manager.submit_ticketed(_get_approach_type_counts)
         return get_state_response(ticket)
 
     return blueprint

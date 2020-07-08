@@ -24,12 +24,11 @@ def get_merged_csv_files(source: Path, sort_column: str = None) -> DataFrame:
     :param sort_column: column the resulting DataFrame should be sorted by
     :return: the resulting DataFrame
     """
-    csv_files = read_csv_files(source)
-    log.info('combining %s files from path %s', len(csv_files), source)
+    csv_files = get_csv_files(source)
     return merge_and_sort_dataframes(csv_files, sort_column)
 
 
-def read_csv_files(source: Path) -> List[DataFrame]:
+def get_csv_files(source: Path) -> List[DataFrame]:
     """
     Reads all CSV files from the specified path to DataFrames.
     :param source: the source directory
@@ -51,6 +50,7 @@ def merge_and_sort_dataframes(csv_files: List[DataFrame],
     :param sort_column: the column to sort by
     :return: the resulting DataFrame
     """
+    log.info('combining %s files', len(csv_files))
     frame = pandas.concat(csv_files)
     if not sort_column:
         return frame

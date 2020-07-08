@@ -7,10 +7,25 @@ import pm4py.algo.discovery.dfg.algorithm as dfg_alg
 import pm4py.algo.discovery.heuristics.algorithm as hn_alg
 import pm4py.visualization.dfg.visualizer as dfg_vis
 import pm4py.visualization.heuristics_net.visualizer as hn_vis
+from pandas import DataFrame
 from pm4py.objects.log.log import EventLog
 from pm4py.util import constants
 
+import process_miner.mining.util.data as data_util
+
 log = logging.getLogger(__name__)
+
+COLUMN_MAPPINGS = {
+    'timestamp': 'time:timestamp',
+    'correlationId': 'case:concept:name',
+    'label': 'concept:name',
+    'approach': 'case:approach'
+}
+
+
+def _convert_data_frame_to_event_log(frame):
+    data_util.rename_columns(frame, COLUMN_MAPPINGS)
+    return data_util.convert_to_log(frame)
 
 
 def create_directly_follows_graph(event_log: EventLog):
@@ -44,15 +59,16 @@ def save_directly_follows_graph(graph, path):
     dfg_vis.save(graph, path)
 
 
-def create_heuristic_net(event_log: EventLog, threshold: float = 0.0,
+def create_heuristic_net(frame: DataFrame, threshold: float = 0.0,
                          output_format: str = 'svg'):
     """
-    Creates a Heuristic Net from the supplied EventLog.
-    :param event_log: the EventLog
+    Creates a Heuristic Net from the supplied DataFrame.
+    :param frame: the DataFrame
     :param threshold: the threshold to use during creation
     :param output_format: desired output format
     :return: object representing the created graph
     """
+    event_log = _convert_data_frame_to_event_log(frame)
     log.info('creating heuristic net with threshold %s', threshold)
     heu_net = hn_alg.apply_heu(log=event_log, parameters={
         hn_alg.Variants.CLASSIC.value.Parameters.DEPENDENCY_THRESH: threshold

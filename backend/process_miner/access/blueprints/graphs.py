@@ -12,6 +12,8 @@ from process_miner.access.blueprints.request_result import get_state_response
 from process_miner.access.work.request_processing import RequestManager
 from process_miner.mining import graphs, metadata
 from process_miner.mining.dataset_factory import DatasetFactory
+from process_miner.mining.metadata import get_sessions_per_consent_type, \
+    get_banks
 
 log = logging.getLogger(__name__)
 
@@ -57,26 +59,39 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
     def _create_dfg(approach):
         event_log = dataset_factory.get_prepared_event_log(approach)
         graph = graphs.create_directly_follows_graph(event_log)
-        return _package_response(graph)
+        return _package_response(graph, 0, {})
 
     @cache.memoize()
     def _create_heuristic_net(approach, consent_type, threshold,
                               output_format):
-        event_log = dataset_factory.get_prepared_event_log(approach,
-                                                           consent_type)
-        graph = graphs.create_heuristic_net(event_log, threshold,
+        frame = dataset_factory.get_prepared_data_frame(approach,
+                                                        consent_type)
+        session_count = len(frame.groupby('correlationId'))
+        additional_metadata = _extract_metadata(frame)
+        graph = graphs.create_heuristic_net(frame, threshold,
                                             output_format)
-        return _package_response(graph)
+        return _package_response(graph, session_count, additional_metadata)
 
-    def _package_response(graph):
+    def _extract_metadata(frame):
+        consent_counts = get_sessions_per_consent_type(frame)
+        banks = get_banks(frame)
+        return {
+            'consents': consent_counts,
+            'banks': banks
+        }
+
+    def _package_response(graph, session_count, additional_metadata):
         uri = datauri.DataURI.from_file(graph.name, 'utf-8')
         # make sure there are no newlines/carriage returns in the uri
         sanitized_uri = uri.replace('\n', '').replace('\r', '')
         return {
-            'image': sanitized_uri
+            'image': sanitized_uri,
+            'numberOfSessions': session_count,
+            'metadata': additional_metadata
         }
 
     # pylint: disable=unused-variable
+    # TODO remove dfg stuff if not required in frontend
     @blueprint.route('dfg/get')
     def get_dfg():
         """

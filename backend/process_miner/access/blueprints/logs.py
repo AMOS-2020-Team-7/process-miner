@@ -2,8 +2,9 @@
 Blueprint module that allows triggering log retrieval from Graylog
 """
 import logging
+from distutils.util import strtobool
 
-from flask import Blueprint
+from flask import Blueprint, request
 
 from process_miner.access.blueprints.request_result import get_state_response
 
@@ -16,9 +17,11 @@ def create_blueprint(executor, cache, log_retriever):
     """
     blueprint = Blueprint('logs', __name__, url_prefix='/logs')
 
-    def _refresh_logs():
+    def _refresh_logs(force: bool):
         log.info('log data retrieval triggered')
-        log_retriever.retrieve_logs()
+        if force:
+            log.info('forcing re-download of all logs')
+        log_retriever.retrieve_logs(force)
         log.info('clearing cache')
         cache.clear()  # TODO use a more fine grained approach?
         return {}
@@ -42,7 +45,8 @@ def create_blueprint(executor, cache, log_retriever):
               schema:
                 $ref: '#/definitions/RequestResponse'
         """
-        ticket = executor.submit_ticketed(_refresh_logs)
+        force = request.args.get('force', False, strtobool)
+        ticket = executor.submit_ticketed(_refresh_logs, force)
         return get_state_response(ticket)
 
     return blueprint

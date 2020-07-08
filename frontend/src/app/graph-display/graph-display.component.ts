@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { graphviz } from 'd3-graphviz';
 
 @Component({
@@ -6,13 +6,13 @@ import { graphviz } from 'd3-graphviz';
   templateUrl: './graph-display.component.html',
   styleUrls: ['./graph-display.component.css']
 })
-export class GraphDisplayComponent implements OnInit {
+export class GraphDisplayComponent implements OnChanges {
 
   @Input() dotString: string;
 
   constructor() { }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     graphviz('#graph')
       .width(1000)
       .height(1000)
@@ -20,5 +20,4 @@ export class GraphDisplayComponent implements OnInit {
       .scale(0.5)
       .renderDot(this.dotString);
   }
-
 }

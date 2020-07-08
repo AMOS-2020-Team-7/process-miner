@@ -65,14 +65,12 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   public loadGraph() {
     // tslint:disable-next-line:max-line-length
     this.dataService.requestData<ImageResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, consent_type: this.selectedConsent, format: 'dot'}).subscribe(data => {
-      this.loadNewImageToImageViewer(JSON.stringify(data.image));
+      this.loadNewImageToImageViewer(data.image);
     });
   }
 
   public loadNewImageToImageViewer(encodedImage){
-        this.imageEncodedInBase64 = encodedImage.substr(1);
-        this.imageEncodedInBase64 = this.imageEncodedInBase64.slice(0, -1);
-        this.dotString = atob(this.imageEncodedInBase64);
+    this.dotString = atob(encodedImage.split(',')[1]);
   }
 
   public resetPage(){

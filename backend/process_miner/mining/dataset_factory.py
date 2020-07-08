@@ -19,8 +19,8 @@ class DatasetFactory:
         return f'{self.__class__.__name__} [' \
                f'_source_directory <{self._source_directory}>]'
 
-    def get_prepared_data_frame(self, approach=None, consent_type=None) \
-            -> DataFrame:
+    def get_prepared_data_frame(self, approach=None, consent_type=None,
+                                error_type=None) -> DataFrame:
         """
         Creates a DataFrame for graph creation or metadata extraction.
         :param approach: approach that should be used (all if none specified)
@@ -37,4 +37,9 @@ class DatasetFactory:
         # filter by approach
         if approach:
             frame = data_util.filter_by_field(frame, 'approach', approach)
+
+        # filter by consent
+        if error_type:
+            frame = data_util.filter_related_entries(frame, 'correlationId',
+                                                     'errortype', [error_type])
         return frame

@@ -35,7 +35,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
-  dotString:string;
+  dotString: string;
 
   approaches: Approach[] = [
     {item: 'REDIRECT', viewValue: 'Redirect'},
@@ -64,7 +64,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<ImageResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, consent_type: this.selectedConsent, format: "dot"}).subscribe(data => {
+    this.dataService.requestData<ImageResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, consent_type: this.selectedConsent, format: 'dot'}).subscribe(data => {
       this.loadNewImageToImageViewer(JSON.stringify(data.image));
     });
   }

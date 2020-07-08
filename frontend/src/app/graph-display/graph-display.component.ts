@@ -8,12 +8,12 @@ import { graphviz } from 'd3-graphviz';
 })
 export class GraphDisplayComponent implements OnInit {
 
-  @Input() dotString:string;
+  @Input() dotString: string;
 
   constructor() { }
 
   ngOnInit(): void {
-    graphviz("#graph")
+    graphviz('#graph')
       .width(1000)
       .height(1000)
       .fit(true)

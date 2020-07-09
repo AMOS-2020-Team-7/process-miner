@@ -90,4 +90,7 @@ def create_app():
     for blueprint in used_blueprints:
         process_miner_app.register_blueprint(blueprint)
 
+    log.info('updating log storage contents')
+    retriever.retrieve_logs()
+
     return process_miner_app

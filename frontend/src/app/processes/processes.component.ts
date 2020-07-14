@@ -60,7 +60,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
      {item: 'Error2', viewValue: 'Error2'},
      {item: 'Error3', viewValue: 'Error3'},
      {item: 'Error4', viewValue: 'Error4'}
-  ]
+  ];
   encodedImage: any;
 
   constructor(private dataService: DataService, private sanitizer: DomSanitizer) {

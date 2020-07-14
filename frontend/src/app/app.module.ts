@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
-import { HomeComponent } from './home/home.component';
 import { ProcessesComponent } from './processes/processes.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -26,7 +25,6 @@ import { GraphDisplayComponent } from './graph-display/graph-display.component';
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     ProcessesComponent,
     GraphDisplayComponent
   ],

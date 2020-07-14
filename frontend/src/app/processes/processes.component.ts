@@ -24,8 +24,10 @@ export interface Errortype {
   viewValue: string;
 }
 
-interface ImageResult {
+interface QueryResult {
   image: string;
+  metadata: any;
+  numberOfSessions: number;
 }
 
 
@@ -55,12 +57,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     {item: 'get_accounts', viewValue: 'Get Accounts'},
     {item: 'get_transactions', viewValue: 'Get Transactions'}
   ];
-  errors: Errortype[] = [
-     {item: 'Error1', viewValue: 'Error1'},
-     {item: 'Error2', viewValue: 'Error2'},
-     {item: 'Error3', viewValue: 'Error3'},
-     {item: 'Error4', viewValue: 'Error4'}
-  ];
+  errors: Errortype[] = [];
   encodedImage: any;
 
   constructor(private dataService: DataService, private sanitizer: DomSanitizer) {
@@ -79,9 +76,16 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<ImageResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, consent_type: this.selectedConsent, format: 'dot'}).subscribe(data => {
+    this.dataService.requestData<QueryResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, consent_type: this.selectedConsent, format: 'dot'}).subscribe(data => {
       this.loadNewImageToImageViewer(data.image);
+      this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });
+  }
+
+  public loadErrors(responseErrors, responseNumberOfSessions){    
+    for (var error in responseErrors) {
+          this.errors.push({viewValue: error + "       -  " + ((responseErrors[error] * 100) /responseNumberOfSessions).toFixed(2)+ "%", item: error});
+      } 
   }
 
   public loadNewImageToImageViewer(encodedImage){

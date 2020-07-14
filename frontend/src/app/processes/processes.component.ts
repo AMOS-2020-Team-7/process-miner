@@ -19,18 +19,27 @@ export interface Consent {
   viewValue: string;
 }
 
+export interface Errortype {
+  item: string;
+  viewValue: string;
+}
+
 interface ImageResult {
   image: string;
 }
+
 
 @Component({
   selector: 'app-processes',
   templateUrl: './processes.component.html',
   styleUrls: ['./processes.component.css']
 })
+
+
 export class ProcessesComponent implements OnInit, OnDestroy {
   selectedApproach = 'None';
   selectedConsent = 'None';
+  selectedError = 'None';
   selectedDepth = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
@@ -46,6 +55,12 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     {item: 'get_accounts', viewValue: 'Get Accounts'},
     {item: 'get_transactions', viewValue: 'Get Transactions'}
   ];
+  errors: Errortype[] = [
+     {item: 'Error1', viewValue: 'Error1'},
+     {item: 'Error2', viewValue: 'Error2'},
+     {item: 'Error3', viewValue: 'Error3'},
+     {item: 'Error4', viewValue: 'Error4'}
+  ]
   encodedImage: any;
 
   constructor(private dataService: DataService, private sanitizer: DomSanitizer) {
@@ -81,6 +96,11 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.selectedApproach = 'None';
     this.selectedConsent = 'None';
     this.selectedDepth = 0.0;
+    this.selectedError = 'None';
     this.loadGraph();
   }
+
+
+
+
 }

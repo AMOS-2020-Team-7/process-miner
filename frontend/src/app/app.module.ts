@@ -21,6 +21,7 @@ import {MatSliderModule} from '@angular/material/slider';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { GraphDisplayComponent } from './graph-display/graph-display.component';
+import {MatRadioModule} from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { GraphDisplayComponent } from './graph-display/graph-display.component';
     MatGridListModule,
     MatSliderModule,
     FlexLayoutModule,
-    FormsModule
+    FormsModule,
+    MatRadioModule
   ],
   providers: [],
   bootstrap: [AppComponent]

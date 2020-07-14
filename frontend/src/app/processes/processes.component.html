@@ -3,7 +3,7 @@
 <head>
 </head>
 <body>
-    <mat-grid-list cols="2" gutterSize="10px">
+    <mat-grid-list cols="2" gutterSize="10px" class="grid">
         <mat-grid-tile [colspan]="1" [rowspan]="1">
             <div class='container-img'>
                 <p class='instructions-text'>
@@ -12,7 +12,7 @@
                 <app-graph-display [dotString]="dotString"></app-graph-display>
             </div>
         </mat-grid-tile>
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <mat-grid-tile [colspan]="1" [rowspan]="2">
             <div class="container container-controls" fxLayout="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="stretch">
                 <div fxFlex="33%" class="controls-main-selectors">
                     <div fxLayout="column" fxLayoutAlign="stretch">
@@ -78,6 +78,18 @@
                 <div fxFlex="33%" class="controls-main-selectors">
                     Variants
                 </div>
+                <mat-divider></mat-divider>
+                <div fxFlex="33%" class="controls-main-selectors-label">
+                    ERRORS
+                </div>
+              <mat-radio-group
+                aria-labelledby="example-radio-group-label"
+                class="example-radio-group"
+                [(ngModel)]="selectedError">
+                <mat-radio-button class="example-radio-button" *ngFor="let error of errors" [value]="error.item">
+                  {{error.viewValue}}
+                </mat-radio-button>
+              </mat-radio-group>
                 <!-- Load, Reset buttons -->
                 <div fxFlex="20%">
                   <div fxLayout="row" fxLayoutAlign="left">

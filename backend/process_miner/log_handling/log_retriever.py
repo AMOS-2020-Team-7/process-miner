@@ -7,6 +7,7 @@ import os
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
+from threading import Lock
 from typing import List, Dict, Tuple
 
 import process_miner.log_handling.graylog_access as ga
@@ -52,13 +53,15 @@ class LogRetriever:
                                     filter_expressions)
         self.target_dir = Path(target_dir)
         self.log_taggers = log_taggers
+        self._folder_lock = Lock()
 
     def __str__(self) -> str:
         return f'{self.__class__.__name__} [' \
                f'graylog_access <{self.graylog_access}>, ' \
                f'log_filter <{self.log_filter}>, ' \
                f'target_dir <{self.target_dir}>, ' \
-               f'log_taggers <{self.log_taggers}>]'
+               f'log_taggers <{self.log_taggers}>, ' \
+               f'_folder_lock <{self._folder_lock}>]'
 
     def retrieve_logs(self, force: bool = False) -> None:
         """
@@ -67,38 +70,42 @@ class LogRetriever:
         CSV files.
         :param force: force download of already saved logs
         """
-        self._prepare_target_dir()
-        if force:
-            self._clear_logs()
+        with self._folder_lock:
+            self._prepare_target_dir()
+            if force:
+                self._clear_logs()
 
-        last_retrieved_timestamp = self._load_last_included_timestamp()
-        first_timestamp = _get_advanced_timestamp(last_retrieved_timestamp)
-        lines = self.graylog_access.get_log_entries(
-            first_timestamp, EXPORTED_FIELDS)
+            last_retrieved_timestamp = self._load_last_included_timestamp()
+            first_timestamp = _get_advanced_timestamp(last_retrieved_timestamp)
+            lines = self.graylog_access.get_log_entries(
+                first_timestamp, EXPORTED_FIELDS)
 
-        if not lines:
-            log.info("no (new) log entries found")
-            return
+            if not lines:
+                log.info("no (new) log entries found")
+                return
 
-        fields, sorted_lines = self._convert_log_lines_to_dict(lines)
-        # filter log entries before they get processed any further
-        self.log_filter.filter_log_entries(sorted_lines)
-        if not sorted_lines:
-            log.info('no new entries after filtering')
-            return
+            fields, sorted_lines = self._convert_log_lines_to_dict(lines)
+            # filter log entries before they get processed any further
+            self.log_filter.filter_log_entries(sorted_lines)
+            if not sorted_lines:
+                log.info('no new entries after filtering')
+                return
 
-        # organize/collect related log entries
-        grouped_lines, last_timestamp = self._process_csv_lines(sorted_lines)
+            # organize/collect related log entries
+            grouped_lines, last_timestamp = self._process_csv_lines(
+                sorted_lines
+            )
 
-        # add fields based on log tag configuration
-        for tagger in self.log_taggers:
-            for entries in grouped_lines.values():
-                tagger.tag_entries(entries)
-            # make sure each taggers field is later written to the CSV files
-            fields.append(tagger.target_field)
+            # add fields based on log tag configuration
+            for tagger in self.log_taggers:
+                for entries in grouped_lines.values():
+                    tagger.tag_entries(entries)
+                # make sure each taggers field is later written to the CSV
+                # files
+                fields.append(tagger.target_field)
 
-        self._store_logs_as_csv(grouped_lines, fields)
-        self._store_last_included_timestamp(last_timestamp)
+            self._store_logs_as_csv(grouped_lines, fields)
+            self._store_last_included_timestamp(last_timestamp)
 
     def _prepare_target_dir(self) -> None:
         log.info('preparing target directory "%s"', self.target_dir)

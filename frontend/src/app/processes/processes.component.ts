@@ -41,7 +41,7 @@ interface QueryResult {
 export class ProcessesComponent implements OnInit, OnDestroy {
   selectedApproach = 'None';
   selectedConsent = 'None';
-  selectedError = 'None';
+  selectedError = '';
   selectedDepth = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
@@ -76,16 +76,18 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<QueryResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, consent_type: this.selectedConsent, format: 'dot'}).subscribe(data => {
+    this.dataService.requestData<QueryResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, consent_type: this.selectedConsent, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });
   }
 
   public loadErrors(responseErrors, responseNumberOfSessions){    
+    this.errors = [];
     for (var error in responseErrors) {
           this.errors.push({viewValue: error + "       -  " + ((responseErrors[error] * 100) /responseNumberOfSessions).toFixed(2)+ "%", item: error});
       } 
+    this.selectedError = '';
   }
 
   public loadNewImageToImageViewer(encodedImage){
@@ -100,7 +102,8 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.selectedApproach = 'None';
     this.selectedConsent = 'None';
     this.selectedDepth = 0.0;
-    this.selectedError = 'None';
+    this.selectedError = '';
+
     this.loadGraph();
   }
 

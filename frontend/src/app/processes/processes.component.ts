@@ -82,11 +82,13 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public loadErrors(responseErrors, responseNumberOfSessions){    
+  public loadErrors(responseErrors, responseNumberOfSessions){
     this.errors = [];
-    for (var error in responseErrors) {
-          this.errors.push({viewValue: error + "       -  " + ((responseErrors[error] * 100) /responseNumberOfSessions).toFixed(2)+ "%", item: error});
-      } 
+    let percentage: string;
+    for (const error of Object.keys(responseErrors)) {
+          percentage = ((responseErrors[error] * 100) / responseNumberOfSessions).toFixed(2);
+          this.errors.push({viewValue: error + '       -  ' + percentage + '%', item: error});
+    }
     this.selectedError = '';
   }
 

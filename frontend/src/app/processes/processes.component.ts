@@ -76,7 +76,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<QueryResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, consent_type: this.selectedMethod, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
+    this.dataService.requestData<QueryResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, method_type: this.selectedMethod, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });

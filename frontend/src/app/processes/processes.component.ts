@@ -39,8 +39,8 @@ interface QueryResult {
 
 
 export class ProcessesComponent implements OnInit, OnDestroy {
-  selectedApproach = 'None';
-  selectedMethod = 'None';
+  selectedApproach = '';
+  selectedMethod = '';
   selectedError = '';
   selectedDepth = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();

@@ -18,6 +18,7 @@ log = logging.getLogger(__name__)
 ARG_APPROACH = 'approach'
 ARG_METHOD_TYPE = 'method_type'
 ARG_ERROR_TYPE = 'error_type'
+ARG_BANK = 'bank'
 
 
 def create_blueprint(request_manager: RequestManager, cache: Cache,
@@ -61,11 +62,12 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         return _package_response(graph, 0, {})
 
     @cache.memoize()
-    def _create_heuristic_net(approach, method_type, error_type,
+    def _create_heuristic_net(approach, method_type, error_type, bank,
                               output_format):
         frame = dataset_factory.get_prepared_data_frame(approach,
                                                         method_type,
-                                                        error_type)
+                                                        error_type,
+                                                        bank)
         session_count = len(frame.groupby('correlationId'))
         additional_metadata = _extract_metadata(frame)
         graph = graphs.create_heuristic_net(frame, output_format)
@@ -129,6 +131,13 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
             example: 'error_service_unavailable'
             description: the error type the data used for creating the graph
                          should be limited to
+          - name: bank
+            in: query
+            type: string
+            default: ''
+            example: 'ADORSYS'
+            description: the bank the data used for creating the graph
+                         should be limited to
           - name: format
             in: query
             type: string
@@ -143,11 +152,12 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         approach = _get_checked_approach()
         method_type = _get_checked_method()
         error_type = request.args.get(ARG_ERROR_TYPE, '', str)
+        bank = request.args.get(ARG_BANK, '', str)
         # TODO check output_format parameter
         output_format = request.args.get('format', 'svg', str).lower()
         ticket = request_manager.submit_ticketed(_create_heuristic_net,
                                                  approach, method_type,
-                                                 error_type,
+                                                 error_type, bank,
                                                  output_format)
         return get_state_response(ticket)
 

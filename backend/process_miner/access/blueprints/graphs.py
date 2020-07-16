@@ -18,7 +18,6 @@ log = logging.getLogger(__name__)
 ARG_APPROACH = 'approach'
 ARG_METHOD_TYPE = 'method_type'
 ARG_ERROR_TYPE = 'error_type'
-ARG_THRESHOLD = 'threshold'
 
 
 def create_blueprint(request_manager: RequestManager, cache: Cache,
@@ -62,15 +61,14 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         return _package_response(graph, 0, {})
 
     @cache.memoize()
-    def _create_heuristic_net(approach, method_type, error_type, threshold,
+    def _create_heuristic_net(approach, method_type, error_type,
                               output_format):
         frame = dataset_factory.get_prepared_data_frame(approach,
                                                         method_type,
                                                         error_type)
         session_count = len(frame.groupby('correlationId'))
         additional_metadata = _extract_metadata(frame)
-        graph = graphs.create_heuristic_net(frame, threshold,
-                                            output_format)
+        graph = graphs.create_heuristic_net(frame, output_format)
         return _package_response(graph, session_count, additional_metadata)
 
     def _extract_metadata(frame):
@@ -131,12 +129,6 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
             example: 'error_service_unavailable'
             description: the error type the data used for creating the graph
                          should be limited to
-          - name: threshold
-            in: query
-            type: float
-            minimum: 0
-            maximum: 1
-            default: '0'
           - name: format
             in: query
             type: string
@@ -151,12 +143,11 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         approach = _get_checked_approach()
         method_type = _get_checked_method()
         error_type = request.args.get(ARG_ERROR_TYPE, '', str)
-        threshold = request.args.get(ARG_THRESHOLD, 0.0, float)
         # TODO check output_format parameter
         output_format = request.args.get('format', 'svg', str).lower()
         ticket = request_manager.submit_ticketed(_create_heuristic_net,
                                                  approach, method_type,
-                                                 error_type, threshold,
+                                                 error_type,
                                                  output_format)
         return get_state_response(ticket)
 

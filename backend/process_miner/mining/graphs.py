@@ -59,21 +59,16 @@ def save_directly_follows_graph(graph, path):
     dfg_vis.save(graph, path)
 
 
-def create_heuristic_net(frame: DataFrame, threshold: float = 0.0,
-                         output_format: str = 'svg'):
+def create_heuristic_net(frame: DataFrame, output_format: str = 'svg'):
     """
     Creates a Heuristic Net from the supplied DataFrame.
     :param frame: the DataFrame
-    :param threshold: the threshold to use during creation
     :param output_format: desired output format
     :return: object representing the created graph
     """
     event_log = _convert_data_frame_to_event_log(frame)
-    log.info('creating heuristic net with threshold %s', threshold)
-    heu_net = hn_alg.apply_heu(log=event_log, parameters={
-        hn_alg.Variants.CLASSIC.value.Parameters.DEPENDENCY_THRESH: threshold
-    })
-
+    log.info('creating heuristic net')
+    heu_net = hn_alg.apply_heu(log=event_log)
     return hn_vis.apply(heu_net=heu_net, parameters={
         hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: output_format
     })

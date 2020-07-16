@@ -22,7 +22,7 @@ tags:
         - 'approach=OAUTH'
       'decoupled':
         - 'approach=DECOUPLED'
-  consent:
+  method:
     source: 'message'
     tag_all: false
     default_value: 'not available'

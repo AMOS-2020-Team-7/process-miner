@@ -3,7 +3,7 @@
 
 MODULE_DIR=process_miner
 TEST_DIR=tests
-SOURCES = $(shell find $(TEST_DIR) $(MODULE_DIR) -name '*.py')
+SOURCES = tests process_miner
 
 all: setup-dev-env check run
 

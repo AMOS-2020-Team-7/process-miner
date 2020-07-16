@@ -47,19 +47,19 @@
                 </div>
                 <mat-divider></mat-divider>
                 <div fxFlex="33%" class="controls-main-selectors">
-                    <!-- Consent section -->
+                    <!-- Method section -->
                     <div fxLayout="column" fxLayoutAlign="stretch">
                         <div fxFlex="25%">
                             <div fxLayout="row" fxLayoutAlign="center" >
                                 <div fxFlex="25%"  class="controls-main-selectors-labels">
-                                    Consent
+                                    Method
                                 </div>
                                 <div fxFlex="75%">
                                     <mat-form-field floatLabel='never'>
-                                        <mat-label>Select consent </mat-label>
-                                        <mat-select [(ngModel)]="selectedConsent">
-                                            <mat-option *ngFor="let consent of consents" [value]="consent.item">
-                                                {{ consent.viewValue }}
+                                        <mat-label>Select method </mat-label>
+                                        <mat-select [(ngModel)]="selectedMethod">
+                                            <mat-option *ngFor="let method of methods" [value]="method.item">
+                                                {{ method.viewValue }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -81,7 +81,7 @@
                 <mat-divider></mat-divider>
                 <div fxFlex="33%" class="controls-main-selectors-label">
                     ERRORS
-                
+
               <mat-radio-group
                 aria-labelledby="example-radio-group-label"
                 class="example-radio-group"

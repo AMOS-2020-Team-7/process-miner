@@ -16,7 +16,7 @@ from process_miner.mining.dataset_factory import DatasetFactory
 log = logging.getLogger(__name__)
 
 ARG_APPROACH = 'approach'
-ARG_CONSENT_TYPE = 'consent_type'
+ARG_METHOD_TYPE = 'method_type'
 ARG_ERROR_TYPE = 'error_type'
 ARG_THRESHOLD = 'threshold'
 
@@ -37,14 +37,14 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         frame = dataset_factory.get_prepared_data_frame()
         return metadata.get_approach_types(frame)
 
-    def _get_checked_consent():
-        valid_consent_types = _wrapper_get_consent_types()
-        return _get_checked_str_arg(ARG_CONSENT_TYPE, valid_consent_types, '')
+    def _get_checked_method():
+        valid_method_types = _wrapper_get_method_types()
+        return _get_checked_str_arg(ARG_METHOD_TYPE, valid_method_types, '')
 
     @cache.memoize()
-    def _wrapper_get_consent_types():
+    def _wrapper_get_method_types():
         frame = dataset_factory.get_prepared_data_frame()
-        return metadata.get_consent_types(frame)
+        return metadata.get_method_types(frame)
 
     def _get_checked_str_arg(arg: str, valid_values: List[str],
                              default_value: str):
@@ -62,10 +62,10 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         return _package_response(graph, 0, {})
 
     @cache.memoize()
-    def _create_heuristic_net(approach, consent_type, error_type, threshold,
+    def _create_heuristic_net(approach, method_type, error_type, threshold,
                               output_format):
         frame = dataset_factory.get_prepared_data_frame(approach,
-                                                        consent_type,
+                                                        method_type,
                                                         error_type)
         session_count = len(frame.groupby('correlationId'))
         additional_metadata = _extract_metadata(frame)
@@ -74,11 +74,11 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         return _package_response(graph, session_count, additional_metadata)
 
     def _extract_metadata(frame):
-        consent_counts = metadata.get_sessions_per_consent_type(frame)
+        method_counts = metadata.get_sessions_per_method_type(frame)
         bank_counts = metadata.get_sessions_per_bank(frame)
         error_counts = metadata.get_sessions_per_error_type(frame)
         return {
-            'consents': consent_counts,
+            'methods': method_counts,
             'banks': bank_counts,
             'errors': error_counts
         }
@@ -117,12 +117,12 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
             example: 'embedded'
             description: the approach the data used for creating the graph
                          should be limited to
-          - name: consent_type
+          - name: method_type
             in: query
             type: string
             default: ''
             example: 'get_transactions'
-            description: the consent type the data used for creating the graph
+            description: the method type the data used for creating the graph
                          should be limited to
           - name: error_type
             in: query
@@ -149,13 +149,13 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
               $ref: '#/definitions/RequestResponse'
         """
         approach = _get_checked_approach()
-        consent_type = _get_checked_consent()
+        method_type = _get_checked_method()
         error_type = request.args.get(ARG_ERROR_TYPE, '', str)
         threshold = request.args.get(ARG_THRESHOLD, 0.0, float)
         # TODO check output_format parameter
         output_format = request.args.get('format', 'svg', str).lower()
         ticket = request_manager.submit_ticketed(_create_heuristic_net,
-                                                 approach, consent_type,
+                                                 approach, method_type,
                                                  error_type, threshold,
                                                  output_format)
         return get_state_response(ticket)

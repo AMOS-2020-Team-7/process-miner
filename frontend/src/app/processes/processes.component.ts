@@ -49,8 +49,8 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   dotString: string;
 
   approaches: Approach[] = [
-    {item: 'REDIRECT', viewValue: 'Redirect'},
-    {item: 'EMBEDDED', viewValue: 'Embedded'}
+    {item: 'redirect', viewValue: 'Redirect'},
+    {item: 'embedded', viewValue: 'Embedded'}
   ];
   methods: Method[] = [
     {item: 'all', viewValue: 'All'},

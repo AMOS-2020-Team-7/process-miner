@@ -9,6 +9,12 @@ declare const wheelzoom: any;
 
 const REST_API_HN = 'http://127.0.0.1:5000/graphs/hn/get';
 
+const ARG_APPROACH = 'approach';
+const ARG_THRESHOLD = 'threshold';
+const ARG_METHOD_TYPE = 'method_type';
+const ARG_ERROR_TYPE = 'error_type';
+const ARG_FORMAT = 'format';
+
 export interface Approach {
   item: string;
   viewValue: string;
@@ -74,9 +80,27 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
+  private getParameters() {
+    const parameters = {};
+    parameters[ARG_FORMAT] = 'dot';
+    if (this.selectedApproach) {
+      parameters[ARG_APPROACH] = this.selectedApproach;
+    }
+    if (this.selectedDepth) {
+      parameters[ARG_THRESHOLD] = this.selectedDepth;
+    }
+    if (this.selectedMethod) {
+      parameters[ARG_METHOD_TYPE] = this.selectedMethod;
+    }
+    if (this.selectedError) {
+      parameters[ARG_ERROR_TYPE] = this.selectedError;
+    }
+    return parameters;
+  }
+
   public loadGraph() {
-    // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<QueryResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, method_type: this.selectedMethod, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
+    const parameters = this.getParameters();
+    this.dataService.requestData<QueryResult>(REST_API_HN, parameters).subscribe(data => {
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });

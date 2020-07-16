@@ -1,5 +1,6 @@
 global:
   log_directory: 'retrieved_logs'
+  reload_interval: 60
   graph_directory: 'common_path'
 log_retriever:
   url: 'INSERT_GRAYLOG_URL_HERE'

@@ -3,6 +3,8 @@ Module responsible for initializing the flask app that provides the backend
 service of the process miner.
 """
 import logging
+import threading
+import time
 from pathlib import Path
 
 from flasgger import Swagger
@@ -65,7 +67,7 @@ def create_app():
     flask app.
     :return: the Flask object
     """
-    (_, retriever, dataset_factory) = setup_components()
+    (cfg, retriever, dataset_factory) = setup_components()
     log.info('setting up flask app')
     process_miner_app = Flask(__name__)
     Swagger(process_miner_app)
@@ -90,7 +92,24 @@ def create_app():
     for blueprint in used_blueprints:
         process_miner_app.register_blueprint(blueprint)
 
-    log.info('updating log storage contents')
-    retriever.retrieve_logs()
+    # set up periodic log retrieval
+    def _periodic_log_refresh():
+        try:
+            sleep_interval = 60 * int(cfg.get_entry('global',
+                                                    'reload_interval'))
+        except KeyError:
+            sleep_interval = 60 * 60
+            log.info('reload interval not set; using default: %sm',
+                     sleep_interval)
+        if sleep_interval <= 0:
+            log.info('automatic log retrieval disabled')
+            return
+        while True:
+            retriever.retrieve_logs()
+            time.sleep(sleep_interval)
+    log.info('setting up periodic log retrieval')
+    log_reload_thread = threading.Thread(target=_periodic_log_refresh)
+    log_reload_thread.daemon = True
+    log_reload_thread.start()
 
     return process_miner_app

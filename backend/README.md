@@ -38,6 +38,7 @@ The file contains the following sections and entries:
 
 * `global`
     * `log_directory` - Target directory for the retrieved logs (may be an absolute or relative path)
+    * `reload_interval` - Time in minutes between automatic log retrievals (default 60 minutes; 0 or less to disable)
 * `log_retriever`
     * `url` - URL of the Graylog instance logs should be retrieved from
     * `api_token` - Access Token used for authentication to the Graylog instance (see [Creating and using Access Token](https://docs.graylog.org/en/3.3/pages/configuration/rest_api.html#creating-and-using-access-token))

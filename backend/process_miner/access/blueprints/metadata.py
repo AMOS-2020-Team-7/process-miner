@@ -18,9 +18,9 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
     blueprint = Blueprint('metadata', __name__, url_prefix='/metadata')
 
     @cache.memoize()
-    def _get_consent_types_per_approach():
+    def _get_method_types_per_approach():
         frame = dataset_factory.get_prepared_data_frame()
-        return metadata.get_consent_type_count_per_approach(frame)
+        return metadata.get_method_type_count_per_approach(frame)
 
     @cache.memoize()
     def _get_approach_type_counts():
@@ -28,22 +28,22 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         return metadata.get_approach_type_count(frame)
 
     # pylint: disable=unused-variable
-    @blueprint.route('consent/count')
-    def get_consent_count():
+    @blueprint.route('method/count')
+    def get_method_count():
         """
-        Triggers calculation of number of consent types per approach.
+        Triggers calculation of number of method types per approach.
         ---
         response:
           200:
             description: The retrieved result will be a JSON object
-                         representing the number of different consent types per
+                         representing the number of different method types per
                          approach.
             application/json:
               schema:
                 $ref: '#/definitions/RequestResponse'
         """
         ticket = request_manager.submit_ticketed(
-            _get_consent_types_per_approach)
+            _get_method_types_per_approach)
         return get_state_response(ticket)
 
     @blueprint.route('approaches/count')

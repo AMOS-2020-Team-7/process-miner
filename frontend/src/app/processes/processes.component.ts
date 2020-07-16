@@ -14,7 +14,7 @@ export interface Approach {
   viewValue: string;
 }
 
-export interface Consent {
+export interface Method {
   item: string;
   viewValue: string;
 }
@@ -40,7 +40,7 @@ interface QueryResult {
 
 export class ProcessesComponent implements OnInit, OnDestroy {
   selectedApproach = 'None';
-  selectedConsent = 'None';
+  selectedMethod = 'None';
   selectedError = '';
   selectedDepth = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();
@@ -52,7 +52,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     {item: 'REDIRECT', viewValue: 'Redirect'},
     {item: 'EMBEDDED', viewValue: 'Embedded'}
   ];
-  consents: Consent[] = [
+  methods: Method[] = [
     {item: 'all', viewValue: 'All'},
     {item: 'get_accounts', viewValue: 'Get Accounts'},
     {item: 'get_transactions', viewValue: 'Get Transactions'}
@@ -76,7 +76,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<QueryResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, consent_type: this.selectedConsent, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
+    this.dataService.requestData<QueryResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, method_type: this.selectedMethod, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });
@@ -102,7 +102,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public reset(){
     this.selectedApproach = 'None';
-    this.selectedConsent = 'None';
+    this.selectedMethod = 'None';
     this.selectedDepth = 0.0;
     this.selectedError = '';
 

@@ -169,7 +169,7 @@ tags:
   errortype:
     source: 'label'
     tag_all: true
-    default_value: 'no error'
+    default_value: 'No Error'
     mappings:
       'PSU Credentials Invalid':
         - 'Status 401: Error'

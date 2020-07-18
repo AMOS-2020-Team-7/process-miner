@@ -46,6 +46,7 @@ interface QueryResult {
 export class ProcessesComponent implements OnInit, OnDestroy {
   selectedApproach = 'None';
   selectedMethod = 'None';
+  selectedGraphType = 'None';
   selectedError = '';
   selectedDepth = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();
@@ -112,6 +113,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   public reset(){
     this.selectedApproach = 'None';
     this.selectedMethod = 'None';
+    this.selectedGraphType = 'None';
     this.selectedDepth = 0.0;
     this.selectedError = '';
 

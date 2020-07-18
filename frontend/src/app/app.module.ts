@@ -24,6 +24,7 @@ import {MatSliderModule} from '@angular/material/slider';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { GraphDisplayComponent } from './graph-display/graph-display.component';
+import { ChartComponent } from './chart/chart.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { GraphDisplayComponent } from './graph-display/graph-display.component';
     LogsComponent,
     ProcessesComponent,
     UserComponent,
-    GraphDisplayComponent
+    GraphDisplayComponent,
+    ChartComponent
   ],
   imports: [
     BrowserModule,

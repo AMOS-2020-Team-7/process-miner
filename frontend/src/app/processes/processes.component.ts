@@ -42,7 +42,6 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   selectedApproach = 'None';
   selectedMethod = 'None';
   selectedError = '';
-  selectedDepth = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
@@ -76,7 +75,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<QueryResult>(REST_API_HN, {approach: this.selectedApproach , threshold: this.selectedDepth, method_type: this.selectedMethod, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
+    this.dataService.requestData<QueryResult>(REST_API_HN, {approach: this.selectedApproach , method_type: this.selectedMethod, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });
@@ -103,7 +102,6 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   public reset(){
     this.selectedApproach = 'None';
     this.selectedMethod = 'None';
-    this.selectedDepth = 0.0;
     this.selectedError = '';
 
     this.loadGraph();

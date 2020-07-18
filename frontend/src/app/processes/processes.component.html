@@ -33,16 +33,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxFlex="40%">
-                            <div fxLayout="row" fxLayoutAlign="center stretch">
-                                <div fxFlex="25%" class="controls-main-selectors-labels">
-                                    Depth
-                                </div>
-                                <div fxFlex="75%">
-                                    <mat-slider [(ngModel)]="selectedDepth" [max]="1" [min]="0" [step]="0.1" [thumbLabel]="true"></mat-slider>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <mat-divider></mat-divider>
@@ -101,6 +91,9 @@
                     <div fxFlex="20%" fxLayoutAlign="center">
                       <button (click) ="reset()" class='reset-settings-button' mat-raised-button>Reset</button>
                     </div>
+                    <div fxFlex="20%" fxLayoutAlign="center">
+                        <button (click) ="reset()" class='reset-settings-button' mat-raised-button>Reload Logs</button>
+                      </div>
                   </div>
                 </div>
             </div>

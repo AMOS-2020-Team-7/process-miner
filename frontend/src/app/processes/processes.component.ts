@@ -19,6 +19,11 @@ export interface Method {
   viewValue: string;
 }
 
+export interface GraphType {
+  item: string;
+  viewValue: string;
+}
+
 export interface Errortype {
   item: string;
   viewValue: string;
@@ -51,6 +56,10 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   approaches: Approach[] = [
     {item: 'REDIRECT', viewValue: 'Redirect'},
     {item: 'EMBEDDED', viewValue: 'Embedded'}
+  ];
+  graphTypes: GraphType[] = [
+    {item: 'Heuristic Net', viewValue: 'Heuristic Net'},
+    {item: 'DFG', viewValue: 'DFG'}
   ];
   methods: Method[] = [
     {item: 'all', viewValue: 'All'},

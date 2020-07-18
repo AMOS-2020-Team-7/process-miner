@@ -21,17 +21,16 @@ var margin = {
         left: 80
     };
 
-    var width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+    var width = 300 - margin.left - margin.right,
+        height = 150 - margin.top - margin.bottom;
 
     var x = d3.scaleLinear().rangeRound([0, width]);
     var y = d3.scaleBand().rangeRound([height, 0]).padding(0.2);
     const colorScale = d3.scaleOrdinal().range(['#38C976', '#22B0FC']);
     //Append the svg to body
+    d3.select("#chart").selectAll("*").remove();
 
     var svg = d3.select("#chart").append("svg")
-        .attr('width', width + margin.left + margin.right )
-        .attr('height', height + margin.top + margin.bottom)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -68,9 +67,7 @@ var margin = {
             .attr("width", function(d:any) { return x(d.amount);})
             .attr("y", function(d:any) { return y(d.bank); })
             .attr("height", y.bandwidth())
-           // .attr("fill", function(d:any, i:any) {
-             //   return colorScale(d.bank);
-            //})
+            .attr("fill", "#0984bf")
             .on("mouseover", function() {
                 d3.select(this)
                     .style("opacity", "0.5");
@@ -102,15 +99,6 @@ var margin = {
                     .attr('height', y.bandwidth())
                 });
 
-
-        // Add the x Axis
-
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
-
-        svg.append("g")
-            .call(d3.axisLeft(y));
 
 }
 }

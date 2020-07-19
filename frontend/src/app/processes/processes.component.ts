@@ -7,8 +7,7 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 
 declare const wheelzoom: any;
 
-//const REST_API_HN = 'http://127.0.0.1:5000/graphs/hn/get';
-var REST_API_HN = 'http://127.0.0.1:5000/graphs/';
+const REST_API_HN = 'http://127.0.0.1:5000/graphs/';
 
 export interface Approach {
   item: string;
@@ -86,15 +85,15 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   }
 
   public loadGraph() {
-    var fullPath;
-    if(this.selectedGraphType == 'DFG'){
+    let fullPath;
+    if (this.selectedGraphType === 'DFG'){
       fullPath = 'dfg/get';
     }else{
       fullPath = 'hn/get';
     }
 
     // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<QueryResult>(REST_API_HN+fullPath, {approach: this.selectedApproach , threshold: this.selectedDepth, method_type: this.selectedMethod, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
+    this.dataService.requestData<QueryResult>(REST_API_HN + fullPath, {approach: this.selectedApproach , threshold: this.selectedDepth, method_type: this.selectedMethod, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });

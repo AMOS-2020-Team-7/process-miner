@@ -17,7 +17,7 @@ export class ChartComponent implements AfterViewInit, OnChanges {
 
   constructor() { }
   private getData(): any {
-    return this.data == undefined ? [] : this.data;
+    return this.data === undefined ? [] : this.data;
   }
   ngOnChanges(): void {
     this.drawChart();

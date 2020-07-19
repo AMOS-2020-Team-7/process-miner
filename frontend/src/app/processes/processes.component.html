@@ -19,6 +19,23 @@
                         <div fxFlex="40%">
                             <div fxLayout="row" fxLayoutAlign="center stretch">
                                 <div fxFlex="25%" class="controls-main-selectors-labels">
+                                    Graph Type
+                                </div>
+                                <div fxFlex="75%">
+                                    <mat-form-field floatLabel='never'>
+                                        <mat-label>Select  </mat-label>
+                                        <mat-select [(ngModel)]="selectedGraphType">
+                                            <mat-option *ngFor="let GraphType of graphTypes" [value]="GraphType.item">
+                                                {{ GraphType.viewValue }}
+                                            </mat-option>
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div fxFlex="40%">
+                            <div fxLayout="row" fxLayoutAlign="center stretch">
+                                <div fxFlex="25%" class="controls-main-selectors-labels">
                                     Approach
                                 </div>
                                 <div fxFlex="75%">
@@ -30,16 +47,6 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div fxFlex="40%">
-                            <div fxLayout="row" fxLayoutAlign="center stretch">
-                                <div fxFlex="25%" class="controls-main-selectors-labels">
-                                    Depth
-                                </div>
-                                <div fxFlex="75%">
-                                    <mat-slider [(ngModel)]="selectedDepth" [max]="1" [min]="0" [step]="0.1" [thumbLabel]="true"></mat-slider>
                                 </div>
                             </div>
                         </div>

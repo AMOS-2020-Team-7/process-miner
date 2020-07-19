@@ -55,7 +55,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   dotString: string;
   selectedBank: string;
   bankChartData: any=[{"bank":"ADORSYS","amount":45},{"bank":"not available","amount":4}];
-
+  methodChartData: any=[{"bank":"ADORSYS","amount":45},{"bank":"not available","amount":4}];
   approaches: Approach[] = [
     {item: 'redirect', viewValue: 'Redirect'},
     {item: 'embedded', viewValue: 'Embedded'}
@@ -101,6 +101,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     const parameters = this.getParameters();
     this.dataService.requestData<QueryResult>(REST_API_HN, parameters).subscribe(data => {
       this.bankChartData = Object.entries(data.metadata.banks).map((f) => ({'bank': f[0], 'amount': f[1]}));
+      this.methodChartData = Object.entries(data.metadata.methods).map((f) => ({'bank': f[0], 'amount': f[1]}));
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });
@@ -133,7 +134,9 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   public selectBank(selected: string) {
     this.selectedBank = selected;
   }
-
+  public selectMethod(selected: string) {
+    this.selectedMethod = selected;
+  }
   public resetPage(){
     window.location.reload();
   }

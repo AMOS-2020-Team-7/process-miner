@@ -40,26 +40,16 @@
                     <!-- Method section -->
                     <div fxLayout="column" fxLayoutAlign="stretch">
                         <div fxFlex="25%">
-                            <div fxLayout="row" fxLayoutAlign="center" >
+                            <div fxLayout="row">
                                 <div fxFlex="25%"  class="controls-main-selectors-labels">
                                     Method
-                                </div>
-                                <div fxFlex="75%">
-                                    <mat-form-field floatLabel='never'>
-                                        <mat-label>Select method </mat-label>
-                                        <mat-select [(ngModel)]="selectedMethod">
-                                            <mat-option *ngFor="let method of methods" [value]="method.item">
-                                                {{ method.viewValue }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
                                 </div>
                             </div>
                         </div>
                         <div fxFlex="75%">
                             <div fxLayout="row" fxLayoutAlign="stretch">
                               <div fxFlex="100%">
-                                 <app-chart chartid='bankchart' [data]='bankChartData' [selected]='selectedBank' (onSelect)='selectBank($event)'></app-chart>
+                                 <app-chart chartid='methodchart' [data]='methodChartData' [selected]='selectedMethod' (onSelect)='selectMethod($event)'></app-chart>
                               </div>
                             </div>
                         </div>

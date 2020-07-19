@@ -24,6 +24,7 @@ export interface Method {
   item: string;
   viewValue: string;
 }
+
 export interface GraphType {
   item: string;
   viewValue: string;
@@ -111,17 +112,19 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     const parameters = this.getParameters();
+
     let fullPath;
-    if (this.selectedGraphType === 'DFG') {
+    if (this.selectedGraphType === 'DFG'){
       fullPath = 'dfg/get';
     }else{
       fullPath = 'hn/get';
     }
+
     this.dataService.requestData<QueryResult>(REST_API_HN + fullPath, parameters).subscribe(data => {
-        this.bankChartData = Object.entries(data.metadata.banks).map((f) => ({bank: f[0], amount: f[1]}));
-        this.methodChartData = Object.entries(data.metadata.methods).map((f) => ({bank: f[0], amount: f[1]}));
-        this.loadNewImageToImageViewer(data.image);
-        this.loadErrors(data.metadata.errors, data.numberOfSessions);
+      this.bankChartData = Object.entries(data.metadata.banks).map((f) => ({bank: f[0], amount: f[1]}));
+      this.methodChartData = Object.entries(data.metadata.methods).map((f) => ({bank: f[0], amount: f[1]}));
+      this.loadNewImageToImageViewer(data.image);
+      this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });
   }
 
@@ -160,10 +163,13 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   }
 
   public reset(){
-    this.selectedApproach = 'None';
-    this.selectedMethod = 'None';
+    this.selectedApproach = '';
+    this.selectedMethod = '';
+    this.selectedGraphType = '';
     this.selectedError = '';
     this.selectedBank = '';
     this.loadGraph();
   }
+
+
 }

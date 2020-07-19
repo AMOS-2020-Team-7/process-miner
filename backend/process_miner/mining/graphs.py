@@ -2,14 +2,16 @@
 Module for creating different graph types
 """
 import logging
+import tempfile
 
 import pm4py.algo.discovery.dfg.algorithm as dfg_alg
 import pm4py.algo.discovery.heuristics.algorithm as hn_alg
 import pm4py.visualization.dfg.visualizer as dfg_vis
 import pm4py.visualization.heuristics_net.visualizer as hn_vis
 from pandas import DataFrame
-from pm4py.objects.log.log import EventLog
-from pm4py.util import constants
+from pm4py.algo.discovery.dfg.algorithm import Variants as DfgAlgVariants
+from pm4py.visualization.dfg.visualizer import Variants as DfgVisVariants
+from pm4py.visualization.parameters import Parameters as VisualisationParams
 
 import process_miner.mining.util.data as data_util
 
@@ -28,25 +30,30 @@ def _convert_data_frame_to_event_log(frame):
     return data_util.convert_to_log(frame)
 
 
-def create_directly_follows_graph(event_log: EventLog):
+def create_directly_follows_graph(frame: DataFrame, output_format='svg'):
     """
-    Creates a Directly Follows Graph from the supplied EventLog.
-    :param event_log: the event log
+    Creates a Directly Follows Graph from the supplied DataFrame.
+    :param frame: the DataFrame
+    :param output_format: desired output format
     :return: object representing the created graph
     """
-    parameters = {
-        constants.PARAMETER_CONSTANT_ACTIVITY_KEY: "concept:name",
-        "format": "svg"
-    }
-    variant = 'frequency'
-    graph = dfg_alg.apply(log=event_log,
-                          parameters=parameters,
-                          variant=variant)
-    # TODO dfg breaks at this point
-    return dfg_vis.apply(graph,
-                         log=event_log,
-                         parameters=parameters,
-                         variant=variant)
+    event_log = _convert_data_frame_to_event_log(frame)
+    dfg = dfg_alg.apply(log=event_log,
+                        variant=DfgAlgVariants.FREQUENCY)
+    apply = dfg_vis.apply(dfg,
+                          log=event_log,
+                          variant=DfgVisVariants.FREQUENCY,
+                          parameters={
+                              VisualisationParams.FORMAT: output_format
+                          })
+    saved_dfg = tempfile.NamedTemporaryFile(prefix='pm_',
+                                            suffix=f'.{output_format}',
+                                            delete=False)
+    dfg_vis.save(apply, saved_dfg.name)
+    # close here and delete after final use to work around access issues on
+    # in case anybody tries to run this on windows
+    saved_dfg.close()
+    return saved_dfg
 
 
 def save_directly_follows_graph(graph, path):
@@ -59,23 +66,18 @@ def save_directly_follows_graph(graph, path):
     dfg_vis.save(graph, path)
 
 
-def create_heuristic_net(frame: DataFrame, threshold: float = 0.0,
-                         output_format: str = 'svg'):
+def create_heuristic_net(frame: DataFrame, output_format: str = 'svg'):
     """
     Creates a Heuristic Net from the supplied DataFrame.
     :param frame: the DataFrame
-    :param threshold: the threshold to use during creation
     :param output_format: desired output format
     :return: object representing the created graph
     """
     event_log = _convert_data_frame_to_event_log(frame)
-    log.info('creating heuristic net with threshold %s', threshold)
-    heu_net = hn_alg.apply_heu(log=event_log, parameters={
-        hn_alg.Variants.CLASSIC.value.Parameters.DEPENDENCY_THRESH: threshold
-    })
-
+    log.info('creating heuristic net')
+    heu_net = hn_alg.apply_heu(log=event_log)
     return hn_vis.apply(heu_net=heu_net, parameters={
-        hn_vis.Variants.PYDOTPLUS.value.Parameters.FORMAT: output_format
+        VisualisationParams.FORMAT: output_format
     })
 
 

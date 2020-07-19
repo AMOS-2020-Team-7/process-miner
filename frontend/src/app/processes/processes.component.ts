@@ -149,9 +149,9 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   }
 
   public reset(){
-    this.selectedApproach = 'None';
-    this.selectedMethod = 'None';
-    this.selectedGraphType = 'None';
+    this.selectedApproach = '';
+    this.selectedMethod = '';
+    this.selectedGraphType = '';
     this.selectedError = '';
 
     this.loadGraph();

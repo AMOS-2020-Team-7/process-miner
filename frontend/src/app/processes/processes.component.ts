@@ -49,7 +49,6 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   selectedApproach = '';
   selectedMethod = '';
   selectedError = '';
-  selectedDepth = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
@@ -86,9 +85,6 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     parameters[ARG_FORMAT] = 'dot';
     if (this.selectedApproach) {
       parameters[ARG_APPROACH] = this.selectedApproach;
-    }
-    if (this.selectedDepth) {
-      parameters[ARG_THRESHOLD] = this.selectedDepth;
     }
     if (this.selectedMethod) {
       parameters[ARG_METHOD_TYPE] = this.selectedMethod;
@@ -138,7 +134,6 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   public reset(){
     this.selectedApproach = 'None';
     this.selectedMethod = 'None';
-    this.selectedDepth = 0.0;
     this.selectedError = '';
 
     this.loadGraph();

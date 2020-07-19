@@ -7,10 +7,9 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 
 declare const wheelzoom: any;
 
-const REST_API_HN = 'http://127.0.0.1:5000/graphs/hn/get';
+const REST_API_HN = 'http://127.0.0.1:5000/graphs/';
 
 const ARG_APPROACH = 'approach';
-const ARG_THRESHOLD = 'threshold';
 const ARG_METHOD_TYPE = 'method_type';
 const ARG_ERROR_TYPE = 'error_type';
 const ARG_FORMAT = 'format';
@@ -21,6 +20,11 @@ export interface Approach {
 }
 
 export interface Method {
+  item: string;
+  viewValue: string;
+}
+
+export interface GraphType {
   item: string;
   viewValue: string;
 }
@@ -48,6 +52,7 @@ interface QueryResult {
 export class ProcessesComponent implements OnInit, OnDestroy {
   selectedApproach = '';
   selectedMethod = '';
+  selectedGraphType = '';
   selectedError = '';
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
@@ -57,6 +62,10 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   approaches: Approach[] = [
     {item: 'redirect', viewValue: 'Redirect'},
     {item: 'embedded', viewValue: 'Embedded'}
+  ];
+  graphTypes: GraphType[] = [
+    {item: 'HN', viewValue: 'Heuristic Net'},
+    {item: 'DFG', viewValue: 'Directly-Follows Graph'}
   ];
   methods: Method[] = [
     {item: 'all', viewValue: 'All'},
@@ -97,7 +106,15 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     const parameters = this.getParameters();
-    this.dataService.requestData<QueryResult>(REST_API_HN, parameters).subscribe(data => {
+
+    let fullPath;
+    if (this.selectedGraphType === 'DFG'){
+      fullPath = 'dfg/get';
+    }else{
+      fullPath = 'hn/get';
+    }
+
+    this.dataService.requestData<QueryResult>(REST_API_HN + fullPath, parameters).subscribe(data => {
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });
@@ -132,8 +149,9 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   }
 
   public reset(){
-    this.selectedApproach = 'None';
-    this.selectedMethod = 'None';
+    this.selectedApproach = '';
+    this.selectedMethod = '';
+    this.selectedGraphType = '';
     this.selectedError = '';
 
     this.loadGraph();

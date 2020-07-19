@@ -28,6 +28,7 @@ export interface Method {
 export interface Errortype {
   item: string;
   viewValue: string;
+  errorNum: string;
 }
 
 interface QueryResult {
@@ -111,8 +112,18 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     let percentage: string;
     for (const error of Object.keys(responseErrors)) {
           percentage = ((responseErrors[error] * 100) / responseNumberOfSessions).toFixed(2);
-          this.errors.push({viewValue: error + '       -  ' + percentage + '%', item: error});
+          this.errors.push({viewValue: error + '       -  ' + percentage + '%', item: error, errorNum: responseErrors[error]});
     }
+    const sortByErrorNum = (a, b) => {
+      if (a.errorNum > b.errorNum) {
+        return -1;
+      }
+      if (a.errorNum < b.errorNum) {
+        return 1;
+      }
+      return 0;
+    };
+    this.errors.sort(sortByErrorNum);
     this.selectedError = '';
   }
 

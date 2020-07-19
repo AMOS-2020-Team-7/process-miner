@@ -2,7 +2,7 @@
 Blueprint module responsible for retrieving different graph types
 """
 import logging
-from typing import List
+import os
 
 import datauri
 from flask import Blueprint, request
@@ -28,38 +28,26 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
     """
     blueprint = Blueprint('graphs', __name__, url_prefix='/graphs')
 
-    def _get_checked_approach():
-        valid_approach_types = _wrapper_get_approach_types()
-        return _get_checked_str_arg(ARG_APPROACH, valid_approach_types, '')
+    def _get_filter_parameters():
+        approach = request.args.get(ARG_APPROACH, '', str)
+        method_type = request.args.get(ARG_METHOD_TYPE, '', str)
+        error_type = request.args.get(ARG_ERROR_TYPE, '', str)
+        bank = request.args.get(ARG_BANK, '', str)
+        return approach, bank, error_type, method_type
 
     @cache.memoize()
-    def _wrapper_get_approach_types():
-        frame = dataset_factory.get_prepared_data_frame()
-        return metadata.get_approach_types(frame)
-
-    def _get_checked_method():
-        valid_method_types = _wrapper_get_method_types()
-        return _get_checked_str_arg(ARG_METHOD_TYPE, valid_method_types, '')
-
-    @cache.memoize()
-    def _wrapper_get_method_types():
-        frame = dataset_factory.get_prepared_data_frame()
-        return metadata.get_method_types(frame)
-
-    def _get_checked_str_arg(arg: str, valid_values: List[str],
-                             default_value: str):
-        value = request.args.get(arg, default_value, str).lower()
-        if value == default_value or value in valid_values:
-            return value
-        log.warning('unknown value "%s" for argument "%s"; using default "%s"',
-                    value, arg, default_value)
-        return default_value
-
-    @cache.memoize()
-    def _create_dfg(approach):
-        event_log = dataset_factory.get_prepared_event_log(approach)
-        graph = graphs.create_directly_follows_graph(event_log)
-        return _package_response(graph, 0, {})
+    def _create_dfg(approach, method_type, error_type, bank, output_format):
+        frame = dataset_factory.get_prepared_data_frame(approach,
+                                                        method_type,
+                                                        error_type,
+                                                        bank)
+        session_count = _extract_session_count(frame)
+        additional_metadata = _extract_metadata(frame)
+        dfg = graphs.create_directly_follows_graph(frame, output_format)
+        response = _package_response(dfg.name, session_count,
+                                     additional_metadata)
+        os.remove(dfg.name)
+        return response
 
     @cache.memoize()
     def _create_heuristic_net(approach, method_type, error_type, bank,
@@ -68,10 +56,13 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
                                                         method_type,
                                                         error_type,
                                                         bank)
-        session_count = len(frame.groupby('correlationId'))
+        session_count = _extract_session_count(frame)
         additional_metadata = _extract_metadata(frame)
-        graph = graphs.create_heuristic_net(frame, output_format)
-        return _package_response(graph, session_count, additional_metadata)
+        net = graphs.create_heuristic_net(frame, output_format)
+        return _package_response(net.name, session_count, additional_metadata)
+
+    def _extract_session_count(frame):
+        return len(frame.groupby('correlationId'))
 
     def _extract_metadata(frame):
         method_counts = metadata.get_sessions_per_method_type(frame)
@@ -83,8 +74,8 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
             'errors': error_counts
         }
 
-    def _package_response(graph, session_count, additional_metadata):
-        uri = datauri.DataURI.from_file(graph.name, 'utf-8')
+    def _package_response(filename, session_count, additional_metadata):
+        uri = datauri.DataURI.from_file(filename, 'utf-8')
         # make sure there are no newlines/carriage returns in the uri
         sanitized_uri = uri.replace('\n', '').replace('\r', '')
         return {
@@ -94,20 +85,10 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         }
 
     # pylint: disable=unused-variable
-    # TODO remove dfg stuff if not required in frontend
     @blueprint.route('dfg/get')
     def get_dfg():
         """
         Triggers the creation of a Directly Follows Graph.
-        """
-        approach = _get_checked_approach()
-        ticket = request_manager.submit_ticketed(_create_dfg, approach)
-        return get_state_response(ticket)
-
-    @blueprint.route('hn/get')
-    def get_hn():
-        """
-        Triggers the creation of a Heuristic net.
         ---
         parameters:
           - name: approach
@@ -149,11 +130,59 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
             schema:
               $ref: '#/definitions/RequestResponse'
         """
-        approach = _get_checked_approach()
-        method_type = _get_checked_method()
-        error_type = request.args.get(ARG_ERROR_TYPE, '', str)
-        bank = request.args.get(ARG_BANK, '', str)
-        # TODO check output_format parameter
+        approach, bank, error_type, method_type = _get_filter_parameters()
+        output_format = request.args.get('format', 'svg', str).lower()
+        ticket = request_manager.submit_ticketed(_create_dfg, approach,
+                                                 method_type, error_type, bank,
+                                                 output_format)
+        return get_state_response(ticket)
+
+    @blueprint.route('hn/get')
+    def get_hn():
+        """
+        Triggers the creation of a Heuristic net.
+        ---
+        parameters:
+          - name: approach
+            in: query
+            type: string
+            default: ''
+            example: 'embedded'
+            description: the approach the data used for creating the net
+                         should be limited to
+          - name: method_type
+            in: query
+            type: string
+            default: ''
+            example: 'get_transactions'
+            description: the method type the data used for creating the net
+                         should be limited to
+          - name: error_type
+            in: query
+            type: string
+            default: ''
+            example: 'error_service_unavailable'
+            description: the error type the data used for creating the net
+                         should be limited to
+          - name: bank
+            in: query
+            type: string
+            default: ''
+            example: 'ADORSYS'
+            description: the bank the data used for creating the net
+                         should be limited to
+          - name: format
+            in: query
+            type: string
+            default: 'svg'
+        responses:
+          200:
+            description: The result will contain a base64 encoded DataURI
+                         representing the generated net.
+            schema:
+              $ref: '#/definitions/RequestResponse'
+        """
+        approach, bank, error_type, method_type = _get_filter_parameters()
         output_format = request.args.get('format', 'svg', str).lower()
         ticket = request_manager.submit_ticketed(_create_heuristic_net,
                                                  approach, method_type,

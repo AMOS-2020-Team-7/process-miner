@@ -64,8 +64,8 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     {item: 'embedded', viewValue: 'Embedded'}
   ];
   graphTypes: GraphType[] = [
-    {item: 'Heuristic Net', viewValue: 'Heuristic Net'},
-    {item: 'DFG', viewValue: 'DFG'}
+    {item: 'HN', viewValue: 'Heuristic Net'},
+    {item: 'DFG', viewValue: 'Directly-Follows Graph'}
   ];
   methods: Method[] = [
     {item: 'all', viewValue: 'All'},

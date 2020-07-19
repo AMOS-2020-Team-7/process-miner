@@ -16,7 +16,9 @@ export class ChartComponent implements AfterViewInit, OnChanges {
 
 
   constructor() { }
-
+  private getData(): any {
+    return this.data == undefined ? [] : this.data;
+  }
   ngOnChanges(): void {
     this.drawChart();
   }
@@ -46,11 +48,11 @@ export class ChartComponent implements AfterViewInit, OnChanges {
         .append('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    this.data.forEach((d: any) => d.amount = +d.amount);
+    this.getData().forEach((d: any) => d.amount = +d.amount);
 
 
-    x.domain([0, d3.max(this.data, ((d: any) => +(d.amount)))]);
-    y.domain(this.data.map((d: any) => d.bank ));
+    x.domain([0, d3.max(this.getData, ((d: any) => +(d.amount)))]);
+    y.domain(this.getData().map((d: any) => d.bank ));
 
     svg.append('g')
             .attr('class', 'grid')

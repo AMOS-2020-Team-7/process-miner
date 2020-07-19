@@ -37,6 +37,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
   dotString: string;
+  selectedBank: string;
   bankChartData: any=[{"bank":"ADORSYS","amount":45},{"bank":"not available","amount":4}];
 
   approaches: Approach[] = [
@@ -74,6 +75,10 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadNewImageToImageViewer(encodedImage){
     this.dotString = atob(encodedImage.split(',')[1]);
+  }
+
+  public selectBank(selected: string) {
+    this.selectedBank = selected;
   }
 
   public resetPage(){

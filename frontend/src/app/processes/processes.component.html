@@ -69,7 +69,7 @@
                         <div fxFlex="75%">
                             <div fxLayout="row" fxLayoutAlign="stretch">
                               <div fxFlex="100%">
-                                  <app-chart [data]='bankChartData'></app-chart>
+                                 <app-chart chartid='bankchart' [data]='bankChartData' [selected]='selectedBank' (onSelect)='selectBank($event)'></app-chart>
                               </div>
                             </div>
                         </div>

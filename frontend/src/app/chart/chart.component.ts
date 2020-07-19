@@ -1,4 +1,4 @@
-import { Component, OnChanges, Input } from '@angular/core';
+import { Component, OnChanges, Input,Output, EventEmitter, AfterViewInit } from '@angular/core';
 import * as d3 from 'd3';
 
 @Component({
@@ -6,14 +6,26 @@ import * as d3 from 'd3';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
-export class ChartComponent implements OnChanges {
+export class ChartComponent implements AfterViewInit, OnChanges {
 
-  @Input()data:any;
+@Output() onSelect = new EventEmitter<string>();
+
+    @Input() chartid: string;
+    @Input() data: any;
+    @Input() selected: string;
+
 
   constructor() { }
 
   ngOnChanges(): void {
+    this.drawChart();
+  }
 
+  ngAfterViewInit(): void {
+    this.drawChart();
+    }
+
+private drawChart(){
 var margin = {
         top: 15,
         right: 25,
@@ -28,9 +40,9 @@ var margin = {
     var y = d3.scaleBand().rangeRound([height, 0]).padding(0.2);
     const colorScale = d3.scaleOrdinal().range(['#38C976', '#22B0FC']);
     //Append the svg to body
-    d3.select("#chart").selectAll("*").remove();
+    d3.select(`#${this.chartid}`).selectAll("*").remove();
 
-    var svg = d3.select("#chart").append("svg")
+    var svg = d3.select(`#${this.chartid}`).append("svg")
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -67,7 +79,8 @@ var margin = {
             .attr("width", function(d:any) { return x(d.amount);})
             .attr("y", function(d:any) { return y(d.bank); })
             .attr("height", y.bandwidth())
-            .attr("fill", "#0984bf")
+            .attr("fill", (d: any) => d.bank == this.selected ? "#054f72": "#0984bf")
+            .on("click", (d: any) => this.onSelect.emit(d.bank))
             .on("mouseover", function() {
                 d3.select(this)
                     .style("opacity", "0.5");
@@ -78,7 +91,7 @@ var margin = {
                     .attr('y', (a:any) => y(a.bank) - 5)
                     .attr('height', y.bandwidth() + 10)
                     .text(function(d:any, i:any) {
-                    return d[i].amount; })
+                    return d.amount; })
               /*  line = d3.append('line')
                     .attr('id', 'limit')
                     .attr('x1', x)
@@ -99,6 +112,6 @@ var margin = {
                     .attr('height', y.bandwidth())
                 });
 
-
 }
+
 }

@@ -20,9 +20,9 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'Process Miner'`, () => {
+  it(`should have as title 'PSD2Miner'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('Process Miner');
+    expect(app.title).toEqual('PSD2Miner');
   });
 });

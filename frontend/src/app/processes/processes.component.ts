@@ -55,8 +55,8 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   imageEncodedInBase64 = '';
   dotString: string;
   selectedBank: string;
-  bankChartData: any=[];
-  methodChartData: any=[];
+  bankChartData: any = [];
+  methodChartData: any = [];
   approaches: Approach[] = [
     {item: 'redirect', viewValue: 'Redirect'},
     {item: 'embedded', viewValue: 'Embedded'}
@@ -104,8 +104,8 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   public loadGraph() {
     const parameters = this.getParameters();
     this.dataService.requestData<QueryResult>(REST_API_HN, parameters).subscribe(data => {
-      this.bankChartData = Object.entries(data.metadata.banks).map((f) => ({'bank': f[0], 'amount': f[1]}));
-      this.methodChartData = Object.entries(data.metadata.methods).map((f) => ({'bank': f[0], 'amount': f[1]}));
+      this.bankChartData = Object.entries(data.metadata.banks).map((f) => ({bank: f[0], amount: f[1]}));
+      this.methodChartData = Object.entries(data.metadata.methods).map((f) => ({bank: f[0], amount: f[1]}));
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });
@@ -149,7 +149,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.selectedApproach = 'None';
     this.selectedMethod = 'None';
     this.selectedError = '';
-
+    this.selectedMethod = '';
     this.loadGraph();
   }
 

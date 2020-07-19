@@ -1,0 +1,13 @@
+.line#limit {
+    stroke: #FED966;
+    stroke-width: 3;
+    stroke-dasharray: 6;
+}
+.text {
+    fill: white;
+}
+
+.grid .tick line {
+    stroke: #9FAAAE;
+    stroke-opacity: 0.2;
+}

@@ -57,33 +57,40 @@
                     <!-- Method section -->
                     <div fxLayout="column" fxLayoutAlign="stretch">
                         <div fxFlex="25%">
-                            <div fxLayout="row" fxLayoutAlign="center" >
+                            <div fxLayout="row">
                                 <div fxFlex="25%"  class="controls-main-selectors-labels">
                                     Method
-                                </div>
-                                <div fxFlex="75%">
-                                    <mat-form-field floatLabel='never'>
-                                        <mat-label>Select method </mat-label>
-                                        <mat-select [(ngModel)]="selectedMethod">
-                                            <mat-option *ngFor="let method of methods" [value]="method.item">
-                                                {{ method.viewValue }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
                                 </div>
                             </div>
                         </div>
                         <div fxFlex="75%">
-                            <div fxLayout="row" fxLayoutAlign="center stretch">
-                                  <!-- Here it goes the bar chart section -->
+                            <div fxLayout="row" fxLayoutAlign="stretch">
+                              <div fxFlex="100%">
+                                 <app-chart chartid='methodchart' [data]='methodChartData' [selected]='selectedMethod' (selectOn)='selectMethod($event)'></app-chart>
+                              </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <mat-divider></mat-divider>
-                <!-- Variants section -->
-                <div fxFlex="13%" class="controls-main-selectors">
-                    Variants
+                <div fxFlex="33%" class="controls-main-selectors">
+                    <!-- Method section -->
+                    <div fxLayout="column" fxLayoutAlign="stretch">
+                        <div fxFlex="25%">
+                            <div fxLayout="row">
+                                <div fxFlex="25%"  class="controls-main-selectors-labels">
+                                    Banks
+                                </div>
+                            </div>
+                        </div>
+                        <div fxFlex="75%">
+                            <div fxLayout="row" fxLayoutAlign="stretch">
+                              <div fxFlex="100%">
+                                 <app-chart chartid='bankchart' [data]='bankChartData' [selected]='selectedBank' (selectOn)='selectBank($event)'></app-chart>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <mat-divider></mat-divider>
                 <div fxFlex="33%" class="controls-main-selectors-label">

@@ -21,12 +21,14 @@ import {MatSliderModule} from '@angular/material/slider';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { GraphDisplayComponent } from './graph-display/graph-display.component';
+import { ChartComponent } from './chart/chart.component';
 import {MatRadioModule} from '@angular/material/radio';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProcessesComponent,
+    ChartComponent,
     GraphDisplayComponent
   ],
   imports: [

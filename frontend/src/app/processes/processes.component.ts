@@ -11,6 +11,7 @@ const REST_API_HN = 'http://127.0.0.1:5000/graphs/';
 
 const ARG_APPROACH = 'approach';
 const ARG_METHOD_TYPE = 'method_type';
+const ARG_BANK = 'bank';
 const ARG_ERROR_TYPE = 'error_type';
 const ARG_FORMAT = 'format';
 
@@ -58,7 +59,9 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
   dotString: string;
-
+  selectedBank: string;
+  bankChartData: any = [];
+  methodChartData: any = [];
   approaches: Approach[] = [
     {item: 'redirect', viewValue: 'Redirect'},
     {item: 'embedded', viewValue: 'Embedded'}
@@ -98,6 +101,9 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     if (this.selectedMethod) {
       parameters[ARG_METHOD_TYPE] = this.selectedMethod;
     }
+    if (this.selectedBank) {
+      parameters[ARG_BANK] = this.selectedBank;
+    }
     if (this.selectedError) {
       parameters[ARG_ERROR_TYPE] = this.selectedError;
     }
@@ -115,6 +121,8 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     }
 
     this.dataService.requestData<QueryResult>(REST_API_HN + fullPath, parameters).subscribe(data => {
+      this.bankChartData = Object.entries(data.metadata.banks).map((f) => ({bank: f[0], amount: f[1]}));
+      this.methodChartData = Object.entries(data.metadata.methods).map((f) => ({bank: f[0], amount: f[1]}));
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });
@@ -144,6 +152,12 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.dotString = atob(encodedImage.split(',')[1]);
   }
 
+  public selectBank(selected: string) {
+    this.selectedBank = selected;
+  }
+  public selectMethod(selected: string) {
+    this.selectedMethod = selected;
+  }
   public resetPage(){
     window.location.reload();
   }
@@ -153,11 +167,9 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.selectedMethod = '';
     this.selectedGraphType = '';
     this.selectedError = '';
-
+    this.selectedBank = '';
     this.loadGraph();
   }
-
-
 
 
 }

@@ -149,7 +149,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.selectedApproach = 'None';
     this.selectedMethod = 'None';
     this.selectedError = '';
-    this.selectedMethod = '';
+    this.selectedBank = '';
     this.loadGraph();
   }
 

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient , HttpErrorResponse, HttpParams} from '@angular/common/http';
 import { throwError } from 'rxjs';
 import { retry, catchError, tap, take, filter, repeatWhen, delay, switchMap } from 'rxjs/operators';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 const REQUEST_REPEAT_DELAY = 250;
 
@@ -22,7 +23,7 @@ export class DataService {
 
   private REST_API_SERVER_TESTS = 'assets/tests/response.json';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, private snackBar: MatSnackBar) { }
 
   handleError(error: HttpErrorResponse) {
     let errorMessage = 'Unknown error!';
@@ -33,7 +34,8 @@ export class DataService {
       // Server-side errors
       errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
     }
-    window.alert(errorMessage);
+    this.snackBar.open('An error occurred. Please try again.');
+    //window.alert(errorMessage);
     return throwError(errorMessage);
   }
 

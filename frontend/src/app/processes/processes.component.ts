@@ -86,9 +86,6 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     if (this.selectedApproach) {
       parameters[ARG_APPROACH] = this.selectedApproach;
     }
-    if (this.selectedDepth) {
-      parameters[ARG_THRESHOLD] = this.selectedDepth;
-    }
     if (this.selectedMethod) {
       parameters[ARG_METHOD_TYPE] = this.selectedMethod;
     }

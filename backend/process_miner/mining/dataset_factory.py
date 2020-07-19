@@ -19,26 +19,26 @@ class DatasetFactory:
         return f'{self.__class__.__name__} [' \
                f'_source_directory <{self._source_directory}>]'
 
-    def get_prepared_data_frame(self, approach=None, consent_type=None,
+    def get_prepared_data_frame(self, approach=None, method_type=None,
                                 error_type=None) -> DataFrame:
         """
         Creates a DataFrame for graph creation or metadata extraction.
         :param approach: approach that should be used (all if none specified)
-        :param consent_type: consent that has to be used during all sessions
+        :param method_type: method that has to be used during all sessions
         that should be included
         :return: DataFrame representing the data set
         """
         frame = data_util.get_merged_csv_files(self._source_directory,
                                                'timestamp')
-        # filter by consent
-        if consent_type:
+        # filter by method
+        if method_type:
             frame = data_util.filter_related_entries(frame, 'correlationId',
-                                                     'consent', [consent_type])
+                                                     'method', [method_type])
         # filter by approach
         if approach:
             frame = data_util.filter_by_field(frame, 'approach', approach)
 
-        # filter by consent
+        # filter by method
         if error_type:
             frame = data_util.filter_related_entries(frame, 'correlationId',
                                                      'errortype', [error_type])

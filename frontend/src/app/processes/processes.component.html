@@ -3,7 +3,7 @@
 <head>
 </head>
 <body>
-    <mat-grid-list cols="2" gutterSize="10px">
+    <mat-grid-list cols="2" gutterSize="10px" class="grid">
         <mat-grid-tile [colspan]="1" [rowspan]="1">
             <div class='container-img'>
                 <p class='instructions-text'>
@@ -12,7 +12,7 @@
                 <app-graph-display [dotString]="dotString"></app-graph-display>
             </div>
         </mat-grid-tile>
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
+        <mat-grid-tile [colspan]="1" [rowspan]="2">
             <div class="container container-controls" fxLayout="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="stretch">
                 <div fxFlex="33%" class="controls-main-selectors">
                     <div fxLayout="column" fxLayoutAlign="stretch">
@@ -33,33 +33,23 @@
                                 </div>
                             </div>
                         </div>
-                        <div fxFlex="40%">
-                            <div fxLayout="row" fxLayoutAlign="center stretch">
-                                <div fxFlex="25%" class="controls-main-selectors-labels">
-                                    Depth
-                                </div>
-                                <div fxFlex="75%">
-                                    <mat-slider [(ngModel)]="selectedDepth" [max]="1" [min]="0" [step]="0.1" [thumbLabel]="true"></mat-slider>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <mat-divider></mat-divider>
                 <div fxFlex="33%" class="controls-main-selectors">
-                    <!-- Consent section -->
+                    <!-- Method section -->
                     <div fxLayout="column" fxLayoutAlign="stretch">
                         <div fxFlex="25%">
                             <div fxLayout="row" fxLayoutAlign="center" >
                                 <div fxFlex="25%"  class="controls-main-selectors-labels">
-                                    Consent
+                                    Method
                                 </div>
                                 <div fxFlex="75%">
                                     <mat-form-field floatLabel='never'>
-                                        <mat-label>Select consent </mat-label>
-                                        <mat-select [(ngModel)]="selectedConsent">
-                                            <mat-option *ngFor="let consent of consents" [value]="consent.item">
-                                                {{ consent.viewValue }}
+                                        <mat-label>Select method </mat-label>
+                                        <mat-select [(ngModel)]="selectedMethod">
+                                            <mat-option *ngFor="let method of methods" [value]="method.item">
+                                                {{ method.viewValue }}
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
@@ -77,9 +67,23 @@
                 </div>
                 <mat-divider></mat-divider>
                 <!-- Variants section -->
-                <div fxFlex="33%" class="controls-main-selectors">
+                <div fxFlex="13%" class="controls-main-selectors">
                     Variants
                 </div>
+                <mat-divider></mat-divider>
+                <div fxFlex="33%" class="controls-main-selectors-label">
+                    ERRORS
+
+              <mat-radio-group
+                aria-labelledby="example-radio-group-label"
+                class="example-radio-group"
+                [(ngModel)]="selectedError">
+                <mat-radio-button class="example-radio-button" *ngFor="let error of errors" [value]="error.item">
+                  {{error.viewValue}}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+            <br>
                 <!-- Load, Reset buttons -->
                 <div fxFlex="20%">
                   <div fxLayout="row" fxLayoutAlign="left">
@@ -88,9 +92,6 @@
                     </div>
                     <div fxFlex="20%" fxLayoutAlign="center">
                       <button (click) ="reset()" class='reset-settings-button' mat-raised-button>Reset</button>
-                    </div>
-                    <div fxFlex="20%" fxLayoutAlign="right center">
-                      <button (click) ="resetPage()" class='reset-settings-button' mat-raised-button>Export Graph</button>
                     </div>
                   </div>
                 </div>

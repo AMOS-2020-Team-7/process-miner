@@ -51,7 +51,7 @@ export class ChartComponent implements AfterViewInit, OnChanges {
     this.getData().forEach((d: any) => d.amount = +d.amount);
 
 
-    x.domain([0, d3.max(this.getData, ((d: any) => +(d.amount)))]);
+    x.domain([0, d3.max(this.getData(), ((d: any) => +(d.amount)))]);
     y.domain(this.getData().map((d: any) => d.bank ));
 
     svg.append('g')
@@ -69,7 +69,7 @@ export class ChartComponent implements AfterViewInit, OnChanges {
         // Create or append rectangel for graph
 
     svg.selectAll('.bar')
-            .data(this.data)
+            .data(this.getData())
             .enter()
             .append('rect')
             .attr('class', 'bar')

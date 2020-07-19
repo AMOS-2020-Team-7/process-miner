@@ -9,6 +9,11 @@ declare const wheelzoom: any;
 
 const REST_API_HN = 'http://127.0.0.1:5000/graphs/';
 
+const ARG_APPROACH = 'approach';
+const ARG_METHOD_TYPE = 'method_type';
+const ARG_ERROR_TYPE = 'error_type';
+const ARG_FORMAT = 'format';
+
 export interface Approach {
   item: string;
   viewValue: string;
@@ -27,6 +32,7 @@ export interface GraphType {
 export interface Errortype {
   item: string;
   viewValue: string;
+  errorNum: string;
 }
 
 interface QueryResult {
@@ -44,19 +50,18 @@ interface QueryResult {
 
 
 export class ProcessesComponent implements OnInit, OnDestroy {
-  selectedApproach = 'None';
-  selectedMethod = 'None';
-  selectedGraphType = 'None';
+  selectedApproach = '';
+  selectedMethod = '';
+  selectedGraphType = '';
   selectedError = '';
-  selectedDepth = 0.0;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
   dotString: string;
 
   approaches: Approach[] = [
-    {item: 'REDIRECT', viewValue: 'Redirect'},
-    {item: 'EMBEDDED', viewValue: 'Embedded'}
+    {item: 'redirect', viewValue: 'Redirect'},
+    {item: 'embedded', viewValue: 'Embedded'}
   ];
   graphTypes: GraphType[] = [
     {item: 'Heuristic Net', viewValue: 'Heuristic Net'},
@@ -84,7 +89,24 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
+  private getParameters() {
+    const parameters = {};
+    parameters[ARG_FORMAT] = 'dot';
+    if (this.selectedApproach) {
+      parameters[ARG_APPROACH] = this.selectedApproach;
+    }
+    if (this.selectedMethod) {
+      parameters[ARG_METHOD_TYPE] = this.selectedMethod;
+    }
+    if (this.selectedError) {
+      parameters[ARG_ERROR_TYPE] = this.selectedError;
+    }
+    return parameters;
+  }
+
   public loadGraph() {
+    const parameters = this.getParameters();
+
     let fullPath;
     if (this.selectedGraphType === 'DFG'){
       fullPath = 'dfg/get';
@@ -92,8 +114,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
       fullPath = 'hn/get';
     }
 
-    // tslint:disable-next-line:max-line-length
-    this.dataService.requestData<QueryResult>(REST_API_HN + fullPath, {approach: this.selectedApproach , threshold: this.selectedDepth, method_type: this.selectedMethod, error_type: this.selectedError, format: 'dot'}).subscribe(data => {
+    this.dataService.requestData<QueryResult>(REST_API_HN + fullPath, parameters).subscribe(data => {
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
     });
@@ -104,8 +125,18 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     let percentage: string;
     for (const error of Object.keys(responseErrors)) {
           percentage = ((responseErrors[error] * 100) / responseNumberOfSessions).toFixed(2);
-          this.errors.push({viewValue: error + '       -  ' + percentage + '%', item: error});
+          this.errors.push({viewValue: error + '       -  ' + percentage + '%', item: error, errorNum: responseErrors[error]});
     }
+    const sortByErrorNum = (a, b) => {
+      if (a.errorNum > b.errorNum) {
+        return -1;
+      }
+      if (a.errorNum < b.errorNum) {
+        return 1;
+      }
+      return 0;
+    };
+    this.errors.sort(sortByErrorNum);
     this.selectedError = '';
   }
 
@@ -121,7 +152,6 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.selectedApproach = 'None';
     this.selectedMethod = 'None';
     this.selectedGraphType = 'None';
-    this.selectedDepth = 0.0;
     this.selectedError = '';
 
     this.loadGraph();

@@ -112,7 +112,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   public loadGraph() {
     const parameters = this.getParameters();
     let fullPath;
-    if (this.selectedGraphType === 'DFG'){
+    if (this.selectedGraphType === 'DFG') {
       fullPath = 'dfg/get';
     }else{
       fullPath = 'hn/get';

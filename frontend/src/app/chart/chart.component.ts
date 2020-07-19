@@ -11,7 +11,7 @@ export class ChartComponent implements AfterViewInit, OnChanges {
     @Output() selectOn = new EventEmitter<string>();
 
     @Input() chartid: string;
-    @Input() data: any;
+    @Input() data: any = [];
     @Input() selected: string;
 
 

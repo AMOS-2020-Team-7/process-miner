@@ -12,6 +12,7 @@ const REST_API_HN = 'http://127.0.0.1:5000/graphs/hn/get';
 const ARG_APPROACH = 'approach';
 const ARG_THRESHOLD = 'threshold';
 const ARG_METHOD_TYPE = 'method_type';
+const ARG_BANK = 'bank';
 const ARG_ERROR_TYPE = 'error_type';
 const ARG_FORMAT = 'format';
 
@@ -54,8 +55,8 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   imageEncodedInBase64 = '';
   dotString: string;
   selectedBank: string;
-  bankChartData: any=[{"bank":"ADORSYS","amount":45},{"bank":"not available","amount":4}];
-  methodChartData: any=[{"bank":"ADORSYS","amount":45},{"bank":"not available","amount":4}];
+  bankChartData: any=[];
+  methodChartData: any=[];
   approaches: Approach[] = [
     {item: 'redirect', viewValue: 'Redirect'},
     {item: 'embedded', viewValue: 'Embedded'}
@@ -90,6 +91,9 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     }
     if (this.selectedMethod) {
       parameters[ARG_METHOD_TYPE] = this.selectedMethod;
+    }
+    if (this.selectedBank) {
+      parameters[ARG_BANK] = this.selectedBank;
     }
     if (this.selectedError) {
       parameters[ARG_ERROR_TYPE] = this.selectedError;

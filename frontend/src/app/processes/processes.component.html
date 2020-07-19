@@ -56,9 +56,24 @@
                     </div>
                 </div>
                 <mat-divider></mat-divider>
-                <!-- Variants section -->
-                <div fxFlex="13%" class="controls-main-selectors">
-                    Variants
+                <div fxFlex="33%" class="controls-main-selectors">
+                    <!-- Method section -->
+                    <div fxLayout="column" fxLayoutAlign="stretch">
+                        <div fxFlex="25%">
+                            <div fxLayout="row">
+                                <div fxFlex="25%"  class="controls-main-selectors-labels">
+                                    Banks
+                                </div>
+                            </div>
+                        </div>
+                        <div fxFlex="75%">
+                            <div fxLayout="row" fxLayoutAlign="stretch">
+                              <div fxFlex="100%">
+                                 <app-chart chartid='bankchart' [data]='bankChartData' [selected]='selectedBank' (onSelect)='selectBank($event)'></app-chart>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <mat-divider></mat-divider>
                 <div fxFlex="33%" class="controls-main-selectors-label">

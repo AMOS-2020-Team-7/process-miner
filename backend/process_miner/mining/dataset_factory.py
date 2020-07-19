@@ -20,12 +20,16 @@ class DatasetFactory:
                f'_source_directory <{self._source_directory}>]'
 
     def get_prepared_data_frame(self, approach=None, method_type=None,
-                                error_type=None) -> DataFrame:
+                                error_type=None, bank=None) -> DataFrame:
         """
         Creates a DataFrame for graph creation or metadata extraction.
         :param approach: approach that should be used (all if none specified)
         :param method_type: method that has to be used during all sessions
         that should be included
+        :param error_type: error type sessions have to contain if they should
+        be in the resulting data set
+        :param bank: bank that a session has to belong to to be considered in
+        the resulting data set
         :return: DataFrame representing the data set
         """
         frame = data_util.get_merged_csv_files(self._source_directory,
@@ -38,8 +42,13 @@ class DatasetFactory:
         if approach:
             frame = data_util.filter_by_field(frame, 'approach', approach)
 
-        # filter by method
+        # filter by error type
         if error_type:
             frame = data_util.filter_related_entries(frame, 'correlationId',
                                                      'errortype', [error_type])
+
+        # filter by bank
+        if bank:
+            frame = data_util.filter_related_entries(frame, 'correlationId',
+                                                     'bank', [bank])
         return frame

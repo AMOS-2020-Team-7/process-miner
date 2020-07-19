@@ -47,8 +47,12 @@ def create_directly_follows_graph(frame: DataFrame, output_format='svg'):
                               VisualisationParams.FORMAT: output_format
                           })
     saved_dfg = tempfile.NamedTemporaryFile(prefix='pm_',
-                                            suffix=f'.{output_format}')
+                                            suffix=f'.{output_format}',
+                                            delete=False)
     dfg_vis.save(apply, saved_dfg.name)
+    # close here and delete after final use to work around access issues on
+    # in case anybody tries to run this on windows
+    saved_dfg.close()
     return saved_dfg
 
 

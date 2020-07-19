@@ -2,6 +2,7 @@
 Blueprint module responsible for retrieving different graph types
 """
 import logging
+import os
 
 import datauri
 from flask import Blueprint, request
@@ -43,7 +44,10 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
         session_count = _extract_session_count(frame)
         additional_metadata = _extract_metadata(frame)
         dfg = graphs.create_directly_follows_graph(frame, output_format)
-        return _package_response(dfg.name, session_count, additional_metadata)
+        response = _package_response(dfg.name, session_count,
+                                     additional_metadata)
+        os.remove(dfg.name)
+        return response
 
     @cache.memoize()
     def _create_heuristic_net(approach, method_type, error_type, bank,

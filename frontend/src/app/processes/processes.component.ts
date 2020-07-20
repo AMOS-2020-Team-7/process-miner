@@ -60,6 +60,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   imageEncodedInBase64 = '';
   dotString: string;
   selectedBank: string;
+  spinnerWait: boolean;
   bankChartData: any = [];
   methodChartData: any = [];
   approaches: Approach[] = [
@@ -88,6 +89,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.destroy$.next(true);
+    this.spinnerWait = false;
     // Unsubscribe from the subject
     this.destroy$.unsubscribe();
   }
@@ -111,6 +113,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   }
 
   public loadGraph() {
+    this.spinnerWait = true;
     const parameters = this.getParameters();
 
     let fullPath;
@@ -120,11 +123,15 @@ export class ProcessesComponent implements OnInit, OnDestroy {
       fullPath = 'hn/get';
     }
 
-    this.dataService.requestData<QueryResult>(REST_API_HN + fullPath, parameters).subscribe(data => {
+    this.dataService.requestData<QueryResult>(REST_API_HN + fullPath, parameters).pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.spinnerWait = false;
       this.bankChartData = Object.entries(data.metadata.banks).map((f) => ({bank: f[0], amount: f[1]}));
       this.methodChartData = Object.entries(data.metadata.methods).map((f) => ({bank: f[0], amount: f[1]}));
       this.loadNewImageToImageViewer(data.image);
       this.loadErrors(data.metadata.errors, data.numberOfSessions);
+    },
+    error => {
+      this.spinnerWait = false;
     });
   }
 

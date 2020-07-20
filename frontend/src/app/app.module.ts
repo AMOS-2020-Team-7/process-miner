@@ -22,6 +22,8 @@ import {FlexLayoutModule} from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { GraphDisplayComponent } from './graph-display/graph-display.component';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {NotificationService} from './notification.service';
 
 @NgModule({
   declarations: [
@@ -47,9 +49,10 @@ import {MatRadioModule} from '@angular/material/radio';
     MatSliderModule,
     FlexLayoutModule,
     FormsModule,
-    MatRadioModule
+    MatRadioModule,
+    MatSnackBarModule
   ],
-  providers: [],
+  providers: [NotificationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

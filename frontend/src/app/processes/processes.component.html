@@ -12,6 +12,12 @@
                 <app-graph-display [dotString]="dotString"></app-graph-display>
             </div>
         </mat-grid-tile>
+        <div class="overlay" *ngIf="spinnerWait">
+            <div class="centerSpinner">
+                <mat-progress-spinner class="custom-spinner" mode="indeterminate" style="margin:0 auto;" *ngIf="spinnerWait">
+                </mat-progress-spinner>
+            </div>
+        </div>
         <mat-grid-tile [colspan]="1" [rowspan]="2">
             <div class="container container-controls" fxLayout="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="stretch">
                 <div fxFlex="33%" class="controls-main-selectors">
@@ -95,7 +101,6 @@
                 <mat-divider></mat-divider>
                 <div fxFlex="33%" class="controls-main-selectors-label">
                     ERRORS
-
               <mat-radio-group
                 aria-labelledby="example-radio-group-label"
                 class="example-radio-group"

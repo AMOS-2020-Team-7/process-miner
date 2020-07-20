@@ -7,6 +7,7 @@ import os
 import datauri
 from flask import Blueprint, request
 from flask_caching import Cache
+from werkzeug.utils import unescape
 
 from process_miner.access.blueprints.request_result import get_state_response
 from process_miner.access.work.request_processing import RequestManager
@@ -29,11 +30,14 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
     blueprint = Blueprint('graphs', __name__, url_prefix='/graphs')
 
     def _get_filter_parameters():
-        approach = request.args.get(ARG_APPROACH, '', str)
-        method_type = request.args.get(ARG_METHOD_TYPE, '', str)
-        error_type = request.args.get(ARG_ERROR_TYPE, '', str)
-        bank = request.args.get(ARG_BANK, '', str)
+        approach = _get_unescaped_parameter(ARG_APPROACH)
+        method_type = _get_unescaped_parameter(ARG_METHOD_TYPE)
+        error_type = _get_unescaped_parameter(ARG_ERROR_TYPE)
+        bank = _get_unescaped_parameter(ARG_BANK)
         return approach, bank, error_type, method_type
+
+    def _get_unescaped_parameter(parameter, default=''):
+        return unescape(request.args.get(parameter, default, str))
 
     @cache.memoize()
     def _create_dfg(approach, method_type, error_type, bank, output_format):
@@ -131,7 +135,7 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
               $ref: '#/definitions/RequestResponse'
         """
         approach, bank, error_type, method_type = _get_filter_parameters()
-        output_format = request.args.get('format', 'svg', str).lower()
+        output_format = _get_unescaped_parameter('format', 'svg')
         ticket = request_manager.submit_ticketed(_create_dfg, approach,
                                                  method_type, error_type, bank,
                                                  output_format)
@@ -183,7 +187,7 @@ def create_blueprint(request_manager: RequestManager, cache: Cache,
               $ref: '#/definitions/RequestResponse'
         """
         approach, bank, error_type, method_type = _get_filter_parameters()
-        output_format = request.args.get('format', 'svg', str).lower()
+        output_format = _get_unescaped_parameter('format', 'svg')
         ticket = request_manager.submit_ticketed(_create_heuristic_net,
                                                  approach, method_type,
                                                  error_type, bank,

@@ -1,12 +1,18 @@
-<mat-toolbar class='adorsys-blue'>
-  <div class="container-logo">
-      <img src="assets/img/logo.png">
+<div class="container-main">
+  <div class="container-header">
+    <mat-toolbar>
+      <div class="container-logo">
+        <img class="image-logo" src="assets/img/logo.png">
+      </div>
+      <h1 class="toolbar-title">
+        &nbsp;PSD2Miner
+      </h1>
+      <div class="toolbar-items">
+        <button mat-button routerLink="/processes">Processes</button>
+      </div>
+    </mat-toolbar>
   </div>
-  <h1 class="toolbar-title">
-      PSD2Miner
-  </h1>
-  <div class="toolbar-items">
-      <button mat-button routerLink="/processes">Processes</button>
+  <div class="container-content">
+    <router-outlet></router-outlet>
   </div>
-</mat-toolbar>
-<router-outlet></router-outlet>
+</div>

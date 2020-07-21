@@ -14,6 +14,11 @@ setup-env:
 setup-dev-env: setup-env
 	pipenv install --dev
 
+setup-prod-env:
+	pip install pipenv waitress
+	pipenv lock -r > requirements.txt
+	pip install -r requirements.txt
+
 test:
 	pipenv run pytest --cov=$(MODULE_DIR) --cov-fail-under=50 --cov-report term-missing
 

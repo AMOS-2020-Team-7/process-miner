@@ -28,7 +28,7 @@ check: test lint security-check
 run: run-backend
 
 run-main:
-	pipenv run python -m $(MODULE_DIR)
+	pipenv run python -m $(MODULE_DIR).research
 
 run-backend:
 	FLASK_APP=$(MODULE_DIR) pipenv run flask run

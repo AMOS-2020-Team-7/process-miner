@@ -24,12 +24,11 @@ WITHOUT_ERROR = True
 
 
 def _main():
-    (cfg, retriever, _) = setup_components()
+    (_, retriever, _) = setup_components()
     log.info('starting log retrieval')
     retriever.retrieve_logs()
-    global_cfg = cfg.get_section('global')
-    miner = pm.Miner(global_cfg['graph_directory'])
-    error_dir = pm.Error(global_cfg['error_directory'])
+    miner = pm.Miner('graphs')
+    error_dir = pm.Error('errors')
     miner.prepare_graph_dir()
     error_dir.prepare_graph_dir()
     create_results(WITHOUT_ERROR, APPROACH, ERROR_TYPE)

@@ -3,6 +3,7 @@ Module responsible for initializing the flask app that provides the backend
 service of the process miner.
 """
 import logging
+import os
 import threading
 import time
 from pathlib import Path
@@ -11,6 +12,7 @@ from flasgger import Swagger
 from flask import Flask
 from flask_caching import Cache
 from flask_cors import CORS
+from numpy.compat import os_PathLike
 
 import process_miner.configuration_loader as cl
 import process_miner.log_handling.graylog_access as ga
@@ -22,29 +24,44 @@ from process_miner.access.blueprints import logs, request_result, graphs, \
 from process_miner.access.work.request_processing import RequestManager
 
 _DEFAULT_CONFIG_FILE = 'process_miner_config.yaml'
+_DEFAULT_LOG_RETR_CONFIG_FILE = 'log_retriever_config.yaml'
 
 log = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.INFO)
 
 
-def setup_components(config_file=_DEFAULT_CONFIG_FILE):
+def setup_components(process_miner_config_file=_DEFAULT_CONFIG_FILE,
+                     log_retriever_config_file=_DEFAULT_LOG_RETR_CONFIG_FILE):
     """
     Sets up all components needed for running the process miner.
-    :param config_file: path to the configuration file that should be used
+    :param process_miner_config_file: path to the configuration file that
+    should be used
+    :param log_retriever_config_file: path to the log retriever configuration
+    file that should be used (setting API token and URL via environment is
+    preferred)
     :return: a tuple containing the fully set up components of the process
     miner backend
     """
     log.info('setting up configuration')
-    cfg_loader = cl.ConfigurationLoader(Path(config_file))
-    global_cfg = cfg_loader.get_section('global')
-    log_retriever_cfg = cfg_loader.get_section('log_retriever')
-    filter_cfg = cfg_loader.get_section('filters')
-    tag_cfg = cfg_loader.get_section('tags')
+    pm_cfg_loader = cl.ConfigurationLoader(Path(process_miner_config_file))
+    global_cfg = pm_cfg_loader.get_section('global')
+    filter_cfg = pm_cfg_loader.get_section('filters')
+    tag_cfg = pm_cfg_loader.get_section('tags')
 
     log.info('setting up Graylog access')
-    graylog = ga.GraylogAccess(log_retriever_cfg['url'],
-                               log_retriever_cfg['api_token'])
+    if os.environ.get('GRAYLOG_URL') and os.environ.get('GRAYLOG_API_TOKEN'):
+        graylog_url = os.environ.get('GRAYLOG_URL')
+        api_token = os.environ.get('GRAYLOG_API_TOKEN')
+    else:
+        log.warning('Graylog URL and API token not provided via environment. '
+                    'Trying to read credentials from file %s',
+                    log_retriever_config_file)
+        lr_cfg_loader = cl.ConfigurationLoader(Path(log_retriever_config_file))
+        log_retriever_cfg = lr_cfg_loader.get_section('log_retriever')
+        graylog_url = log_retriever_cfg['url']
+        api_token = log_retriever_cfg['api_token']
+    graylog = ga.GraylogAccess(graylog_url, api_token)
 
     log.info('setting up log taggers')
     taggers = lt.create_log_taggers(tag_cfg)
@@ -58,7 +75,7 @@ def setup_components(config_file=_DEFAULT_CONFIG_FILE):
     log.info('setting up metadata factory')
     dataset_factory = dsf.DatasetFactory(Path(global_cfg['log_directory']))
 
-    return cfg_loader, retriever, dataset_factory
+    return pm_cfg_loader, retriever, dataset_factory
 
 
 def create_app():

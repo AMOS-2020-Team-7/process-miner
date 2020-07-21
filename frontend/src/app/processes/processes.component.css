@@ -97,4 +97,13 @@
   margin: 5px;
 }
 
+.reload-logs-button{
+    font-family: 'Montserrat', sans-serif;
+    color: #FFFFFF;
+    background: #054f72;
+}
 
+.remove-logs-checkbox{
+    font-family: 'Montserrat', sans-serif;
+    color:  #054f72;
+}

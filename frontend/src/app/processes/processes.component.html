@@ -122,6 +122,16 @@
                     </div>
                   </div>
                 </div>
+                <div fxFlex="20%">
+                    <div fxLayout="row" fxLayoutAlign="left">
+                      <div fxFlex="20%" fxLayoutAlign="left center">
+                        <button (click) ="reloadLogs()" class='reload-logs-button' mat-raised-button>Reload Logs</button>
+                      </div>
+                      <div fxFlex="40%" fxLayoutAlign="center">
+                        <mat-checkbox class='remove-logs-checkbox' color="primary" [(ngModel)]="forceRefresh">Remove Stored Logs</mat-checkbox>
+                      </div>
+                    </div>
+                  </div>
             </div>
         </mat-grid-tile>
     </mat-grid-list>

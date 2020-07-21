@@ -20,6 +20,7 @@ pandas = "*"
 flask-cors = "*"
 python-datauri = "*"
 flasgger = "*"
+werkzeug = "*"
 
 [requires]
 python_version = "3.8"

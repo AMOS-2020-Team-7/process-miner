@@ -1,19 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from '../data.service';
 import {  takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { Subject, pipe } from 'rxjs';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
 declare const wheelzoom: any;
 
 const REST_API_HN = 'http://127.0.0.1:5000/graphs/';
+const REST_API_LR = 'http://localhost:5000/logs/refresh';
 
 const ARG_APPROACH = 'approach';
 const ARG_METHOD_TYPE = 'method_type';
 const ARG_BANK = 'bank';
 const ARG_ERROR_TYPE = 'error_type';
 const ARG_FORMAT = 'format';
+const ARG_FORCE_REFRESH = 'force';
 
 export interface Approach {
   item: string;
@@ -55,6 +57,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   selectedMethod = '';
   selectedGraphType = '';
   selectedError = '';
+  forceRefresh = false;
   destroy$: Subject<boolean> = new Subject<boolean>();
   trustedImageUrl: SafeUrl;
   imageEncodedInBase64 = '';
@@ -94,7 +97,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  private getParameters() {
+  private getGraphParameters() {
     const parameters = {};
     parameters[ARG_FORMAT] = 'dot';
     if (this.selectedApproach) {
@@ -114,7 +117,7 @@ export class ProcessesComponent implements OnInit, OnDestroy {
 
   public loadGraph() {
     this.spinnerWait = true;
-    const parameters = this.getParameters();
+    const parameters = this.getGraphParameters();
 
     let fullPath;
     if (this.selectedGraphType === 'DFG'){
@@ -178,5 +181,16 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.loadGraph();
   }
 
+  public reloadLogs(){
+
+    this.spinnerWait = true;
+
+    this.dataService.requestData<QueryResult>(REST_API_LR, {force: this.forceRefresh}).pipe(takeUntil(this.destroy$)).subscribe(data => {
+      this.spinnerWait = false;
+    },
+    error => {
+      this.spinnerWait = false;
+    });
+  }
 
 }

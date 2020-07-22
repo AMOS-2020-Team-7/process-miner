@@ -1,139 +1,137 @@
-<!doctype html>
-<html>
-<head>
-</head>
-<body>
-    <mat-grid-list cols="2" gutterSize="10px" class="grid">
-        <mat-grid-tile [colspan]="1" [rowspan]="1">
-            <div class='container-img'>
-                <p class='instructions-text'>
-                    Scroll to zoom, drag and click to pan
-                </p>
-                <app-graph-display [dotString]="dotString"></app-graph-display>
-            </div>
-        </mat-grid-tile>
-        <div class="overlay" *ngIf="spinnerWait">
-            <div class="centerSpinner">
-                <mat-progress-spinner class="custom-spinner" mode="indeterminate" style="margin:0 auto;" *ngIf="spinnerWait">
-                </mat-progress-spinner>
-            </div>
+<div class="container-content">
+  <div class="container-content-rows" fxFlex="100%" fxLayout="row">
+    <div fxFlex="100%" #displayDiv class="container-img">
+      <p class="instructions-text">
+        Scroll to zoom, drag and click to pan
+      </p>
+      <app-graph-display [dotString]="dotString" [width]="displayDiv.width" [height]="displayDiv.height">
+      </app-graph-display>
+    </div>
+    <div class="overlay" *ngIf="spinnerWait">
+      <div class="centerSpinner">
+        <mat-progress-spinner class="custom-spinner" mode="indeterminate" style="margin:0 auto;" *ngIf="spinnerWait">
+        </mat-progress-spinner>
+      </div>
+    </div>
+    <div fxFlex="*" class="container container-controls" fxLayout="column" fxLayoutWrap fxLayoutGap="0.5%"
+      fxLayoutAlign="stretch">
+      <!-- Load, Reset buttons -->
+      <div fxLayout="row" fxLayoutAlign="center">
+        <div fxFlex="25%" fxLayoutAlign="center">
+          <button (click)="loadGraph()" class="load-graph-button" mat-raised-button>
+            Load Graph
+          </button>
         </div>
-        <mat-grid-tile [colspan]="1" [rowspan]="2">
-            <div class="container container-controls" fxLayout="column" fxLayoutWrap fxLayoutGap="0.5%" fxLayoutAlign="stretch">
-                <div fxFlex="33%" class="controls-main-selectors">
-                    <div fxLayout="column" fxLayoutAlign="stretch">
-                        <div fxFlex="40%">
-                            <div fxLayout="row" fxLayoutAlign="center stretch">
-                                <div fxFlex="25%" class="controls-main-selectors-labels">
-                                    Graph Type
-                                </div>
-                                <div fxFlex="75%">
-                                    <mat-form-field floatLabel='never'>
-                                        <mat-label>Select  </mat-label>
-                                        <mat-select [(ngModel)]="selectedGraphType">
-                                            <mat-option *ngFor="let GraphType of graphTypes" [value]="GraphType.item">
-                                                {{ GraphType.viewValue }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                        </div>
-                        <div fxFlex="40%">
-                            <div fxLayout="row" fxLayoutAlign="center stretch">
-                                <div fxFlex="25%" class="controls-main-selectors-labels">
-                                    Approach
-                                </div>
-                                <div fxFlex="75%">
-                                    <mat-form-field floatLabel='never'>
-                                        <mat-label>Select  </mat-label>
-                                        <mat-select [(ngModel)]="selectedApproach">
-                                            <mat-option *ngFor="let approach of approaches" [value]="approach.item">
-                                                {{ approach.viewValue }}
-                                            </mat-option>
-                                        </mat-select>
-                                    </mat-form-field>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <mat-divider></mat-divider>
-                <div fxFlex="33%" class="controls-main-selectors">
-                    <!-- Method section -->
-                    <div fxLayout="column" fxLayoutAlign="stretch">
-                        <div fxFlex="25%">
-                            <div fxLayout="row">
-                                <div fxFlex="25%"  class="controls-main-selectors-labels">
-                                    Method
-                                </div>
-                            </div>
-                        </div>
-                        <div fxFlex="75%">
-                            <div fxLayout="row" fxLayoutAlign="stretch">
-                              <div fxFlex="100%">
-                                 <app-chart chartid='methodchart' [data]='methodChartData' [selected]='selectedMethod' (selectOn)='selectMethod($event)'></app-chart>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <mat-divider></mat-divider>
-                <div fxFlex="33%" class="controls-main-selectors">
-                    <!-- Method section -->
-                    <div fxLayout="column" fxLayoutAlign="stretch">
-                        <div fxFlex="25%">
-                            <div fxLayout="row">
-                                <div fxFlex="25%"  class="controls-main-selectors-labels">
-                                    Banks
-                                </div>
-                            </div>
-                        </div>
-                        <div fxFlex="75%">
-                            <div fxLayout="row" fxLayoutAlign="stretch">
-                              <div fxFlex="100%">
-                                 <app-chart chartid='bankchart' [data]='bankChartData' [selected]='selectedBank' (selectOn)='selectBank($event)'></app-chart>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <mat-divider></mat-divider>
-                <div fxFlex="33%" class="controls-main-selectors-label">
-                    ERRORS
-              <mat-radio-group
-                aria-labelledby="example-radio-group-label"
-                class="example-radio-group"
-                [(ngModel)]="selectedError">
-                <mat-radio-button class="example-radio-button" *ngFor="let error of errors" [value]="error.item">
-                  {{error.viewValue}}
-                </mat-radio-button>
-              </mat-radio-group>
-            </div>
-            <br>
-                <!-- Load, Reset buttons -->
-                <div fxFlex="20%">
-                  <div fxLayout="row" fxLayoutAlign="left">
-                    <div fxFlex="20%" fxLayoutAlign="left center">
-                      <button (click) ="loadGraph()" class='load-graph-button' mat-raised-button>Load Graph</button>
-                    </div>
-                    <div fxFlex="20%" fxLayoutAlign="center">
-                      <button (click) ="reset()" class='reset-settings-button' mat-raised-button>Reset</button>
-                    </div>
+        <div fxFlex="25%" fxLayoutAlign="left center">
+          <button (click)="reset()" class="reset-settings-button" mat-raised-button>
+            Reset
+          </button>
+        </div>
+        <div fxLayoutAlign="left center">
+          <button (click)="reloadLogs()" class='reload-logs-button' mat-raised-button>
+            Reload Logs
+          </button>
+          &nbsp;
+          <mat-checkbox class='remove-logs-checkbox' color="primary" [(ngModel)]="forceRefresh">
+            Clear old data
+          </mat-checkbox>
+        </div>
+      </div>
+      <!-- filters -->
+      <div style="overflow-y: scroll;" class="container container-filters" fxLayout="column" fxLayoutWrap
+        fxLayoutGap="0.5%" fxLayoutAlign="stretch">
+        <div class="container container-controls" fxLayout="column" fxLayoutWrap fxLayoutGap="0.5%"
+          fxLayoutAlign="stretch">
+          <div fxFlex="33%" class="controls-main-selectors">
+            <div fxLayout="column" fxLayoutAlign="stretch">
+              <div fxFlex="40%">
+                <div fxLayout="row" fxLayoutAlign="center stretch">
+                  <div fxFlex="25%" class="controls-main-selectors-labels">
+                    Graph Type
+                  </div>
+                  <div fxFlex="75%">
+                    <mat-form-field floatLabel='never'>
+                      <mat-label>Select </mat-label>
+                      <mat-select [(ngModel)]="selectedGraphType">
+                        <mat-option *ngFor="let GraphType of graphTypes" [value]="GraphType.item">
+                          {{ GraphType.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
                   </div>
                 </div>
-                <div fxFlex="20%">
-                    <div fxLayout="row" fxLayoutAlign="left">
-                      <div fxFlex="20%" fxLayoutAlign="left center">
-                        <button (click) ="reloadLogs()" class='reload-logs-button' mat-raised-button>Reload Logs</button>
-                      </div>
-                      <div fxFlex="40%" fxLayoutAlign="center">
-                        <mat-checkbox class='remove-logs-checkbox' color="primary" [(ngModel)]="forceRefresh">Remove Stored Logs</mat-checkbox>
-                      </div>
-                    </div>
+              </div>
+              <div fxFlex="40%">
+                <div fxLayout="row" fxLayoutAlign="center stretch">
+                  <div fxFlex="25%" class="controls-main-selectors-labels">
+                    Approach
                   </div>
+                  <div fxFlex="75%">
+                    <mat-form-field floatLabel='never'>
+                      <mat-label>Select </mat-label>
+                      <mat-select [(ngModel)]="selectedApproach">
+                        <mat-option *ngFor="let approach of approaches" [value]="approach.item">
+                          {{ approach.viewValue }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                </div>
+              </div>
             </div>
-        </mat-grid-tile>
-    </mat-grid-list>
-</body>
-</html>
+          </div>
+          <mat-divider></mat-divider>
+          <div fxFlex="33%" class="controls-main-selectors">
+            <!-- Method section -->
+            <div fxLayout="column" fxLayoutAlign="stretch">
+              <div fxFlex="25%">
+                <div fxLayout="row">
+                  <div fxFlex="25%" class="controls-main-selectors-labels">
+                    Method
+                  </div>
+                </div>
+              </div>
+              <div fxFlex="75%">
+                <div fxLayout="row" fxLayoutAlign="stretch">
+                  <div fxFlex="100%">
+                    <app-chart chartid='methodchart' [data]='methodChartData' [selected]='selectedMethod'
+                      (selectOn)='selectMethod($event)'></app-chart>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <!-- Banks section -->
+          <div fxFlex="33%" class="controls-main-selectors">
+            <div fxLayout="column" fxLayoutAlign="stretch">
+              <div fxFlex="25%">
+                <div fxLayout="row">
+                  <div fxFlex="25%" class="controls-main-selectors-labels">
+                    Banks
+                  </div>
+                </div>
+              </div>
+              <div fxFlex="75%">
+                <div fxLayout="row" fxLayoutAlign="stretch">
+                  <div fxFlex="100%">
+                    <app-chart chartid='bankchart' [data]='bankChartData' [selected]='selectedBank'
+                      (selectOn)='selectBank($event)'></app-chart>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <mat-divider></mat-divider>
+          <!-- error section -->
+          <div fxFlex="33%" class="controls-main-selectors-label">
+            Errors
+            <mat-radio-group aria-labelledby="error-radio-group-label" class="error-radio-group"
+              [(ngModel)]="selectedError">
+              <mat-radio-button class="error-radio-button" *ngFor="let error of errors" [value]="error.item">
+                {{error.viewValue}}
+              </mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </div>
+      </div>

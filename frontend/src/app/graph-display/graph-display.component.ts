@@ -9,15 +9,16 @@ import { graphviz } from 'd3-graphviz';
 export class GraphDisplayComponent implements OnChanges {
 
   @Input() dotString: string;
+  @Input() width: string;
+  @Input() height: string;
 
   constructor() { }
 
   ngOnChanges(): void {
     graphviz('#graph')
-      .width(1000)
-      .height(1000)
+      .width(parseInt(this.width, 10))
+      .height(parseInt(this.height, 10))
       .fit(true)
-      .scale(0.5)
       .renderDot(this.dotString);
   }
 }

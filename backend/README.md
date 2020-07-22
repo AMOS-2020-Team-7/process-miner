@@ -90,4 +90,4 @@ Even if none of the patterns matched each tags field will be present in the outp
 
 ## Process mining
 
-The actual process mining is done by the modules `minin.graphs` and `mining.metadata` whereas the first is used for creating graphs from the retrieved logs and the later for providing additional metadata. The Swagger UI at http://localhost:5000/apidocs/index.html provides documentation and also allows to test the endpoints that allow access to those modules functionalities. The Flask app has to run for the documentation to be accessible.
+The actual process mining is done by the modules `mining.graphs` and `mining.metadata` whereas the first is used for creating graphs from the retrieved logs and the later for providing additional metadata. The Swagger UI at http://localhost:5000/apidocs/index.html provides documentation and also allows to test the endpoints that allow access to those modules functionalities. The Flask app has to run for the documentation to be accessible.

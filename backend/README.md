@@ -39,12 +39,16 @@ The file contains the following sections and entries:
 * `global`
     * `log_directory` - Target directory for the retrieved logs (may be an absolute or relative path)
     * `reload_interval` - Time in minutes between automatic log retrievals (default 60 minutes; 0 or less to disable)
-* `log_retriever`
-    * `url` - URL of the Graylog instance logs should be retrieved from
-    * `api_token` - Access Token used for authentication to the Graylog instance (see [Creating and using Access Token](https://docs.graylog.org/en/3.3/pages/configuration/rest_api.html#creating-and-using-access-token))
 * `filters`
     * `filter_expressions` - Array of Regular Expressions that can be used to remove log entries that do not serve any purpose for the process mining
 * `tags` - Configuration of log taggers (see [Tagging](#Tagging))
+
+The hostname of the Graylog instance and the API token used to access that instance may be configured via the environment variables `GRAYLOG_URL` and `GRAYLOG_API_TOKEN`. If those variables are not set during application start the backend will additionally look for those values in a file called `log_retriever_config.yaml`. This file also has to reside at the top level of the `backend` directory. The file may look like this:
+```
+log_retriever:
+    url: GRAYLOG_URL
+    api_token: GRAYLOG_API_TOKEN
+```
 
 ## Retrieving of logs
 
@@ -82,8 +86,8 @@ To aid the process mining the class `LogTagger` from the module `log_tagger` ext
       'another fieldname':
         .....
 
-Even if none of the patterns matched each tags field will be present in the output files. For concrete usage examples see `docs/example_process_miner_config.yaml`.
+Even if none of the patterns matched each tags field will be present in the output files. For concrete usage examples see `process_miner_config.yaml`.
 
 ## Process mining
 
-The actual process mining is done by the modules `graph_factory` and `metadata_factory` whereas the first is used for creating graphs from the retrieved logs and the later for providing additional metadata. The Swagger UI at http://localhost:5000/apidocs/index.html provides documentation and also allows to test the endpoints that allow access to those modules functionalities. The Flask app has to run for the documentation to be accessible.
+The actual process mining is done by the modules `mining.graphs` and `mining.metadata` whereas the first is used for creating graphs from the retrieved logs and the later for providing additional metadata. The Swagger UI at http://localhost:5000/apidocs/index.html provides documentation and also allows to test the endpoints that allow access to those modules functionalities. The Flask app has to run for the documentation to be accessible.

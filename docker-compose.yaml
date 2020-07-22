@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+    backend:
+        container_name: pm-backend
+        build: 
+            context: ./backend/
+        ports: 
+            - 5000:5000 # the exposed port has to be kept in sync with the BACKEND_PORT frontend build arg
+        environment: 
+            - GRAYLOG_URL=INSERT_GRAYLOG_URL
+            - GRAYLOG_API_TOKEN=INSERT_GRAYLOG_API_TOKEN
+
+    frontend:
+        container_name: pm-frontend
+        build: 
+            context: ./frontend/
+            args:
+            - BACKEND_HOST=INSERT_BACKEND_HOSTNAME # host the backend is running on
+            - BACKEND_PORT=5000 # exposed port of the backend
+        ports: 
+            - 4200:80

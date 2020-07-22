@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DataService } from '../data.service';
 import {  takeUntil } from 'rxjs/operators';
@@ -7,8 +8,9 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 
 declare const wheelzoom: any;
 
-const REST_API_HN = 'http://127.0.0.1:5000/graphs/';
-const REST_API_LR = 'http://localhost:5000/logs/refresh';
+const REST_API_HN = 'graphs/hn/get';
+const REST_API_DFG = 'graphs/dfg/get';
+const REST_API_LR = 'logs/refresh';
 
 const ARG_APPROACH = 'approach';
 const ARG_METHOD_TYPE = 'method_type';
@@ -119,14 +121,14 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     this.spinnerWait = true;
     const parameters = this.getGraphParameters();
 
-    let fullPath;
+    let url;
     if (this.selectedGraphType === 'DFG'){
-      fullPath = 'dfg/get';
+      url = this.getUrl(REST_API_DFG);
     }else{
-      fullPath = 'hn/get';
+      url = this.getUrl(REST_API_HN);
     }
 
-    this.dataService.requestData<QueryResult>(REST_API_HN + fullPath, parameters).pipe(takeUntil(this.destroy$)).subscribe(data => {
+    this.dataService.requestData<QueryResult>(url, parameters).pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.spinnerWait = false;
       this.bankChartData = Object.entries(data.metadata.banks).map((f) => ({bank: f[0], amount: f[1]}));
       this.methodChartData = Object.entries(data.metadata.methods).map((f) => ({bank: f[0], amount: f[1]}));
@@ -136,6 +138,12 @@ export class ProcessesComponent implements OnInit, OnDestroy {
     error => {
       this.spinnerWait = false;
     });
+  }
+
+  private getUrl(endpointPath: string) {
+    const host = environment.backendHost;
+    const port = environment.backendPort;
+    return `http://${host}:${port}/${endpointPath}`;
   }
 
   public loadErrors(responseErrors, responseNumberOfSessions){
@@ -184,8 +192,8 @@ export class ProcessesComponent implements OnInit, OnDestroy {
   public reloadLogs(){
 
     this.spinnerWait = true;
-
-    this.dataService.requestData<QueryResult>(REST_API_LR, {force: this.forceRefresh}).pipe(takeUntil(this.destroy$)).subscribe(data => {
+    const url = this.getUrl(REST_API_LR);
+    this.dataService.requestData<QueryResult>(url, {force: this.forceRefresh}).pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.spinnerWait = false;
     },
     error => {

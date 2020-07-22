@@ -8,3 +8,11 @@ Our web application analyzes the concrete implementation of the process 'Get Tra
 
 ## Software Architecture
 <br><center><img src="/backend/docs/software_architecture.png" alt="Software Architecture" width="700"/></center></br>
+
+
+## Deployment
+The PSD2Miner may be deployed using `docker-compose`. In order to be able to do this certain values in the file `docker-compose.yaml` need to be modified:
+* `GRAYLOG_URL` - hostname of the Graylog instance that should be used to retrieve logs from
+* `GRAYLOG_API_TOKEN` - API token that is required for accessing the Graylog instance
+* `BACKEND_HOST` - hostname of the machine that will run the backend
+* `BACKEND_PORT` - number of the port that exposes the backend

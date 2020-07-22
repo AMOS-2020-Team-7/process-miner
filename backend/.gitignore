@@ -11,8 +11,7 @@ __pycache__/
 .idea/
 
 # config files containing possibly sensitive data
-process_miner_config.yaml
-/example_process_miner_config.yaml
+log_retriever_config.yaml
 
 # default output directory
 retrieved_logs/

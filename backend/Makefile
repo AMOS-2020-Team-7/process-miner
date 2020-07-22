@@ -14,6 +14,11 @@ setup-env:
 setup-dev-env: setup-env
 	pipenv install --dev
 
+setup-prod-env:
+	pip install pipenv waitress
+	pipenv lock -r > requirements.txt
+	pip install -r requirements.txt
+
 test:
 	pipenv run pytest --cov=$(MODULE_DIR) --cov-fail-under=50 --cov-report term-missing
 
@@ -28,7 +33,7 @@ check: test lint security-check
 run: run-backend
 
 run-main:
-	pipenv run python -m $(MODULE_DIR)
+	pipenv run python -m $(MODULE_DIR).research
 
 run-backend:
 	FLASK_APP=$(MODULE_DIR) pipenv run flask run

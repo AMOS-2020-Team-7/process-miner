@@ -6,8 +6,6 @@ The example process miner uses the following configuration file entries in `proc
 
 * `global`
     * `log_directory` - Target directory for the retrieved logs (may be an absolute or relative path)
-    * `graph_directory` - Target directory for the retrieved graphs
-    * `error_directory` - Target directory for the retrieved graphs of the identified error types
 
 ## Common Paths for all Approaches
 

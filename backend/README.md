@@ -43,6 +43,13 @@ The file contains the following sections and entries:
     * `filter_expressions` - Array of Regular Expressions that can be used to remove log entries that do not serve any purpose for the process mining
 * `tags` - Configuration of log taggers (see [Tagging](#Tagging))
 
+The hostname of the Graylog instance and the API token used to access that instance may be configured via the environment variables `GRAYLOG_URL` and `GRAYLOG_API_TOKEN`. If those variables are not set during application start the backend will additionally look for those values in a file called `log_retriever_config.yaml`. This file also has to reside at the top level of the `backend` directory. The file may look like this:
+```
+log_retriever:
+    url: GRAYLOG_URL
+    api_token: GRAYLOG_API_TOKEN
+```
+
 ## Retrieving of logs
 
 ### Functional overview

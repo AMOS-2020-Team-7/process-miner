@@ -13,5 +13,5 @@ RUN node_modules/@angular/cli/bin/ng build --prod
 
 # serve Angular app
 FROM nginx:alpine
-COPY --from=node-build /usr/src/app/dist/psd2miner-frontend /usr/share/nginx/html
+COPY --from=node-build /usr/src/app/dist/frontend /usr/share/nginx/html
 COPY nginx-angular.conf /etc/nginx/conf.d/default.conf

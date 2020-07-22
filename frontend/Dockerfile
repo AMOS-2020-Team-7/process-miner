@@ -1,10 +1,15 @@
 # build Angular app
 FROM node:current-alpine AS node-build
+ARG BACKEND_HOST
+ARG BACKEND_PORT
+ENV BACKEND_HOST ${BACKEND_HOST}
+ENV BACKEND_PORT ${BACKEND_PORT}
 WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
-RUN npm run build
+RUN sh script/set_backend_access_data.sh
+RUN node_modules/@angular/cli/bin/ng build --prod
 
 # serve Angular app
 FROM nginx:alpine
